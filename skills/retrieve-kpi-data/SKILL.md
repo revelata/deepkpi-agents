@@ -156,10 +156,11 @@ feed** but has **not** (yet) asked for CSV or an Excel file:
   If they **differ** (e.g. quarterly vs annual, or different units), use **separate
   blocks** or **separate labeled tables** — **one block per distinct deepKPI time
   series** when they are not the same KPI.
-- **Derived metrics:** Show **operands** first (including as **columns** in a
-  combined-period table), then the **derived series last** — e.g. the **rightmost**
-  column or final labeled block — with values **bold** where helpful and a **Note**
-  on the derivation where useful.
+- **Derived / imputed metrics:** When you **fill a missing point** in an existing
+  series (e.g. Q4 from FY − Q1−Q2−Q3), put the value **in that series’ row** in the
+  correct period column—**not** a separate “Q4 (derived)” line item. **Bold** or
+  annotate in-cell / **Notes** where helpful. **Distinct** derived KPIs (different
+  line item, e.g. YoY %) may still use their **own** row or column.
 - **Provenance:** `[value](exact-url)` per **Provenance — non-negotiable rules**.
 - **Prose:** optional short intro; do not bury the data in long narrative unless the
   user asked for analysis.
@@ -209,9 +210,10 @@ Structure (read **down** the page; **time is rows**, not columns):
   split by mismatched axes.
 - **Merge vs split (KPI identity)** — unchanged: merge values that are the same KPI;
   separate rows when metric/unit/aggregation differs.
-- **Derivations** — operands first; add **derived** as a **column** if it shares the
-  same period axis, or a clearly labeled row/column; **bold** derived values where
-  helpful. **Note** only when needed.
+- **Derivations / imputation** — gap-fills (imputed Q4, etc.) live **inside** the
+  same row as the parent series for that period; **do not** add an extra line item
+  for the imputed point. Other derived KPIs get their own row/column when they are
+  genuinely separate metrics. **Note** imputation in Notes or inline where needed.
 
 **.xlsx is different:** file export uses **periods as columns** (annual block |
 blank | quarterlies) — see **`format-deepkpi-for-excel`**.
@@ -232,7 +234,7 @@ Units: $M unless noted (store count = stores)
 | FY22-Q1 | [$248.0](url)      | [2,410](url) |
 | FY22-Q2 | [$300.9](url)      | [2,445](url) |
 | FY22-Q3 | [$292.2](url)      | [2,489](url) |
-| FY22-Q4 | **[$355.7](url)** (derived) | [2,521](url) |
+| FY22-Q4 | **[$355.7](url)** (imputed in this row: FY−Q1−Q2−Q3; link operands) | [2,521](url) |
 | FY23-Q1 | [$267.1](url)      | [2,563](url) |
 ```
 

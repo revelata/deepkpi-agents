@@ -92,10 +92,19 @@ Format all output spreadsheets as a **revenue build model**:
   fragment one series into "Revenue - Q1" / "Revenue - Q2" rows. **Each value
   lands in the column that matches its reporting period;** Col A may list multiple
   deepKPI source strings if you merged series (or keep one canonical label in C).
-- **Derived blocks:** **operand** (input) series as **separate rows** above;
-  **derived** row **last** in that block. Derived cells use **black** font and no
-  green input styling — and **must** hold **live `=` formulas**, never typed
-  results (see **Derived values — formulas only** below).
+- **Imputation / gap-fill (same series row):** When you **impute** a missing point
+  in an existing stream (e.g. **Q4 = FY − Q1 − Q2 − Q3** because there is no Q4
+  10-Q), put the value **only** in **that series’ row**, in the **missing period
+  column(s)**—as a **live `=` formula** (black font, no green input styling). **Do
+  not** add a separate line item such as “Q4 (derived)”, “Q4 Revenue”, or “Imputed
+  Q4” beneath the quarterly row. **Especially in Excel**, the quarterly KPI stays
+  **one row**; Q4 cells reference FY and Q1–Q3. A separate **annual** row for the
+  same metric is fine when it is a distinct deepKPI series (different frequency).
+  Document imputation in **Notes** or an agreed footnote row, not as an extra KPI row.
+- **Distinct derived KPIs** (YoY %, margins, segment remainder **as its own metric**,
+  build subtotals): **operand** rows above where needed; the **derived KPI** gets
+  its **own** row—because it is a **different** line item, not a hole in one stream.
+  Those cells are still **live formulas** (see **Derived values — formulas only**).
 - **Time periods flow left to right** within each block. Row labels in column A.
 - **Three-column label system**:
   - Col A (hidden): deepKPI metric name string — serves as audit trail
@@ -159,10 +168,9 @@ Format all output spreadsheets as a **revenue build model**:
 Col A (hidden)            | Col B | Col C                  | Col D          | FY2022       | FY2023       |   | Mar-22       | Jun-22       | Sep-22       | Dec-22       | … |
 --------------------------|-------|------------------------|----------------|--------------|--------------|---|--------------|--------------|--------------|--------------|---|
                           |       | REVENUE BUILD          |                |              |              |   |              |              |              |              |   |  ← ALL CAPS bold + underlined
-revenue; quarterly ($)    |  33   | Revenue                | (in thousands) | -            | -            |   | [248,017] inp| [300,941] inp| [292,246] inp| -            | … | ← inp = green #00B050 text, fill #E2EFDA
+revenue; quarterly ($)    |  33   | Revenue                | (in thousands) | -            | -            |   | [248,017] inp| [300,941] inp| [292,246] inp| [355,622] drv| … | ← Q4 imputed in-stream: formula = FY−Q1−Q2−Q3, black—not a separate “Q4” row
 revenue; annual ($)       |  34   | Revenue (annual)       | (in thousands) | [1,196,826] inp| [1,383,600] inp|   | -            | -            | -            | -            | … |
-                          |  35   |   % YoY                |                |   +15.6%     |   +12.5%     |   |     n/a      |   +21.1%     |   +15.2%     |              | … | ← italic
-                          |       | Q4 Revenue             | (in thousands) | -            | -            |   | -            | -            | -            | [355,622] drv|   | ← drv = derived, black font
+                          |  35   |   % YoY                |                |   +15.6%     |   +12.5%     |   |     n/a      |   +21.1%     |   +15.2%     |              | … | ← italic; distinct KPI → own row OK
 ```
 
 *(Legend: **row 2 blank** between **C1** title and headers; date header row —
@@ -171,10 +179,11 @@ with full company name; **A1:B1** empty.)*
 
 ### Derived values — formulas only
 
-**Every derived value** (anything computed from other cells: Q4 as FY − Q1 − Q2 − Q3,
-YoY or other growth rates, subtotals, seasonal ratios, projected quarters, segment
-remainders, per-unit metrics, etc.) **must** be implemented as an Excel **`=`
-formula** that references the relevant input cells.
+**Every derived cell** must be a live Excel **`=`
+formula** referencing inputs. **Imputed quarters** (e.g. Q4 = FY − Q1 − Q2 − Q3) live
+in the **same row** as that quarterly series, in the gap column—**not** on a
+separate “Q4 derived” row. **Distinct** derived KPIs (YoY %, ratios, remainder
+lines, projections) use **their own** rows because they are different series.
 
 **Never** type, paste, or “hardcode” the computed number into a derived cell — even if
 it matches what you calculated in chat or in your head. The workbook must
@@ -218,7 +227,8 @@ strings, and warn the user that links are not clickable — recommend .xlsx.
 Before presenting the file link, verify every item. Do not deliver the file until all boxes pass.
 
 - [ ] No spurious row fragmentation (no "metric - Q1" rows); merged same-KPI
-      series = one row; distinct KPIs = separate rows; operands before derived
+      series = one row; **imputed Q4 (etc.) in that row’s column**, not a separate
+      “Q4 derived” line item; distinct KPIs = separate rows
 - [ ] **Annual columns are the left block**, blank separator, **quarterly columns
       on the right** — not the reverse
 - [ ] **Column groups** defined: **annual** block and **quarterly** block each
@@ -257,3 +267,5 @@ Before presenting the file link, verify every item. Do not deliver the file unti
   be a **formula**, not a pasted constant (even if “correct”).
 - **Parenthetical KPI labels** (`Name (modifier)`) or **opaque abbreviations** in
   Col C when **dash-separated** names or **spelled-out** words would be clearer.
+- **Extra row for imputed Q4** — imputation belongs **in the quarterly series row**,
+  not a second row for the same stream.

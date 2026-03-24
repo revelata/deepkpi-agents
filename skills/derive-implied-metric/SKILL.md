@@ -45,6 +45,12 @@ Q4 = FY − (Q1 + Q2 + Q3)
 is not directly in deepKPI, check whether FY is available and compute it — do
 not present a partial quarterly series without first trying to fill Q4.
 
+**Where the imputed value goes:** Put Q4 **in the same row** as the quarterly
+series, in the **Q4 period column** (in-chat wide tables) or the matching period
+column in Excel—**not** a separate line labeled “Q4 (derived)” or “Imputed Q4”.
+The data stream should read as one continuous series; use **Notes** (or a footnote)
+to flag imputation. Same rule for other **gap-fills** in a single stream.
+
 Apply to: revenue, COGS, gross profit, opex, net income, unit sales, deliveries,
 store openings, SBC, D&A, capex, cash from operations.
 
@@ -105,18 +111,24 @@ penetration_rate = units_captured / total_addressable_units
 Table structure rules (in-chat):
 - **Time flows left to right** — column headers are period labels
   (`FY22-Q1` … `FY22-Q4`), earliest at left.
-- **One row per time series** — each operand in the derivation formula is its own
-  row, mapping 1:1 to a single deepKPI series. Do not fragment a series into
-  separate rows per quarter; each series spans all its period columns on one row.
-- **Inputs first, derived metric last** — raw deepKPI rows appear at the top;
-  the derived result is the final data row, bolded.
+- **One row per time series** — each **reported** deepKPI series is one row across
+  periods. Do not fragment into “Revenue - Q1” rows. **Imputed** points (e.g. Q4)
+  sit **in that same row** in the missing column—**not** an extra “Q4 (derived)” row.
+- **Operands for imputation** — FY and Q1–Q3 may appear on **additional** rows when
+  they are **separate** deepKPI pulls (e.g. annual revenue row + quarterly row); the
+  **imputed value still fills the gap inside the quarterly row**, not a third row
+  for “Q4”.
+- **Truly distinct derived KPIs** (a metric that is *not* the same stream with a
+  hole—e.g. a computed ratio or remainder **as its own line item**) may use their
+  own row; show operands and formula as today.
 - **Links embed in cell values** — every directly reported input is a clickable
   hyperlink: `[$41.8M](exact-deepkpi-url)`. No separate Source column.
 - **Notes is a bottom row** — populated in columns where something non-standard
   occurred (derivation applied, stock item, unit conversion, MD&A gap-fill, etc.).
 
-Every derived metric must show all operands with links, and the result. Never
-present a derived number without its full derivation visible.
+Show all operands (with links) needed for imputation, and the filled-in cell in the
+**same stream** as the missing point. For a distinct derived KPI row, show operands
+and the result on that KPI’s row. Never hide how a number was obtained.
 
 **Single derivation block:**
 ```
@@ -130,15 +142,14 @@ Caveat: Q4 not directly reported in SEC filings; derived from 10-K annual figure
 **Multi-period table (preferred when deriving multiple periods):**
 
 ```
-## [Metric] ([Ticker]) — Q4 derivation
+## [Metric] ([Ticker]) — Q4 imputed in-stream
 Units: $M
 
-                   | FY22-Q1       | FY22-Q2       | FY22-Q3       | FY22-Q4   | FY23-Q1       | FY23-Q2       | FY23-Q3       | FY23-Q4   |
--------------------|---------------|---------------|---------------|-----------|---------------|---------------|---------------|-----------|
-Quarterly Revenue  | [$41.8](url)  | [$55.3](url)  | [$65.1](url)  |           | [$43.9](url)  | [$59.8](url)  | [$69.7](url)  |           |
-Annual Revenue     |               |               |               |[$210.1](url)|             |               |               |[$226.6](url)|
-**Q4 (derived)**   |               |               |               | **$47.9** |               |               |               | **$53.2** |
-Notes              |               |               |               |FY−Q1−Q2−Q3|               |               |               |FY−Q1−Q2−Q3|
+                   | FY22-Q1       | FY22-Q2       | FY22-Q3       | FY22-Q4        | FY23-Q1       | FY23-Q2       | FY23-Q3       | FY23-Q4        |
+-------------------|---------------|---------------|---------------|----------------|---------------|---------------|---------------|----------------|
+Quarterly Revenue  | [$41.8](url)  | [$55.3](url)  | [$65.1](url)  | **$47.9** (FY−Q1−Q2−Q3; link FY + Q1–Q3 operands) | [$43.9](url)  | [$59.8](url)  | [$69.7](url)  | **$53.2** (same) |
+Annual Revenue     |               |               |               |[$210.1](url)   |               |               |               |[$226.6](url)   |
+Notes              |               |               |               | imputed Q4     |               |               |               | imputed Q4     |
 ```
 
 Use the Notes row to flag anything non-standard: stock item used directly as Q4,
@@ -153,11 +164,13 @@ column grouping, and checklist. Use the **xlsx** skill to build the file.
 
 **Derive-implied-metric addenda:**
 
-- Structure sections with ALL CAPS headers as needed (e.g. **INPUTS**, **DERIVED
-  METRICS**); **operand** deepKPI rows first, **derived** row(s) last in each block.
-- **Every derived value** must be a live `=` formula referencing the actual input
-  cells — no hardcoded derived numbers:
-  - **Q4:** `=FY_cell - Q1_cell - Q2_cell - Q3_cell`
+- **Q4 / gap imputation:** formula **`=FY_cell - Q1_cell - Q2_cell - Q3_cell`** in
+  the **quarterly series row**, **Q4 column**—not a separate “Q4 Revenue” row.
+- Structure ALL CAPS sections as needed. **Distinct** derived KPIs (not gap-fill)
+  get their own rows with formulas.
+- **Every derived cell** is a live `=` formula — no hardcoded computed numbers:
+  - **Q4 in-stream:** `=FY_cell - Q1_cell - Q2_cell - Q3_cell` in the **same row**
+    as Q1–Q3
   - **Segment remainder:** `=Total_cell - Seg1_cell - Seg2_cell`
   - **Per-unit:** `=Revenue_cell / Units_cell`
   - **Implied useful life:** `=NetPPE_cell / Depreciation_cell`
@@ -171,6 +184,8 @@ needed; recommend `.xlsx`.
 
 ## Common pitfalls
 
+- **Separate row for imputed Q4**: imputation belongs in the **quarterly series row**,
+  not a second line item for the same stream (especially in Excel).
 - **Flow/stock confusion**: subscriber counts, store counts, balance sheet items
   are stocks — year-end value is Q4, not derived by subtraction.
 - **Unit mismatch**: deepKPI may return some values in thousands, others in
