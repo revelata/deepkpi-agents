@@ -14,12 +14,14 @@ Integration instructions for Claude Cowork, OpenClaw, or generic API access and 
 | `derive-implied-metric` | Computes derived metrics based on reported data with transparent formulas and source-data links. Example uses include Q4 imputation, segment remainders, per-unit metrics, AUV, Rule of 40, etc. |
 | `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |
 | `format-deepkpi-for-excel` | Canonical `.xlsx` layout, styling, formulas, hyperlinks. Edit or override this skill to implement your own formatting conventions. |
+| `custom-deepkpi-skill` | **Stub / template**—summarizes shared rules, links to the four skills above, and a minimal “hello world” response. Fork and customize for your org. |
 
 Each skill folder contains a **`SKILL.md`** (YAML frontmatter + body).
 
 ## Installation
 
-The `package-skills.sh` script will guide you through skill installation for **Claude Desktop**, **Claude.ai (web)**, or **OpenClaw**. For manual installation, please refer to the documentation for skill installation in your environment. 
+The `package-skills.sh` script will guide you through skill installation for **Claude Desktop**, **Claude.ai (web)**, or **OpenClaw**. Note that installation does not by default install the 
+stubbed custom agent skill. For manual installation, please refer to the documentation for skill installation in your environment. 
 
 ```bash
 chmod +x package-skills.sh
