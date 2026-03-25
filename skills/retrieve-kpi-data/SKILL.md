@@ -22,19 +22,13 @@ to a deepKPI call.
 
 ## Data source (deepKPI)
 
-Preferred for Claude: MCP tools — `query_company_id` · `list_kpis` · `search_kpis`
+| Context | How |
+|---------|-----|
+| **Claude (preferred)** | MCP tools — `query_company_id` · `list_kpis` · `search_kpis` |
+| **OpenClaw** | Use the **`deepkpi-api`** skill (REST endpoints + API key) |
+| **Env fallback** (`DEEPKPI_API_KEY` set) | `POST https://deepkpi-api.revelata.com/v1.0/{query_company_id, list_kpis, search_kpis}` — headers `Content-Type: application/json`, `X-API-Key: $DEEPKPI_API_KEY` |
 
-Preferred for OpenClaw: First try to use the generic deepkpi tool for access, 
-and fall back to manual API calling. 
-
-Fallback (if `DEEPKPI_API_KEY` env var is set):
-```
-Base URL: https://deepkpi-api.revelata.com
-Headers: Content-Type: application/json, X-API-Key: $DEEPKPI_API_KEY
-Endpoints: POST /v1.0/query_company_id · /v1.0/list_kpis · /v1.0/search_kpis
-```
-
-If neither is available, say so and ask the user how to proceed.
+If none of the above applies, say so and ask the user how to proceed.
 
 ## Opening line
 

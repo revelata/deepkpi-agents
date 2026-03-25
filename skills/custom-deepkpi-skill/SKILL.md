@@ -20,12 +20,14 @@ accurate.
 
 | Skill | When to use |
 |-------|-------------|
+| **`deepkpi-api`** | REST API access layer. Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. Other skills call through this for data access. |
 | **`retrieve-kpi-data`** | Every number from SEC-sourced KPIs; `list_kpis` / `search_kpis`; provenance `[value](url)`; in-chat tables; mandatory Excel offer after data pulls. |
 | **`derive-implied-metric`** | Implied metrics (Q4, segment remainders, per-unit, etc.); **imputed values in the same row** as the series, not a spare line item; flow vs stock. |
 | **`format-deepkpi-for-excel`** | `.xlsx` / CSV layout: PLNT-style wide grid, **C1** title, formulas not hardcoded, hyperlinks on value cells, **`format-deepkpi-for-excel`** checklist. |
 | **`analyze-seasonality`** | Seasonal ratios, quarterly splits from annuals; same provenance and Excel rules. |
 
-**Compose:** Run **`retrieve-kpi-data`** before anything that needs figures. Add
+**Compose:** **`deepkpi-api`** provides data access (OpenClaw) or use MCP (Claude).
+Run **`retrieve-kpi-data`** before anything that needs figures. Add
 **`derive-implied-metric`** when something is computed, **`analyze-seasonality`** for
 seasonal work, and **`format-deepkpi-for-excel`** whenever you build a spreadsheet file.
 

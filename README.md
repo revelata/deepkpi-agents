@@ -9,28 +9,55 @@ Integration instructions for Claude Cowork, OpenClaw, or generic API access and 
 ## Skills
 
 | Skill | Role |
-|-------------------------|-----------------------------------------|
-| `retrieve-kpi-data` | Pulls KPI data from public filings into agent and chat workflows, while also providing options to export into Excel financial models |
+|---|---|
+| `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
+| `retrieve-kpi-data` | Pulls KPI data from public filings into agent and chat workflows, while also providing options to export into Excel financial models. Uses MCP (Claude) or `deepkpi-api` (OpenClaw) for data access. |
 | `derive-implied-metric` | Computes derived metrics based on reported data with transparent formulas and source-data links. Example uses include Q4 imputation, segment remainders, per-unit metrics, AUV, Rule of 40, etc. |
 | `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |
 | `format-deepkpi-for-excel` | Canonical `.xlsx` layout, styling, formulas, hyperlinks. Edit or override this skill to implement your own formatting conventions. |
-| `custom-deepkpi-skill` | **Stub / template**—summarizes shared rules, links to the four skills above, and a minimal “hello world” response. Fork and customize for your org. |
+| `custom-deepkpi-skill` | **Stub / template** — summarizes shared rules, links to the skills above, and a minimal "hello world" response. Fork and customize for your org. |
 
 Each skill folder contains a **`SKILL.md`** (YAML frontmatter + body).
 
 ## Installation
 
-The `package-skills.sh` script will guide you through skill installation for **Claude Desktop**, **Claude.ai (web)**, or **OpenClaw**. Note that installation does not by default install the 
-stubbed custom agent skill. For manual installation, please refer to the documentation for skill installation in your environment. 
+### Quick install (any platform)
 
 ```bash
-chmod +x package-skills.sh
-./package-skills.sh
+curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash
 ```
 
-- **Claude Desktop / Claude.ai** — builds one ZIP per skill (folder-at-root layout) into `~/Desktop/deepkpi-skills` or `~/Downloads/deepkpi-skills`, then prints upload steps.
+The installer prompts you to choose **Claude Desktop**, **Claude.ai**, or
+**OpenClaw**, then downloads the skills and walks you through setup.
 
-- **OpenClaw** — copies each skill directory into **`~/.openclaw/workspace/skills/`**. Override with `OPENCLAW_SKILLS_ROOT` if needed.
+To skip the prompt and go straight to a specific platform:
+
+```bash
+# OpenClaw
+curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw
+
+# Claude Desktop
+curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s claude-desktop
+
+# Claude.ai (web)
+curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s claude-web
+```
+
+### From a local clone
+
+```bash
+git clone https://github.com/revelata/deepkpi-agents.git
+cd deepkpi-agents
+./install.sh
+```
+
+Same interactive flow, but uses local files instead of downloading from GitHub.
+
+### Notes
+
+- The stub template (`custom-deepkpi-skill`) is not installed by default — clone
+  the repo to access it.
+- Override the OpenClaw skills directory with `OPENCLAW_SKILLS_ROOT` if needed.
 
 
 ## Examples
