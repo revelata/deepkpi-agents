@@ -3,7 +3,8 @@ name: format-deepkpi-for-excel
 description: >
   Canonical Excel (.xlsx) layout and styling for deepKPI financial exports: 
   wide layout, annual then quarterly columns, Calibri, green input cells, hyperlinks,
-  numeric date headers, freeze panes, column grouping, no redundant Source rows;
+  numeric date headers, time series values as Excel numbers (not text), freeze panes,
+  column grouping, no redundant Source rows;
   same metric at quarterly and annual frequency (same definition/unit) on one row
   across period columns, not two rows; derived cells must be live formulas, never
   hardcoded computed values.
@@ -36,6 +37,24 @@ offer).
 - **Empty data cells** (no value for that period): show a **dash** (`-` or
   accounting-style em dash), not a blank cell — consistent for the data region
   (period columns from Col E onward, and any comparable body area).
+
+### Time series values — store as numbers (not text)
+
+- Any **numeric** value written from deepKPI **time series** (reported actuals,
+  imputed amounts, ratios, rates, and other quantitative points) must be stored as
+  **Excel number values** (numeric cell type), **not** as text — so sorting, charts,
+  `SUM`, and arithmetic work without coercion.
+- **Do not** write series values as strings that only *look* like numbers (e.g.
+  quote-prefixed cells, padded text, or literals like `"1,234.5"` as the stored
+  value). Use a **real numeric** `cell.value` (or equivalent) and apply **number
+  format** (currency, percent, thousands, decimals) for display.
+- **Percent / basis points:** store the **numeric** magnitude the sheet should use
+  (per your convention, e.g. decimal fraction for percent format), still as a
+  number — not a text label such as `"15%"` unless the underlying source is
+  genuinely non-numeric.
+- **Hyperlinked value cells:** the **cell value** remains numeric when the metric is
+  numeric; the provenance hyperlink is layered on the cell — do not replace the
+  number with a text-only representation.
 
 ### Title cell **C1** (not A1)
 
@@ -262,6 +281,7 @@ Before presenting the file link, verify every item. Do not deliver the file unti
 - [ ] **deepKPI input** cells: font **`#00B050`**, fill **`#E2EFDA`**
 - [ ] **Derived** cells: **black** font (no green input styling); formulas live
 - [ ] Every derived value is a live `=` formula referencing input cells — no hardcoded numbers
+- [ ] **Time series numerics** stored as **Excel numbers**, not text strings
 - [ ] Number format `_(* #,##0_);_(* \(#,##0\);_(* "-"_);_(@_)` applied to data cells as applicable
 - [ ] Every deepKPI-sourced cell has an actual Excel hyperlink (not a plain-text URL string)
 - [ ] **ALL CAPS** section headers: **bold** and **underlined**
@@ -275,6 +295,8 @@ Before presenting the file link, verify every item. Do not deliver the file unti
 - **Extra Source rows**: filing identity lives in the **cell hyperlink** only.
 - **Default blue underlined links** on deepKPI values — use **green**, **no underline**.
 - **Text-only date headers** — use **numeric** Excel dates + `mmm-yy` / year format.
+- **Text-stored time series values** — numeric KPI points must be **Excel numbers**,
+  not strings; use number format for display, not text that mimics a number.
 - **Quarterly columns before annual** — **annuals left**, blank, **quarterlies right**.
 - **Hardcoded derived numbers** — if a cell is computed from other cells, it must
   be a **formula**, not a pasted constant (even if “correct”).
