@@ -1,6 +1,6 @@
 # deepkpi-agents
 
-Example agent skills for automating finance workflows. These skills provide basic support for working with deepKPI data, as well as foundational examples for automating steps in a workflow. Every deepKPI datapoint comes with a link back to its original source and those hyperlinks are carried through any subsequent tool calls that use these skills.
+Example agent skills for automating finance workflows. These skills provide basic support for working with deepKPI data, as well as foundational examples for automating common analysis tasks. Every deepKPI datapoint comes with a link back to its original source and those hyperlinks are carried through any subsequent tool calls that use these skills.
 
 These skills source data from deepKPI by [Revelata](https://www.revelata.com), e.g. for public US companies. Data access requires a [free account](https://www.revelata.com/signup) and authentication via OAuth or API Key to load data into your agent's context. We support MCP access with OAuth authentication (preferred for Claude and Claude Cowork) and API access with an API key (preferred for OpenClaw). 
 
