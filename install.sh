@@ -109,6 +109,9 @@ install_openclaw_skills() {
 configure_openclaw() {
   echo "─── OpenClaw configuration ───"
   echo ""
+  echo "Need an Account? https://www.revelata.com/signup?product_id=0"
+  echo "Have an Account? Retrieve your API key here: https://www.revelata.com/ai-credits"
+  echo ""
   read -r -p "Paste your deepKPI API key (dk_...): " DEEPKPI_API_KEY </dev/tty
   if [[ -z "${DEEPKPI_API_KEY}" ]]; then
     echo "No API key provided, aborting."
