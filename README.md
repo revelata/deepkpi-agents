@@ -2,7 +2,7 @@
 
 Example agent skills for automating finance workflows. These skills provide basic support for working with deepKPI data, as well as foundational examples for automating common analysis tasks. Every deepKPI datapoint comes with a link back to its original source. These hyperlinks are carried through any subsequent tool call to provide 1-click auditability. 
 
-The skills in this repo source data from deepKPI by [Revelata](https://www.revelata.com). The underlying datasets capture comprehensive KPI data about public companies extracted from narrative text and tables in their filings; these are refreshed nightly to capture fresh disclosures. Data access requires a [free account](https://www.revelata.com/signup). Authentication is provided via OAuth for our MCP server (preferred for Claude and Cowork) or API Key (preferred for OpenClaw); once authenticated, these skills allow you to pull KPI data into your agent's context automatically. . 
+The skills in this repo source data from deepKPI by [Revelata](https://www.revelata.com). The underlying datasets capture comprehensive KPI data about public companies extracted from narrative text and tables in their filings; these are refreshed nightly to capture fresh disclosures. Data access requires a [free account](https://www.revelata.com/signup?product_id=0). Authentication is provided via OAuth for our MCP server (preferred for Claude and Cowork) or API Key (preferred for OpenClaw); once authenticated, these skills allow you to pull KPI data into your agent's context automatically. . 
 
 Integration instructions for Claude Cowork, OpenClaw, or generic API access and API keys are available [here](https://www.revelata.com/ai-credits).
 
