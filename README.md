@@ -32,14 +32,18 @@ The installer prompts you to choose **Claude Desktop**, **Claude.ai**, or
 
 To skip the prompt and go straight to a specific platform:
 
+**OpenClaw**
 ```bash
-# OpenClaw
 curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw
+```
 
-# Claude Desktop
+**Claude Desktop**
+```bash
 curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s claude-desktop
+```
 
-# Claude.ai (web)
+**Claude.ai (web)**
+```bash
 curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s claude-web
 ```
 
