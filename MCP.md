@@ -27,6 +27,40 @@ Support and troubleshooting for **Claude Desktop**, **Claude.ai**, and similar c
 
 ---
 
+## MCP tools
+
+The server exposes three tools. For US-listed companies, **`company_id`** is the **SEC CIK** (you can obtain it with **`query_company_id`**).
+
+### `query_company_id`
+
+Looks up a company’s numeric identifier from a **free-text name**. Returns matches you can use as **`company_id`** in the other tools. For US companies this identifier is the **SEC CIK**.
+
+**Parameters:** `company_name` (string), `num_of_res` (optional, default `5`) — max number of matches to return.
+
+**Credits:** None — free.
+
+---
+
+### `list_kpis`
+
+Lists **all KPIs** available for a given company, **organized by category**. Use this as the **first step** before searching: the returned KPI names help you write **precise** queries for **`search_kpis`**, which saves credits.
+
+**Parameters:** `company_id` (string), `source` (optional) — omit to include all filing types, or set to `10-K`, `10-Q`, or `8-K` to filter.
+
+**Credits:** None — free.
+
+---
+
+### `search_kpis`
+
+**Semantic search** over KPIs for one company — finds items most relevant to your **natural-language `query`**. Each result costs **one credit** (cap **15** results per call; default **3** — increase only when needed). Best practice: run **`list_kpis`** first, then search using **exact KPI names** from that list when possible instead of requesting many broad results.
+
+**Parameters:** `company_id` (string), `query` (string), `num_of_res` (optional, default `3`), `source` (optional) — same filing-type filter as **`list_kpis`**; omit to search across all filing types.
+
+**Credits:** Charged per result — see [AI credits](https://www.revelata.com/ai-credits).
+
+---
+
 ## Authentication issues
 
 | Symptom | What to try |
