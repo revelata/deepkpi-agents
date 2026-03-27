@@ -1,5 +1,5 @@
 ---
-name: deepkpi
+name: revelata-deepkpi
 description: >
   Financial and operational KPI research for US public companies using Revelata's
   deepKPI database. Pulls structured metrics from SEC filings (10-K, 10-Q, 8-K):

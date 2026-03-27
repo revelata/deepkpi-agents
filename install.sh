@@ -23,6 +23,7 @@ BUNDLE_SUBDIRS=(
   analyze-seasonality
 )
 
+# Must match `name:` in root SKILL.md (same as install folder basename).
 OPENCLAW_SKILL_ENTRY_KEY="${BUNDLE_DIR_NAME}"
 
 OPENCLAW_SKILLS_ROOT="${OPENCLAW_SKILLS_ROOT:-${HOME}/.openclaw/skills}"
@@ -154,7 +155,6 @@ configure_openclaw() {
 
   mkdir -p "$(dirname "${CONFIG_FILE}")"
 
-  # Config key matches the skills subdirectory name (revelata-deepkpi).
   local entry_key="$OPENCLAW_SKILL_ENTRY_KEY"
 
   if [[ ! -f "${CONFIG_FILE}" ]]; then
@@ -188,15 +188,16 @@ data = json.loads(cfg_path.read_text())
 skills = data.setdefault("skills", {})
 entries = skills.setdefault("entries", {})
 
-# Prefer the bundled skill entry; migrate env from legacy deepkpi-api if present.
-legacy = entries.pop("deepkpi-api", None)
+# Migrate env from legacy keys (old skill ids / per-folder install).
 entry = entries.setdefault("${entry_key}", {})
-if legacy and isinstance(legacy, dict):
-    entry.setdefault("enabled", legacy.get("enabled", True))
-    old_env = legacy.get("env") or {}
-    new_env = entry.setdefault("env", {})
-    for k, v in old_env.items():
-        new_env.setdefault(k, v)
+for legacy_key in ("deepkpi-api", "deepkpi"):
+    legacy = entries.pop(legacy_key, None)
+    if isinstance(legacy, dict):
+        entry.setdefault("enabled", legacy.get("enabled", True))
+        old_env = legacy.get("env") or {}
+        new_env = entry.setdefault("env", {})
+        for k, v in old_env.items():
+            new_env.setdefault(k, v)
 entry["enabled"] = True
 env = entry.setdefault("env", {})
 env["DEEPKPI_API_KEY"] = "${DEEPKPI_API_KEY}"
