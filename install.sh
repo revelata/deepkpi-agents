@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Unified installer for deepkpi-agents skills.
+# Unified installer for deepkpi-agents — single bundled skill (revelata-deepkpi).
+# The repo root SKILL.md is the master controller; subfolders hold reference docs.
 # Supports Claude Desktop, Claude.ai (web), and OpenClaw.
 #
 # Usage:
@@ -8,9 +9,13 @@
 #   curl ... | bash -s openclaw   Fetch from GitHub and install for OpenClaw
 set -euo pipefail
 
-GITHUB_RAW="https://raw.githubusercontent.com/revelata/deepkpi-agents/main"
+GITHUB_CODELOAD="https://codeload.github.com/revelata/deepkpi-agents/tar.gz/main"
 
-SKILL_NAMES=(
+# Installed folder name (OpenClaw skills dir and Claude zip root).
+BUNDLE_DIR_NAME="revelata-deepkpi"
+
+# Reference-doc folders copied into the bundle (repo root layout; no skills/ prefix).
+BUNDLE_SUBDIRS=(
   deepkpi-api
   retrieve-kpi-data
   derive-implied-metric
@@ -18,30 +23,36 @@ SKILL_NAMES=(
   analyze-seasonality
 )
 
-CLAUDE_SKILL_NAMES=(
-  retrieve-kpi-data
-  derive-implied-metric
-  format-deepkpi-for-excel
-  analyze-seasonality
-)
+OPENCLAW_SKILL_ENTRY_KEY="${BUNDLE_DIR_NAME}"
 
 OPENCLAW_SKILLS_ROOT="${OPENCLAW_SKILLS_ROOT:-${HOME}/.openclaw/skills}"
 CONFIG_FILE="${HOME}/.openclaw/openclaw.json"
 
 die() { echo "Error: $*" >&2; exit 1; }
 
-# Detect whether we're running from a local clone.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || echo "")"
-LOCAL_SKILLS_DIR="${SCRIPT_DIR}/skills"
-if [[ -d "$LOCAL_SKILLS_DIR" ]]; then
-  HAS_LOCAL=true
-else
-  HAS_LOCAL=false
+if [[ -z "$SCRIPT_DIR" ]]; then
+  die "could not resolve script directory"
 fi
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# Local clone = repo root SKILL.md present (layout after skills/ → root move).
+if [[ -f "${SCRIPT_DIR}/SKILL.md" ]]; then
+  HAS_LOCAL=true
+  DEFAULT_REPO_ROOT="$SCRIPT_DIR"
+else
+  HAS_LOCAL=false
+  DEFAULT_REPO_ROOT=""
+fi
 
-TMPDIR_SKILLS=""
+TMP_EXTRACT=""
+TMP_BUNDLE=""
+cleanup() {
+  [[ -n "${TMP_EXTRACT}" && -d "${TMP_EXTRACT}" ]] && rm -rf "${TMP_EXTRACT}"
+  [[ -n "${TMP_BUNDLE}" && -d "${TMP_BUNDLE}" ]] && rm -rf "${TMP_BUNDLE}"
+}
+trap cleanup EXIT
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
 
 default_zip_out_dir() {
   if [[ -d "${HOME}/Desktop" ]]; then
@@ -53,56 +64,80 @@ default_zip_out_dir() {
   fi
 }
 
-ensure_skills_dir() {
-  if $HAS_LOCAL; then
-    SKILLS_SRC="$LOCAL_SKILLS_DIR"
-  else
-    TMPDIR_SKILLS="$(mktemp -d)"
-    trap 'rm -rf "$TMPDIR_SKILLS"' EXIT
-    SKILLS_SRC="$TMPDIR_SKILLS"
-    local names=("$@")
-    echo "Downloading skills from GitHub..."
-    for name in "${names[@]}"; do
-      mkdir -p "${TMPDIR_SKILLS}/${name}"
-      curl -fsSL "${GITHUB_RAW}/skills/${name}/SKILL.md" \
-        -o "${TMPDIR_SKILLS}/${name}/SKILL.md" || {
-        echo "  ✗ Failed to download ${name}"
-        exit 1
-      }
-      echo "  ✓ ${name}"
-    done
-    echo ""
-  fi
-}
-
-zip_skills_to() {
-  local out="$1"
-  shift
-  local names=("$@")
-  mkdir -p "$out"
-  echo "Writing ZIPs to: $out"
+# Download and extract GitHub tarball; print absolute repo root path on stdout.
+fetch_repo_root_from_github() {
+  TMP_EXTRACT="$(mktemp -d)"
+  echo "Downloading repository tarball from GitHub..." >&2
   (
-    cd "$SKILLS_SRC"
-    for name in "${names[@]}"; do
-      rm -f "${out}/${name}.zip"
-      zip -qr "${out}/${name}.zip" "$name"
-      echo "  - ${name}.zip"
-    done
+    cd "$TMP_EXTRACT"
+    curl -fsSL "$GITHUB_CODELOAD" | tar -xz
   )
+  shopt -s nullglob
+  local topdirs=( "$TMP_EXTRACT"/* )
+  shopt -u nullglob
+  if [[ ${#topdirs[@]} -ne 1 || ! -d "${topdirs[0]}" ]]; then
+    die "unexpected archive layout (expected exactly one top-level directory)"
+  fi
+  echo "${topdirs[0]}"
 }
 
-install_openclaw_skills() {
-  ensure_skills_dir "${SKILL_NAMES[@]}"
-  mkdir -p "$OPENCLAW_SKILLS_ROOT"
-  echo "Installing skills into: ${OPENCLAW_SKILLS_ROOT}"
-  echo ""
+# Resolve directory containing SKILL.md and all BUNDLE_SUBDIRS.
+resolve_repo_root() {
+  if $HAS_LOCAL; then
+    echo "$DEFAULT_REPO_ROOT"
+    return
+  fi
+  fetch_repo_root_from_github
+}
 
-  for name in "${SKILL_NAMES[@]}"; do
-    rm -rf "${OPENCLAW_SKILLS_ROOT}/${name}"
-    cp -R "${SKILLS_SRC}/${name}" "${OPENCLAW_SKILLS_ROOT}/${name}"
-    echo "  ✓ ${name}"
+# Build ${dest_parent}/${BUNDLE_DIR_NAME} from repo root.
+build_bundle_at() {
+  local repo_root="$1"
+  local dest_parent="$2"
+  local bundle_root="${dest_parent}/${BUNDLE_DIR_NAME}"
+
+  [[ -f "${repo_root}/SKILL.md" ]] || die "SKILL.md not found in ${repo_root}"
+
+  rm -rf "$bundle_root"
+  mkdir -p "$bundle_root"
+  cp "${repo_root}/SKILL.md" "${bundle_root}/SKILL.md"
+
+  local d
+  for d in "${BUNDLE_SUBDIRS[@]}"; do
+    [[ -d "${repo_root}/${d}" ]] || die "missing folder ${d}/ under ${repo_root}"
+    cp -R "${repo_root}/${d}" "${bundle_root}/"
   done
+}
 
+# Stage bundle in a temp dir; echo absolute path to .../revelata-deepkpi
+stage_bundle() {
+  local repo_root
+  repo_root="$(resolve_repo_root)"
+  TMP_BUNDLE="$(mktemp -d)"
+  build_bundle_at "$repo_root" "$TMP_BUNDLE"
+  echo "${TMP_BUNDLE}/${BUNDLE_DIR_NAME}"
+}
+
+zip_bundle_for_claude() {
+  local bundle_path="$1"
+  local out_dir="$2"
+  local parent
+  parent="$(dirname "$bundle_path")"
+  [[ "$(basename "$bundle_path")" == "$BUNDLE_DIR_NAME" ]] || die "zip_bundle_for_claude: wrong bundle path"
+
+  mkdir -p "$out_dir"
+  rm -f "${out_dir}/${BUNDLE_DIR_NAME}.zip"
+  echo "Writing: ${out_dir}/${BUNDLE_DIR_NAME}.zip"
+  (cd "$parent" && zip -qr "${out_dir}/${BUNDLE_DIR_NAME}.zip" "$BUNDLE_DIR_NAME")
+}
+
+install_openclaw_bundle() {
+  local bundle_path="$1"
+  mkdir -p "$OPENCLAW_SKILLS_ROOT"
+  echo "Installing bundled skill into: ${OPENCLAW_SKILLS_ROOT}/${BUNDLE_DIR_NAME}"
+  rm -rf "${OPENCLAW_SKILLS_ROOT}/${BUNDLE_DIR_NAME}"
+  cp -R "$bundle_path" "${OPENCLAW_SKILLS_ROOT}/${BUNDLE_DIR_NAME}"
+  echo "  ✓ ${BUNDLE_DIR_NAME}"
   echo ""
 }
 
@@ -119,12 +154,15 @@ configure_openclaw() {
 
   mkdir -p "$(dirname "${CONFIG_FILE}")"
 
+  # Config key matches the skills subdirectory name (revelata-deepkpi).
+  local entry_key="$OPENCLAW_SKILL_ENTRY_KEY"
+
   if [[ ! -f "${CONFIG_FILE}" ]]; then
     cat > "${CONFIG_FILE}" <<CFGEOF
 {
   "skills": {
     "entries": {
-      "deepkpi-api": {
+      "${entry_key}": {
         "enabled": true,
         "env": {
           "DEEPKPI_API_KEY": "${DEEPKPI_API_KEY}"
@@ -141,16 +179,26 @@ CFGEOF
     echo "Created ${CONFIG_FILE}."
   else
     python3 - <<PYEOF
-import json, os, pathlib
+import json
+import pathlib
 
 cfg_path = pathlib.Path("${CONFIG_FILE}")
 data = json.loads(cfg_path.read_text())
 
 skills = data.setdefault("skills", {})
 entries = skills.setdefault("entries", {})
-api_entry = entries.setdefault("deepkpi-api", {})
-api_entry["enabled"] = True
-env = api_entry.setdefault("env", {})
+
+# Prefer the bundled skill entry; migrate env from legacy deepkpi-api if present.
+legacy = entries.pop("deepkpi-api", None)
+entry = entries.setdefault("${entry_key}", {})
+if legacy and isinstance(legacy, dict):
+    entry.setdefault("enabled", legacy.get("enabled", True))
+    old_env = legacy.get("env") or {}
+    new_env = entry.setdefault("env", {})
+    for k, v in old_env.items():
+        new_env.setdefault(k, v)
+entry["enabled"] = True
+env = entry.setdefault("env", {})
 env["DEEPKPI_API_KEY"] = "${DEEPKPI_API_KEY}"
 
 load = skills.setdefault("load", {})
@@ -191,7 +239,7 @@ if [[ -z "$MODE" ]]; then
   echo ""
   echo "deepkpi-agents skill installer"
   echo ""
-  echo "Where will you use these skills?"
+  echo "Where will you use this skill?"
   echo "  1) Claude Desktop"
   echo "  2) Claude.ai (web)"
   echo "  3) OpenClaw"
@@ -207,33 +255,33 @@ fi
 
 case "$MODE" in
   claude-desktop)
-    ensure_skills_dir "${CLAUDE_SKILL_NAMES[@]}"
+    BUNDLE_PATH="$(stage_bundle)"
     OUT="$(default_zip_out_dir)"
-    zip_skills_to "$OUT" "${CLAUDE_SKILL_NAMES[@]}"
+    zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
     echo ""
     echo "Next steps (Claude Desktop):"
     echo "  1. Open Claude Desktop and sign in."
     echo '  2. Settings → Capabilities → enable "Code execution and file creation".'
     echo "  3. Customize → Skills → + → Upload a skill."
-    echo "  4. Upload each ZIP from:"
-    echo "       ${OUT}/"
-    echo "  5. Enable each skill with its toggle."
+    echo "  4. Upload this single ZIP:"
+    echo "       ${OUT}/${BUNDLE_DIR_NAME}.zip"
+    echo "  5. Enable the skill with its toggle."
     echo ""
     echo "Packaging rules: https://support.claude.com/en/articles/12512198-creating-custom-skills"
     ;;
 
   claude-web)
-    ensure_skills_dir "${CLAUDE_SKILL_NAMES[@]}"
+    BUNDLE_PATH="$(stage_bundle)"
     OUT="$(default_zip_out_dir)"
-    zip_skills_to "$OUT" "${CLAUDE_SKILL_NAMES[@]}"
+    zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
     echo ""
     echo "Next steps (Claude.ai):"
     echo "  1. Sign in at https://claude.ai"
     echo '  2. Settings → Capabilities → enable "Code execution and file creation".'
     echo "  3. Open Customize → Skills: https://claude.ai/customize/skills"
-    echo "  4. Click + → Upload a skill, and upload each ZIP from:"
-    echo "       ${OUT}/"
-    echo "  5. Enable each skill with its toggle."
+    echo "  4. Click + → Upload a skill, and upload:"
+    echo "       ${OUT}/${BUNDLE_DIR_NAME}.zip"
+    echo "  5. Enable the skill with its toggle."
     echo ""
     echo "Help: https://support.claude.com/en/articles/12512180-using-skills-in-claude"
     ;;
@@ -242,13 +290,12 @@ case "$MODE" in
     echo ""
     echo "deepkpi-agents — OpenClaw installer"
     echo ""
-    install_openclaw_skills
+    BUNDLE_PATH="$(stage_bundle)"
+    install_openclaw_bundle "$BUNDLE_PATH"
     configure_openclaw
     echo ""
-    echo "Installed skills:"
-    for name in "${SKILL_NAMES[@]}"; do
-      echo "  • ${name}"
-    done
+    echo "Installed bundled skill:"
+    echo "  • ${BUNDLE_DIR_NAME}/"
     echo ""
     echo "Verify: openclaw skills list"
     echo "Docs:   https://github.com/revelata/deepkpi-agents"

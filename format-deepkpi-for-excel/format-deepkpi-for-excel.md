@@ -31,7 +31,7 @@ offer).
 
 - **Font:** **Calibri** for the sheet. **Provenance hyperlinks** use the same
   **green** as input text (`#00B050` / `FF00B050`), **not** default blue — see
-  **Hyperlinks** below.
+  **Hyperlinks** below. Ensure that digits in hyperlinked values ARE underlined. 
 - **Gridlines:** **Off** — the worksheet should present with **no visible cell
   grid** (Excel: gridlines hidden for the sheet).
 - **Empty data cells** (no value for that period): show a **dash** (`-` or
@@ -232,20 +232,23 @@ sufficient.
   “10-K FY2024” unless that is the value shown.
 - **Style:** **Font color** **`#00B050`**
   (`FF00B050`) to match prescribed green — **not** default hyperlink blue.
-  **Underline:** **none** (e.g. `underline=None` in openpyxl `Font`) — avoids
-  Excel’s default underlined link look and layout quirks when **right-aligned** in
-  the cell.
+  **Underline:** Put **single** underline **only on the digit characters** (`0`–`9`)
+  in the hyperlink’s **display text** — **not** on spaces around the value, alignment
+  padding, or “the whole cell.” Use **rich text** with per-run fonts (e.g. openpyxl
+  `CellRichText` / `TextBlock` with `InlineFont`) so non-digit runs (including spaces)
+  use `underline="none"`.
 - **Calibri** for link text unless the xlsx library requires a Font pass on the cell.
 
 ```python
-# Example: openpyxl — provenance link; green text, no underline (e.g. when right-aligned)
-cell.value = "248,017"  # or numeric + accounting format; link attaches to this cell
-cell.hyperlink = "https://exact-url-from-deepkpi"
-cell.font = Font(name="Calibri", color="FF00B050", underline=None)
+# Example pattern: green link text; underline digits only (rich text), not spaces/padding.
+# Build runs from display text so only 0-9 get underline="single"; commas/spaces get underline="none".
+# cell.hyperlink = "https://exact-url-from-deepkpi"
+# Assign cell.value = CellRichText(...) with TextBlock(..., font=InlineFont(...)) per run.
 ```
 
-Alternatively `=HYPERLINK("url","display")` — still apply **green** font and **no
-underline** on that cell to match the spec (may require cell style after formula).
+Alternatively `=HYPERLINK("url","display")` — still apply **green** font and **digit-only
+underline** on the display text when the stack allows (rich text / multi-run formatting);
+avoid default “underline the whole cell” hyperlink styling.
 
 Never store a provenance URL as **plain text only** in the data grid.
 

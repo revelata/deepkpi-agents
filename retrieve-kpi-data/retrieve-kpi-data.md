@@ -25,7 +25,7 @@ to a deepKPI call.
 | Context | How |
 |---------|-----|
 | **Claude (preferred)** | MCP tools — `query_company_id` · `list_kpis` · `search_kpis` |
-| **OpenClaw** | Use the **`deepkpi-api`** skill (REST endpoints + API key) |
+| **OpenClaw** | Read `deepkpi-api/deepkpi-api.md` and call the REST endpoints using `$DEEPKPI_API_KEY` |
 | **Env fallback** (`DEEPKPI_API_KEY` set) | `POST https://deepkpi-api.revelata.com/v1.0/{query_company_id, list_kpis, search_kpis}` — headers `Content-Type: application/json`, `X-API-Key: $DEEPKPI_API_KEY` |
 
 If none of the above applies, say so and ask the user how to proceed.
@@ -33,6 +33,30 @@ If none of the above applies, say so and ask the user how to proceed.
 ## Opening line
 
 Before doing anything else, say: **"Let me pull the KPI data using deepKPI."**
+
+## Granularity principle — always go deep first
+
+deepKPI's value is in the detail. Users asking broad questions ("how is the
+company doing?", "analyze their revenue") are used to top-line summaries from
+Bloomberg or news articles. Surprise them by going granular first.
+
+**Default search order:**
+1. **Unit-level KPIs first** — store counts, same-store/comparable sales, ASP,
+   ARPU, deliveries, paying users, occupancy, RevPAR, etc.
+2. **Segment or geography breakdowns** — revenue by business unit, brand,
+   region, or channel before consolidated totals
+3. **Margin and cost structure detail** — food costs as % of revenue, labor,
+   four-wall EBITDA, restaurant-level margins before blended operating margin
+4. **Consolidated / top-line metrics last** — only after the above; use as
+   context or cross-check, not as the primary answer
+
+If granular data exists for a metric, never lead with the consolidated version.
+Only fall back to top-line when the detailed series is genuinely absent from
+deepKPI. Note when you've done this.
+
+This applies to both data pulls and analysis. When writing analysis, build
+the narrative from the unit economics up — don't start with "revenue grew X%"
+when you have store count, traffic, and ticket data to explain why.
 
 ## Retrieval workflow
 
@@ -79,7 +103,7 @@ flow metrics before presenting incomplete data.** Do not surface a partial serie
 
 | Gap | Handling |
 |---|---|
-| Q4 missing, have Q1–Q3 + FY | Derive: Q4 = FY − (Q1+Q2+Q3). See `derive-implied-metric`. |
+| Q4 missing, have Q1–Q3 + FY | Derive: Q4 = FY − (Q1+Q2+Q3). Read `derive-implied-metric/derive-implied-metric.md`. |
 | Annual missing, have quarters | Sum four quarters (flow items only). |
 | Segment missing, have total + others | Derive: missing = total − sum(known). |
 | Balance sheet Q4 missing | Use FY year-end value — stocks are snapshots, not flows. |
@@ -118,11 +142,15 @@ below. Treat this as part of the deliverable, not optional follow-up.
 ### Analysis
 
 When the user wants **analysis**, **interpretation**, **trends**, **commentary**,
-or **what it means** — respond as you normally would for that task (e.g.
-structure, depth, charts-in-prose, comparisons). **Still enforce Provenance:**
-every **numeric figure** must include its deepKPI provenance using
-`[value](exact-url)` (and for derived numbers, link operands or state sources as
-already required). No bare numbers.
+or **what it means** — structure the response from the ground up: unit economics
+and segment detail first, consolidated metrics as context. A response that leads
+with "revenue grew 12%" when you have same-store sales, ticket size, and traffic
+data is a missed opportunity — pull the thread from the most granular level
+available and build toward the headline number, not the reverse.
+
+**Still enforce Provenance:** every **numeric figure** must include its deepKPI
+provenance using `[value](exact-url)` (and for derived numbers, link operands or
+state sources as already required). No bare numbers.
 
 ### Data pull (in-chat: read top to bottom)
 
@@ -186,9 +214,9 @@ For layout examples, see **In-chat table template (data pull)** below.
 ### CSV or spreadsheet output
 
 When the user asks for **CSV**, **spreadsheet**, **Excel**, **.xlsx**, agrees to
-the **post-pull .xlsx offer**, or downloadable tabular output for a model — follow
-the **`format-deepkpi-for-excel`** skill in full (plus the **xlsx** skill for
-implementation).
+the **post-pull .xlsx offer**, or downloadable tabular output for a model — read
+`format-deepkpi-for-excel/format-deepkpi-for-excel.md` and follow it in full
+(plus the **xlsx** skill for implementation).
 
 ---
 
@@ -234,10 +262,10 @@ Units: $M unless noted (store count = stores)
 
 ## Excel workbook (`.xlsx`)
 
-For any **CSV / spreadsheet / Excel** deliverable from deepKPI, apply the
-**`format-deepkpi-for-excel`** skill end-to-end (layout, styling, hyperlinks, dates,
-freeze panes, column grouping, checklist, CSV notes). Use the **xlsx** skill to
-implement it. Do not duplicate those rules here.
+For any **CSV / spreadsheet / Excel** deliverable from deepKPI, read
+`format-deepkpi-for-excel/format-deepkpi-for-excel.md` and apply it end-to-end
+(layout, styling, hyperlinks, dates, freeze panes, column grouping, checklist,
+CSV notes). Use the **xlsx** skill to implement it. Do not duplicate those rules here.
 
 ## Common failure modes
 
@@ -248,6 +276,7 @@ implement it. Do not duplicate those rules here.
   match, **combine into one table** with a column per metric.
 - **Skipping list_kpis**: it's free and consistently guides better, cheaper searches.
 - **Querying too broadly**: "revenue" returns weak matches; use segment-specific terms.
+- **Leading with top-line when granular data exists**: always check for unit-level and segment KPIs first; only use consolidated totals when detail is unavailable. Showing same-store sales + traffic + ticket is more valuable than consolidated revenue alone.
 - **Mixing period types silently**: always label each value as annual or quarterly.
 - **Balance sheet items as flows**: receivables at Dec 31 IS Q4 — don't subtract.
 - **Hallucinating a URL**: if you don't have the exact URL, say so; never construct one.
