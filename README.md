@@ -6,6 +6,8 @@ The skills in this repo source data from deepKPI by [Revelata](https://www.revel
 
 Integration instructions for Claude Cowork, OpenClaw, or generic API access and API keys are available [here](https://www.revelata.com/ai-credits).
 
+**MCP (Claude connector):** See **[MCP.md](./MCP.md)** for setup, endpoint URL, and troubleshooting. OpenClaw uses the REST API — see **`deepkpi-api/`** in this repo.
+
 ## Layout
 
 - **Root `SKILL.md`** — Agent-facing skill package (**`revelata-deepkpi`**): YAML frontmatter + router doc.
