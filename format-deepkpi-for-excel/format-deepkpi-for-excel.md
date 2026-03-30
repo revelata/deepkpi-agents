@@ -2,7 +2,7 @@
 name: format-deepkpi-for-excel
 description: >
   Canonical Excel (.xlsx) layout and styling for deepKPI financial exports: 
-  wide layout, annual then quarterly columns, Calibri, green input cells, hyperlinks,
+  wide layout, annual then quarterly columns, Calibri, pale-green fill on deepKPI input cells, dark-blue hyperlinked numbers,
   numeric date headers, time series values as Excel numbers (not text), freeze panes,
   column grouping, no redundant Source rows;
   same metric at quarterly and annual frequency (same definition/unit) on one row
@@ -29,9 +29,10 @@ offer).
 
 ### Sheet defaults (apply to the whole workbook)
 
-- **Font:** **Calibri** for the sheet. **Provenance hyperlinks** use the same
-  **green** as input text (`#00B050` / `FF00B050`), **not** default blue — see
-  **Hyperlinks** below. Ensure that digits in hyperlinked values ARE underlined. 
+- **Font:** **Calibri** for the sheet. **Hyperlinked value cells** (provenance links)
+  use **dark blue** font (`#0563C1` / `FF0563C1`) and the **number format** in
+  **Hyperlinks** below so they read like real links — see that section. Other body
+  (non-linked) styling follows **Color conventions**.
 - **Gridlines:** **Off** — the worksheet should present with **no visible cell
   grid** (Excel: gridlines hidden for the sheet).
 - **Empty data cells** (no value for that period): show a **dash** (`-` or
@@ -54,7 +55,9 @@ offer).
   genuinely non-numeric.
 - **Hyperlinked value cells:** the **cell value** remains numeric when the metric is
   numeric; the provenance hyperlink is layered on the cell — do not replace the
-  number with a text-only representation.
+  number with a text-only representation. Display them with **dark blue** font and
+  the **hyperlink number format** in **Hyperlinks** (percent-style for rates; for
+  counts/currency use the sheet accounting format **with the same dark blue**).
 
 ### Title cell **C1** (not A1)
 
@@ -178,9 +181,12 @@ Format all output spreadsheets as a **revenue build model**:
   unless the xlsx skill says otherwise).
 - **Color conventions** (Revelata KPI inputs — overriding generic xlsx fill rules
   for this file type):
-  - **deepKPI-sourced input values** (“hardcoded” from API): **Font color**
-    **`#00B050`** (Excel ARGB `FF00B050`); **fill / background**
-    **`#E2EFDA`** (Excel ARGB `FFE2EFDA`). Not the old solid bright-green cell fill.
+  - **deepKPI-sourced input values** (“hardcoded” from API): **fill / background**
+    **`#E2EFDA`** (Excel ARGB `FFE2EFDA`). **Font color:** use **`#0563C1`**
+    (`FF0563C1`) — **dark blue** — on cells that have an **Excel hyperlink** to
+    provenance (so links look like links). Use **`#00B050`** (`FF00B050`) only for
+    **non-hyperlinked** sourced numerics if any (rare); default is **dark blue** on
+    all linked value cells.
   - **Derived / calculated formula cells**: **Black** font (default or explicit); no
     green tint unless the xlsx skill differs.
   - **Col A source-label text**: **Blue** `#0070C0` (`FF0070C0`) where still specified below.
@@ -230,25 +236,24 @@ sufficient.
 
 - **Display:** Use the **metric value** (or short label) as the link text, not
   “10-K FY2024” unless that is the value shown.
-- **Style:** **Font color** **`#00B050`**
-  (`FF00B050`) to match prescribed green — **not** default hyperlink blue.
-  **Underline:** Put **single** underline **only on the digit characters** (`0`–`9`)
-  in the hyperlink’s **display text** — **not** on spaces around the value, alignment
-  padding, or “the whole cell.” Use **rich text** with per-run fonts (e.g. openpyxl
-  `CellRichText` / `TextBlock` with `InlineFont`) so non-digit runs (including spaces)
-  use `underline="none"`.
-- **Calibri** for link text unless the xlsx library requires a Font pass on the cell.
+- **Style (linked value cells):** **Font color** **dark blue** **`#0563C1`**
+  (Excel ARGB `FF0563C1`). **Do not** rely on underline to signal links — Excel’s
+  per-character underline on hyperlinked numbers is unreliable across clients and
+  libraries.
+- **Number format** on **hyperlinked** numeric cells (rates / percents / ratios stored
+  as decimal fractions, e.g. `0.105` → 10.5%):
 
-```python
-# Example pattern: green link text; underline digits only (rich text), not spaces/padding.
-# Build runs from display text so only 0-9 get underline="single"; commas/spaces get underline="none".
-# cell.hyperlink = "https://exact-url-from-deepkpi"
-# Assign cell.value = CellRichText(...) with TextBlock(..., font=InlineFont(...)) per run.
-```
+  `_(#,##0.0%_);_((#,##0.0%);_(-_);_(@_)`
 
-Alternatively `=HYPERLINK("url","display")` — still apply **green** font and **digit-only
-underline** on the display text when the stack allows (rich text / multi-run formatting);
-avoid default “underline the whole cell” hyperlink styling.
+  For **counts, currency, or other non-percent** linked values, keep the sheet’s
+  standard accounting format from **Number format** above (`_(* #,##0_);_(* \(#,##0\);…`)
+  but **still** apply **dark blue** (`FF0563C1`) on the font so the cell reads as a
+  link.
+- **Calibri** on link cells.
+
+Use `cell.hyperlink` + numeric `cell.value`, or `=HYPERLINK("url", …)` with a numeric
+cell — apply **font color** and **number format** on the cell as above (not default
+hyperlink styling).
 
 Never store a provenance URL as **plain text only** in the data grid.
 
@@ -279,9 +284,12 @@ Before presenting the file link, verify every item. Do not deliver the file unti
       right of **D**)
 - [ ] **No** extra **Source** rows/columns for filings — only **hyperlinks** on value
       cells
-- [ ] **Hyperlinks**: **green** `FF00B050`, **no underline**, not blue
+- [ ] **Hyperlinks** on value cells: **dark blue** font `FF0563C1`; number format
+      `_(#,##0.0%_);_((#,##0.0%);_(-_);_(@_)` for percent-class metrics; accounting
+      format + same blue for non-percent linked values; **do not** depend on underline
 - [ ] **Empty** data cells show a **dash** (not blank) in the data region
-- [ ] **deepKPI input** cells: font **`#00B050`**, fill **`#E2EFDA`**
+- [ ] **deepKPI input** cells: fill **`#E2EFDA`**; **hyperlinked** inputs **dark blue**
+      `FF0563C1` per **Hyperlinks**
 - [ ] **Derived** cells: **black** font (no green input styling); formulas live
 - [ ] Every derived value is a live `=` formula referencing input cells — no hardcoded numbers
 - [ ] **Time series numerics** stored as **Excel numbers**, not text strings
@@ -296,7 +304,9 @@ Before presenting the file link, verify every item. Do not deliver the file unti
 ## Common failure modes (Excel)
 
 - **Extra Source rows**: filing identity lives in the **cell hyperlink** only.
-- **Default blue underlined links** on deepKPI values — use **green**, **no underline**.
+- **Green font on hyperlinked values** — use **dark blue** `FF0563C1` and the **percent
+  format** (or accounting + blue for non-percent) so links look like links **without**
+  relying on underline.
 - **Text-only date headers** — use **numeric** Excel dates + `mmm-yy` / year format.
 - **Text-stored time series values** — numeric KPI points must be **Excel numbers**,
   not strings; use number format for display, not text that mimics a number.

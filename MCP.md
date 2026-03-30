@@ -29,7 +29,7 @@ Support and troubleshooting for **Claude Desktop**, **Claude.ai**, and similar c
 
 ## MCP tools
 
-The server exposes three tools. For US-listed companies, **`company_id`** is the **SEC CIK** (you can obtain it with **`query_company_id`**).
+The server exposes three tools: 
 
 ### `query_company_id`
 
@@ -57,7 +57,7 @@ Lists **all KPIs** available for a given company, **organized by category**. Use
 
 **Parameters:** `company_id` (string), `query` (string), `num_of_res` (optional, default `3`), `source` (optional) — same filing-type filter as **`list_kpis`**; omit to search across all filing types.
 
-**Credits:** Charged per result — see [AI credits](https://www.revelata.com/ai-credits).
+**Credits:** Charged per result — check your balance or add credits at [AI credits](https://www.revelata.com/ai-credits).
 
 ---
 
