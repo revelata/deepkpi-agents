@@ -1,20 +1,14 @@
 ---
 name: revelata-deepkpi
 description: >
-  Financial and operational KPI research for US public companies using Revelata's
-  deepKPI database. Pulls structured metrics from SEC filings (10-K, 10-Q, 8-K):
-  revenue by segment, unit-level KPIs (store counts, same-store sales, ARPU,
-  deliveries, paying users), income statement, balance sheet, and cash flow data.
-  Also computes derived metrics (implied Q4, segment remainders, per-unit
-  economics), analyzes seasonality to split annual forecasts into quarterly
-  estimates, and exports results to Excel workbooks formatted for financial
-  modeling. Use for any request asking about operational data for a public company
-  or explicitly involving "pull data for", "get historicals for",
-  "find the KPI", "what does deepKPI have on", quarterly splits or seasonality,
-  implied or derived metrics, or building a .xlsx financial model feed from
-  SEC filings. Also use when the user uploads or discusses a sell-side analyst
-  report and wants a "stress test", critical second opinion, triangulation against
-  SEC data, or an interactive HTML evidence report — route to analyst-report-stress-test.
+  Financial and operational KPI research for US public companies using Revelata deepKPI.
+  Pulls SEC filing metrics (10-K, 10-Q, 8-K): revenue by segment, unit KPIs (stores,
+  comps, ARPU, users), statements, cash flow. Derived metrics (implied Q4, segment
+  remainders, per-unit), seasonality-driven quarterly splits, Excel workbook export.
+  Use for operational data, "pull data for", "get historicals", "find the KPI",
+  "what does deepKPI have on", seasonality, derived metrics, .xlsx models.
+  Stress-test sell-side analyst reports vs SEC data (HTML report) — read
+  analyst-report-stress-test.
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
