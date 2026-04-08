@@ -12,7 +12,9 @@ description: >
   or explicitly involving "pull data for", "get historicals for",
   "find the KPI", "what does deepKPI have on", quarterly splits or seasonality,
   implied or derived metrics, or building a .xlsx financial model feed from
-  SEC filings.
+  SEC filings. Also use when the user uploads or discusses a sell-side analyst
+  report and wants a "stress test", critical second opinion, triangulation against
+  SEC data, or an interactive HTML evidence report — route to analyst-report-stress-test.
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
@@ -64,6 +66,7 @@ may apply to a single request — load all that are relevant.
 | Split annual forecasts into quarterly estimates / seasonality patterns | `analyze-seasonality/analyze-seasonality.md` |
 | Produce an Excel workbook (.xlsx) from deepKPI data | `format-deepkpi-for-excel/format-deepkpi-for-excel.md` |
 | REST API calls (OpenClaw / env-var fallback only) | `deepkpi-api/deepkpi-api.md` |
+| Stress-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `analyst-report-stress-test/analyst-report-stress-test.md` |
 
 **Default entry point:** Start with `retrieve-kpi-data/retrieve-kpi-data.md`
 for almost every request. It orchestrates the full retrieval workflow and
@@ -96,3 +99,10 @@ annual projection into quarterly estimates.
 (annual block → blank column → quarterly block), Calibri font, green input
 cells, clickable hyperlinks in cells, numeric date headers, freeze panes,
 column grouping, and no redundant Source rows.
+
+**`analyst-report-stress-test`** — End-to-end workflow for uploaded analyst PDFs:
+extract 4–6 claims, pull granular deepKPI metrics per claim, build paired
+"supports" / "complicates" evidence with mandatory provenance hyperlinks, and
+emit a Revelata-branded interactive HTML report (`references/html-template.md`,
+`references/chart-patterns.md`). **Always** read `retrieve-kpi-data` first for
+MCP/REST mechanics; use `derive-implied-metric` when filling Q4 or segment gaps.

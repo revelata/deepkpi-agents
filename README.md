@@ -22,6 +22,7 @@ The installer builds one directory, **`revelata-deepkpi/`** (root `SKILL.md` + t
 | `retrieve-kpi-data` | Pulls KPI data from public filings into agent and chat workflows, while also providing options to export into Excel financial models. Uses MCP (Claude) or `deepkpi-api` (OpenClaw) for data access. |
 | `derive-implied-metric` | Computes derived metrics based on reported data with transparent formulas and source-data links. Example uses include Q4 imputation, segment remainders, per-unit metrics, AUV, Rule of 40, etc. |
 | `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |
+| `analyst-report-stress-test` | Stress-tests sell-side analyst reports: maps claims to SEC-sourced KPIs via deepKPI, paired support/counter evidence, and an interactive HTML deliverable with Chart.js and provenance links. |
 | `format-deepkpi-for-excel` | Canonical `.xlsx` layout, styling, formulas, hyperlinks. Edit or override this skill to implement your own formatting conventions. |
 | `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
 | `custom-deepkpi-skill` | **Stub / template** — summarizes shared rules, links to the skills above, and a minimal "hello world" response. Fork and customize for your org. |
@@ -92,4 +93,8 @@ Model seasonality in Monster Energy's sales by brand
 
 ```
 Pull the store count rolls for Planet Fitness into Excel
+```
+
+```
+Stress test this analyst report on Clorox [attach PDF] — use SEC data and give me the HTML report
 ```

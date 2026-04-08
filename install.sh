@@ -21,6 +21,7 @@ BUNDLE_SUBDIRS=(
   derive-implied-metric
   format-deepkpi-for-excel
   analyze-seasonality
+  analyst-report-stress-test
 )
 
 # Must match `name:` in root SKILL.md (same as install folder basename).
