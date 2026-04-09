@@ -31,6 +31,7 @@ Keep the **conversation** thin; put the depth in the **HTML report**.
 
 - After reading the PDF, state the **4–6 main arguments** you will stress-test
   (short titles or one line each — this is the roadmap for the user).
+- Treat each request as self-contained: **do not reference, compare to, or borrow from any other analyst reports** you may have analyzed earlier in the same chat/session unless the user explicitly asks you to do so. Assume you are stress-testing **only the report(s) uploaded with the current request**.
 - Also state you'll pull **market reaction context** (price on report date vs today),
   then move straight into data pulls.
 - Do **not** narrate every tool call, intermediate table, or reasoning step in chat.
@@ -105,6 +106,10 @@ Compute percent move: \(\Delta\% = (P_\text{now}/P_\text{report} - 1)\times 100\
 ### Reporting rules (keep concise)
 
 - Add a small **\"Price since report\"** box near the top of the HTML with the two closes and the \(\Delta\%\).
+- Keep the commentary **blunt and non-narrative**: factual finance language only.
+  Avoid faux-human or conversational filler (e.g., \"had time to breathe\", \"the story is unfolding\",
+  \"the market is waking up\", \"the tape is telling us\"). Prefer: *\"Since publication, shares are
+  down 7%. The move is directionally consistent/inconsistent with the report’s bearish/bullish call.\"*
 - If the report is **> 3 weeks old**, add 2–4 sentences in the HTML (not the chat thread) on:
   what the price did since publication and which **SEC KPIs** would have hinted at (or failed to hint at) that move.
 - If the report is **> 3 months old**, add a short contrast in the HTML between:
@@ -205,12 +210,16 @@ The report structure:
 
 ```
 Header
-  - Revelata brand mark + "Analysis Stress Test"
+  - Revelata Inc wordmark (inlined SVG — no external file)
+    linked to https://www.revelata.com/for-ai-builders
+  - Vertical pipe divider (|)
+  - "Analysis Stress Test (GitHub)" link in Figtree, cyan
   - Title: "[Company] ([Ticker]): Stress-Testing the [Firm] [Action]"
   - Subtitle: firm, report title, date, rating action
   - Legend: amber = "analyst report" data, cyan = "SEC filings (deepKPI)"
     (use generic labels in the legend — the firm name only appears in the
      title, subtitle, source pills, and claim banners)
+  - Price-since-report box (cyan left border)
 
 For each argument (numbered 01, 02, ...):
   - Section heading
@@ -219,7 +228,11 @@ For each argument (numbered 01, 02, ...):
   - Evidence grid: support card (red top) | counter card (green top)
 
 Synthesis section (cyan glow background)
-Footer (data sourcing disclaimer)
+Footer (single centered line: "Supplemental data sourced from SEC filings via Revelata deepKPI.")
+Closing CTA (unboxed, plain on page background)
+  - Headline link in Figtree/cyan: "Run this on any report with your agent:"
+  - Two-column grid: FOR CLAUDE (3 verbatim steps) | FOR OPENCLAW (3 verbatim steps)
+Disclosures (small, dimmed, 4 paragraphs)
 Chart.js scripts
 ```
 
@@ -262,7 +275,10 @@ This applies to numbers in:
 
 1. **Generate the HTML** (steps 4–6) and save to the workspace as
    `[TICKER]_Critical_Analysis.html` (e.g., `CLX_Critical_Analysis.html`) **without
-   asking for confirmation** — this is the expected output of the skill.
+   asking for confirmation** — this is the expected output of the skill. The
+   Revelata wordmark is inlined as SVG directly in the template header, so
+   there is no sidecar logo file to copy and only the `.html` file needs to
+   be presented.
 2. Present it to the user with `present_files` (or your client's equivalent).
 3. **Closing message**: 1–2 sentences on the most interesting tension or finding.
    Do not paste large excerpts from the HTML or rehash every argument in chat.
@@ -274,6 +290,7 @@ This applies to numbers in:
 | File | When to read |
 |------|-------------|
 | `references/html-template.md` | Always — contains the full HTML/CSS/JS template |
+| `references/RevelataIncLogo.svg` | Source of truth for the wordmark. **Not copied** alongside the HTML — the SVG is already inlined in `html-template.md`. Only re-sync this into the template if the brand mark itself changes. |
 | `references/chart-patterns.md` | When building charts — palette, dash patterns, examples |
 
 ---
@@ -283,6 +300,10 @@ This applies to numbers in:
 - **Over-narrating in chat**: long play-by-play of tools, data pulls, or draft prose
   before the HTML exists — keep thread updates to argument list + per-argument
   progress lines + final short summary
+- **Cross-report leakage**: referencing or implicitly comparing to other reports analyzed earlier in the same chat/session without explicit user direction. Default assumption is that you're stress-testing **only the uploaded report(s) for this request**.
+- **Paraphrasing the CTA install commands**: the Claude and OpenClaw install paths in the closing CTA are verbatim from revelata.com/for-ai-builders. Do not rewrite them, reorder the steps, merge them into one path, or "clean up" the shell command. Copy-paste exactly from `html-template.md`.
+- **Adding a box around the closing CTA**: the CTA is deliberately unboxed — plain on the page background — to visually distinguish it from the bordered blocks earlier in the report (claim banners, chart cards, evidence cards, pricebox). Do not wrap it in `.chart-card`, a generic surface container, or any bordered div.
+- **Wrong CTA order**: the page flow is synthesis → footer → closing CTA → disclosures. Do not put the CTA inside the header, above the synthesis, or after the disclosures.
 - **Leading with consolidated metrics**: always go granular first (segment, unit-level)
 - **Missing provenance links**: every deepKPI number needs its `<a href>` tag
 - **Wrong fiscal quarter mapping**: check the company's FY-end before labeling quarters
