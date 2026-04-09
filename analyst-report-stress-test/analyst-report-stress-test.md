@@ -25,6 +25,25 @@ and use to form an independent view — every number is clickable back to its so
 - User uploads a sell-side PDF and asks for critical analysis, counterpoints, or fact-checking
 - User asks to "triangulate" or "challenge" an investment thesis
 
+## Chat pacing and verbosity
+
+Keep the **conversation** thin; put the depth in the **HTML report**.
+
+- After reading the PDF, state the **4–6 main arguments** you will stress-test
+  (short titles or one line each — this is the roadmap for the user).
+- Also state you'll pull **market reaction context** (price on report date vs today),
+  then move straight into data pulls.
+- Do **not** narrate every tool call, intermediate table, or reasoning step in chat.
+  Avoid dumping raw deepKPI responses into the thread.
+- While pulling data, use a **brief progress line per argument**, e.g.
+  `Pulling SEC data for 2/5: [short argument title]…` then continue silently until
+  the next argument or until the HTML is ready.
+- **Automatically build and save the HTML report** when pulls and drafting are
+  complete. Do **not** ask whether to generate the file unless the user explicitly
+  asked for a non-HTML deliverable only.
+- After the file exists: **present** it (`present_files` or equivalent) and add
+  **1–2 sentences** on the sharpest takeaway — no full recap.
+
 ## High-level workflow
 
 1. **Read the report** — extract the analyst's 4-6 key arguments/claims
@@ -36,10 +55,10 @@ and use to form an independent view — every number is clickable back to its so
 5. **Write the synthesis** — 2 paragraphs that weave the evidence into a nuanced
    take the analyst didn't give you
 6. **Generate the HTML** — an interactive, dark-themed report with Chart.js charts,
-   source attribution, and provenance links
-7. **Deliver** — save to the workspace and present to the user
+   source attribution, and provenance links (**default deliverable — produce it without asking**)
+7. **Deliver** — save to the workspace and present to the user (**short wrap-up only**)
 
-Each of these steps is detailed below.
+Each of these steps is detailed below. Follow **Chat pacing and verbosity** for what to say in-thread vs. what belongs only in the HTML.
 
 ## Dependencies
 
@@ -71,7 +90,27 @@ Read the uploaded PDF. Extract:
   sheet / leverage, competitive positioning, specific catalysts or risks.
 
 Write each argument as a 1-2 sentence summary. You'll use these as the section
-headers in the final report.
+headers in the final report. **In chat**, share this list once as the identified
+main arguments; do not pre-write full evidence cards in the thread.
+
+## Step 1.5: Market reaction context (price move since publication)
+
+Get the stock **close price** on:
+
+- **Report date** (use the report's publication date; if only a date is given, use that day's close)
+- **Current date** (most recent close)
+
+Compute percent move: \(\Delta\% = (P_\text{now}/P_\text{report} - 1)\times 100\).
+
+### Reporting rules (keep concise)
+
+- Add a small **\"Price since report\"** box near the top of the HTML with the two closes and the \(\Delta\%\).
+- If the report is **> 3 weeks old**, add 2–4 sentences in the HTML (not the chat thread) on:
+  what the price did since publication and which **SEC KPIs** would have hinted at (or failed to hint at) that move.
+- If the report is **> 3 months old**, add a short contrast in the HTML between:
+  **data available at the time of the report** vs **new filings/KPIs since then**, and whether the new data supports or undermines the original claims.
+
+If price data cannot be retrieved reliably in the current environment, state that in the HTML box and continue with the SEC stress test.
 
 ## Step 2: Resolve the company in deepKPI
 
@@ -90,7 +129,8 @@ so Sep 30 = FQ1, Dec 31 = FQ2, etc.
 
 For each argument, run targeted `search_kpis` calls. Follow the deepKPI
 retrieval skill's granularity principle: unit-level and segment data first,
-consolidated metrics as context.
+consolidated metrics as context. In chat, one short **progress line per argument**
+is enough (see **Chat pacing and verbosity**); do the heavy lifting quietly.
 
 Typical queries per argument:
 
@@ -220,11 +260,12 @@ This applies to numbers in:
 
 ## Step 7: Deliver
 
-1. Save the HTML file to the workspace folder as `[TICKER]_Critical_Analysis.html`
-   (e.g., `CLX_Critical_Analysis.html`)
-2. Present it to the user with `present_files` (or your client's equivalent)
-3. Briefly describe what you found — don't recap the whole report, just the
-   1-2 most interesting findings. The report speaks for itself.
+1. **Generate the HTML** (steps 4–6) and save to the workspace as
+   `[TICKER]_Critical_Analysis.html` (e.g., `CLX_Critical_Analysis.html`) **without
+   asking for confirmation** — this is the expected output of the skill.
+2. Present it to the user with `present_files` (or your client's equivalent).
+3. **Closing message**: 1–2 sentences on the most interesting tension or finding.
+   Do not paste large excerpts from the HTML or rehash every argument in chat.
 
 ---
 
@@ -239,6 +280,9 @@ This applies to numbers in:
 
 ## Common failure modes
 
+- **Over-narrating in chat**: long play-by-play of tools, data pulls, or draft prose
+  before the HTML exists — keep thread updates to argument list + per-argument
+  progress lines + final short summary
 - **Leading with consolidated metrics**: always go granular first (segment, unit-level)
 - **Missing provenance links**: every deepKPI number needs its `<a href>` tag
 - **Wrong fiscal quarter mapping**: check the company's FY-end before labeling quarters

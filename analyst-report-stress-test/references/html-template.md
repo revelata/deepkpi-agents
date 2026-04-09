@@ -60,6 +60,22 @@ brand identity for this product.
   .legend-item { display: flex; align-items: center; gap: 0.5rem; }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
+  /* Price since report */
+  .pricebox {
+    margin-top: 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan); border-radius: 8px;
+    padding: 0.9rem 1.2rem;
+  }
+  .pricebox-title {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--cyan);
+    margin-bottom: 0.35rem;
+  }
+  .pricebox-body { font-size: 0.85rem; color: var(--text-muted); }
+  .pricebox-body strong { color: #fff; font-weight: 650; }
+  .pricebox-note { margin-top: 0.35rem; font-size: 0.75rem; color: var(--text-dim); }
+
   /* Section headings */
   h2 {
     font-size: 1.1rem; font-weight: 700; color: #fff;
@@ -187,6 +203,20 @@ brand identity for this product.
     <div class="legend-item">
       <div class="legend-dot" style="background:var(--cyan)"></div>
       Supplemental data from SEC filings (deepKPI)
+    </div>
+  </div>
+
+  <!-- Price reaction context (fill these placeholders) -->
+  <div class="pricebox">
+    <div class="pricebox-title">Price since report</div>
+    <div class="pricebox-body">
+      Report date close: <strong>$[P_REPORT]</strong> &nbsp;·&nbsp;
+      Most recent close: <strong>$[P_NOW]</strong> &nbsp;·&nbsp;
+      Move: <strong>[DELTA_PCT]%</strong>
+    </div>
+    <div class="pricebox-note">
+      If the report is &gt;3 weeks old, add 2–4 sentences on what moved and which SEC KPIs
+      would have hinted at it. If &gt;3 months old, contrast data available then vs new filings since.
     </div>
   </div>
 </div>
