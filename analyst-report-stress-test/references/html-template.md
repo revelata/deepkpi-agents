@@ -123,15 +123,15 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
   }
   .ev-card p { margin-bottom: 0.6rem; }
   .ev-card p:last-child { margin-bottom: 0; }
-  .ev-support { border-top: 3px solid var(--red); }
-  .ev-counter { border-top: 3px solid var(--green); }
+  .ev-support { border-top: 3px solid var(--green); }
+  .ev-counter { border-top: 3px solid var(--red); }
   .ev-label {
     font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: 0.07em; margin-bottom: 0.7rem;
     display: flex; align-items: center; gap: 0.4rem;
   }
-  .ev-support .ev-label { color: var(--red); }
-  .ev-counter .ev-label { color: var(--green); }
+  .ev-support .ev-label { color: var(--green); }
+  .ev-counter .ev-label { color: var(--red); }
   .ev-label svg { width: 13px; height: 13px; }
 
   /* Inline data highlights */
@@ -462,8 +462,8 @@ earlier bordered blocks (claim banners, chart cards, evidence cards, pricebox).
 8. **Charts use blue-family palette only** — differentiate with dashes and point shapes
 9. **The subtitle must include the rating action** (upgrade/downgrade/etc.) with the
    new rating in `<strong>` (which renders in red via CSS)
-10. **Evidence cards are always in a 2-column grid**: support (red top) on the left,
-    counter (green top) on the right
+10. **Evidence cards are always in a 2-column grid**: support (green top) on the left,
+    counter (red top) on the right
 11. **The synthesis section** uses the cyan-glow background to visually separate it
 12. **Footer** is a single centered line naming Revelata deepKPI — do **not**
     name the analyst firm in the footer, and do **not** add an "informational

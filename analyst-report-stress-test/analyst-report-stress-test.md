@@ -300,6 +300,7 @@ This applies to numbers in:
 - **Over-narrating in chat**: long play-by-play of tools, data pulls, or draft prose
   before the HTML exists — keep thread updates to argument list + per-argument
   progress lines + final short summary
+- **IMPORTANT — data interpretation mismatch**: Every sentence that interprets a metric trend (up/down, acceleration/deceleration, “declined from 2020→2021”, “rebounded”, “flattened”, etc.) must be consistent with the actual linked values. Before finalizing, re-check the direction and the endpoints for every claim that references a number or period-to-period change. Never describe a decline while linking to values that show an increase (or vice versa).
 - **Cross-report leakage**: referencing or implicitly comparing to other reports analyzed earlier in the same chat/session without explicit user direction. Default assumption is that you're stress-testing **only the uploaded report(s) for this request**.
 - **Paraphrasing the CTA install commands**: the Claude and OpenClaw install paths in the closing CTA are verbatim from revelata.com/for-ai-builders. Do not rewrite them, reorder the steps, merge them into one path, or "clean up" the shell command. Copy-paste exactly from `html-template.md`.
 - **Adding a box around the closing CTA**: the CTA is deliberately unboxed — plain on the page background — to visually distinguish it from the bordered blocks earlier in the report (claim banners, chart cards, evidence cards, pricebox). Do not wrap it in `.chart-card`, a generic surface container, or any bordered div.
