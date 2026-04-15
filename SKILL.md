@@ -7,8 +7,8 @@ description: >
   remainders, per-unit), seasonality-driven quarterly splits, Excel workbook export.
   Use for operational data, "pull data for", "get historicals", "find the KPI",
   "what does deepKPI have on", seasonality, derived metrics, .xlsx models.
-  Stress-test sell-side analyst reports vs SEC data (HTML report) — read
-  analyst-report-stress-test. Similarity search over company summaries (company_summary_search).
+  Pressure-test sell-side analyst reports vs SEC data (HTML report) — read
+  analyst-report-pressure-test. Similarity search over company summaries (company_summary_search).
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
@@ -72,7 +72,7 @@ may apply to a single request — load all that are relevant.
 | Split annual forecasts into quarterly estimates / seasonality patterns | `analyze-seasonality/analyze-seasonality.md` |
 | Produce an Excel workbook (.xlsx) from deepKPI data | `format-deepkpi-for-excel/format-deepkpi-for-excel.md` |
 | REST API calls (OpenClaw / env-var fallback only) | `deepkpi-api/deepkpi-api.md` |
-| Stress-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `analyst-report-stress-test/analyst-report-stress-test.md` |
+| Pressure-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `analyst-report-pressure-test/analyst-report-pressure-test.md` |
 
 **Default entry point:** Start with `retrieve-kpi-data/retrieve-kpi-data.md`
 for almost every request. It orchestrates the full retrieval workflow and
@@ -107,7 +107,7 @@ annual projection into quarterly estimates.
 cells, clickable hyperlinks in cells, numeric date headers, freeze panes,
 column grouping, and no redundant Source rows.
 
-**`analyst-report-stress-test`** — End-to-end workflow for uploaded analyst PDFs:
+**`analyst-report-pressure-test`** — End-to-end workflow for uploaded analyst PDFs:
 extract 4–6 claims, pull granular deepKPI metrics per claim, build paired
 "supports" / "complicates" evidence with mandatory provenance hyperlinks, and
 emit a Revelata-branded interactive HTML report (`references/html-template.md`,

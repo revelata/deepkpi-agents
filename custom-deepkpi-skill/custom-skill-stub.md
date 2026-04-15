@@ -25,7 +25,7 @@ accurate.
 | **`derive-implied-metric`** | Implied metrics (Q4, segment remainders, per-unit, etc.); **imputed values in the same row** as the series, not a spare line item; flow vs stock. |
 | **`format-deepkpi-for-excel`** | `.xlsx` / CSV layout: PLNT-style wide grid, **C1** title, formulas not hardcoded, hyperlinks on value cells, **`format-deepkpi-for-excel`** checklist. |
 | **`analyze-seasonality`** | Seasonal ratios, quarterly splits from annuals; same provenance and Excel rules. |
-| **`analyst-report-stress-test`** | Stress-test analyst PDFs vs. SEC KPIs; HTML + Chart.js output; see `analyst-report-stress-test/analyst-report-stress-test.md`. |
+| **`analyst-report-pressure-test`** | Pressure-test analyst PDFs vs. SEC KPIs; HTML + Chart.js output; see `analyst-report-pressure-test/analyst-report-pressure-test.md`. |
 
 **Compose:** **`deepkpi-api`** provides data access (OpenClaw) or use MCP (Claude).
 Run **`retrieve-kpi-data`** before anything that needs figures. Add

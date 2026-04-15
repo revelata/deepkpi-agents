@@ -1,6 +1,6 @@
 # HTML Template Reference
 
-This is the canonical HTML structure for every Analysis Stress Test report.
+This is the canonical HTML structure for every Analysis Pressure Test report.
 Copy this skeleton and fill in the dynamic content. Do not deviate from the
 CSS custom properties, class names, or layout structure — they are the Revelata
 brand identity for this product.
@@ -17,7 +17,7 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[TICKER] Analysis Stress Test | Revelata</title>
+<title>[TICKER] Analysis Pressure Test | Revelata</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&display=swap');
@@ -271,9 +271,9 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
       </svg>
     </a>
     <span class="header-divider">|</span>
-    <span><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Analysis Stress Test (GitHub)</a></span>
+    <span><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Analysis Pressure Test (GitHub)</a></span>
   </div>
-  <h1>[Company] ([TICKER]): Stress-Testing the [Firm] [Action]</h1>
+  <h1>[Company] ([TICKER]): Pressure-Testing the [Firm] [Action]</h1>
   <p class="subtitle">
     [Firm] [Division] &mdash; "[Report Title]" &mdash; [Date] &mdash;
     Rating: [Old] &rarr; <strong>[New]</strong>
@@ -385,7 +385,7 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
       <ol>
         <li>Claude Settings → Connectors → Add Custom Connector: <code>https://deepkpi-mcp.revelata.com/mcp</code></li>
         <li>Install Revelata deepKPI agents: <code>curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash</code></li>
-        <li>Upload an analyst report and ask Claude to "Stress test this report."</li>
+        <li>Upload an analyst report and ask Claude to "Pressure test this report."</li>
       </ol>
     </div>
 
@@ -394,7 +394,7 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
       <ol>
         <li><a href="https://www.revelata.com/for-ai-builders" target="_blank" rel="noopener noreferrer">Get a DEEPKPI_API_KEY</a></li>
         <li>Install Revelata deepKPI agents: <code>curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw</code></li>
-        <li>Upload an analyst report and ask your agent to "Stress test this report."</li>
+        <li>Upload an analyst report and ask your agent to "Pressure test this report."</li>
       </ol>
     </div>
   </div>
@@ -432,47 +432,10 @@ const grid = { color: 'rgba(255,255,255,0.05)' };
 </html>
 ```
 
-## Page flow (order matters)
-
-The closing sections render in this exact order on the page:
-
-1. **Synthesis** (cyan-glow background box)
-2. **Footer** (centered one-liner: "Supplemental data sourced from SEC filings via Revelata deepKPI.")
-3. **Closing CTA** (plain on page background — no box)
-4. **Disclosures** (small, dimmed)
-
-The CTA is deliberately **not** a bordered box — it sits directly on the page
-background between the footer and the disclosures, visually distinct from the
-earlier bordered blocks (claim banners, chart cards, evidence cards, pricebox).
-
 ## Key rules
 
 1. **Never change the CSS custom properties** — they are the brand identity
-2. **Logo is inlined as SVG in the header** — no external file reference, no
-   `RevelataIncLogo.svg` sibling file needed. Links to
-   `https://www.revelata.com/for-ai-builders`.
-3. **Header divider is a vertical pipe** (`|`) styled in `--border-light` at
-   1.5rem — sits between the wordmark and the "Analysis Stress Test (GitHub)"
-   label. Do not swap for em dash or other separators.
-4. **Header label uses Figtree** at 1.1rem, cyan — it is the secondary brand
-   mark for this product and must match across all reports.
-5. **Source pills are mandatory** on every data point in evidence cards
-6. **Every SEC number must be an `<a href>` hyperlink** to its provenance URL
-7. **Amber = analyst report, Cyan = SEC filing** — no exceptions
-8. **Charts use blue-family palette only** — differentiate with dashes and point shapes
-9. **The subtitle must include the rating action** (upgrade/downgrade/etc.) with the
-   new rating in `<strong>` (which renders in red via CSS)
-10. **Evidence cards are always in a 2-column grid**: support (green top) on the left,
-    counter (red top) on the right
-11. **The synthesis section** uses the cyan-glow background to visually separate it
-12. **Footer** is a single centered line naming Revelata deepKPI — do **not**
-    name the analyst firm in the footer, and do **not** add an "informational
-    purposes only" line (that is covered in the disclosures block).
-13. **Closing CTA is unboxed** — plain on page background. Headline is a Figtree
-    link in cyan reading "Run this on any report with your agent:" and pointing
-    to the GitHub repo. Two-column grid with `FOR CLAUDE` (white label) and
-    `FOR OPENCLAW` (white label) install paths underneath.
-14. **CTA install paths are verbatim** — do not paraphrase the commands or URLs.
-    The Claude path has 3 steps ending with "Upload an analyst report and ask
-    Claude to 'Stress test this report.'" The OpenClaw path has 3 steps with
-    the `-s openclaw` flag on the install script.
+2. **Logo is inlined as SVG in the header** — no external file reference. Links to `https://www.revelata.com/for-ai-builders`.
+3. **Header divider is a vertical pipe** (`|`) styled in `--border-light` at 1.5rem — sits between the wordmark and the "Analysis Pressure Test (GitHub)" label.
+4. **CTA install paths are verbatim** — do not paraphrase the commands or URLs. The Claude path ends with “Pressure test this report.”
+
