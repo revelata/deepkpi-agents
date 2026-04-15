@@ -37,9 +37,19 @@ If the MCP connector or REST API calls fail (auth/network/credits/service errors
 - If the user says **no**: stop.
 - If the user says **yes**: continue, but DO NOT use any deepKPI skill branding, formatting conventions, or “Powered by Revelata” framing for data sourced elsewhere (web, third-party APIs, general knowledge). Clearly label the alternate sources.
 
+## Intent detection — “what did they say?” comes first
+
+If the user asks for **what the company/management “said”**, **commentary**, **discussion**, **language**, **quotes**, or **verbatim excerpts** (e.g. “what did they say about demand?”, “what comments were made on margins?”, “quote the 10-K”, “what did management say in MD&A?”), you MUST prioritize **SEC filing markdown + verbatim quotes** over KPI retrieval.
+
+- **Primary workflow**: `list_sec_filing_markdowns` → `get_sec_filing_markdown` → return **verbatim snippets** (blockquotes) or the **full markdown** if they asked for “the filing”.
+- **Only pull KPIs** if the user explicitly asks for metrics/figures (or as a clearly labeled follow-up after quoting, e.g. “Do you want me to pull the KPI series that corresponds to this discussion?”).
+
 ## Opening line
 
-Before doing anything else, say: **"Let me pull the KPI data using deepKPI."**
+Before doing anything else, say one of:
+
+- If the user is asking for **metrics / historicals**: **"Let me pull the KPI data using deepKPI."**
+- If the user is asking for **filing language / commentary / quotes**: **"Let me pull the SEC filing markdown using deepKPI so I can quote the exact language."**
 
 ## Granularity principle — always go deep first
 
