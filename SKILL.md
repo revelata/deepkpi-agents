@@ -67,6 +67,7 @@ may apply to a single request — load all that are relevant.
 | User need | File to read |
 |-----------|--------------|
 | Pull historical KPIs / financials from deepKPI | `retrieve-kpi-data/retrieve-kpi-data.md` |
+| Pull **verbatim SEC filing text**, quotes, or “what did they say” / “what comments were made” | `retrieve-kpi-data/retrieve-kpi-data.md` (use `list_sec_filing_markdowns` + `get_sec_filing_markdown`; quote exact snippets, do not paraphrase by default) |
 | Derive missing Q4 numbers, a segment remainder, or per-unit economics (ASP, ARPU, AUV, take rate) | `derive-implied-metric/derive-implied-metric.md` |
 | Split annual forecasts into quarterly estimates / seasonality patterns | `analyze-seasonality/analyze-seasonality.md` |
 | Produce an Excel workbook (.xlsx) from deepKPI data | `format-deepkpi-for-excel/format-deepkpi-for-excel.md` |
