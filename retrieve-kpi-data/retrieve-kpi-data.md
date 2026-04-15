@@ -24,11 +24,18 @@ to a deepKPI call.
 
 | Context | How |
 |---------|-----|
-| **Claude (preferred)** | MCP tools — `query_company_id` · `list_kpis` · `search_kpis` |
+| **Claude (preferred)** | MCP tools — `query_company_id` · `list_kpis` · `search_kpis` · `company_summary_search` · `get_company_summary` · `get_company_segments` · `list_sec_filing_markdowns` · `get_sec_filing_markdown` |
 | **OpenClaw** | Read `deepkpi-api/deepkpi-api.md` and call the REST endpoints using `$DEEPKPI_API_KEY` |
-| **Env fallback** (`DEEPKPI_API_KEY` set) | `POST https://deepkpi-api.revelata.com/v1.0/{query_company_id, list_kpis, search_kpis}` — headers `Content-Type: application/json`, `X-API-Key: $DEEPKPI_API_KEY` |
+| **Env fallback** (`DEEPKPI_API_KEY` set) | `POST https://deepkpi-api.revelata.com/v1.0/...` — see `deepkpi-api.md` for paths (`query_company_id`, `list_kpis`, `search_kpis`, `company_summary_search`, `get_company_summary`, `get_company_segments`, `list_sec_filing_markdowns`, `get_sec_filing_markdown`). Headers: `Content-Type: application/json`, `X-API-Key: $DEEPKPI_API_KEY` |
 
 If none of the above applies, say so and ask the user how to proceed.
+
+## Hard stop if deepKPI access fails
+
+If the MCP connector or REST API calls fail (auth/network/credits/service errors) and you cannot access deepKPI, STOP and ask the user whether they want to proceed **without deepKPI**.
+
+- If the user says **no**: stop.
+- If the user says **yes**: continue, but DO NOT use any deepKPI skill branding, formatting conventions, or “Powered by Revelata” framing for data sourced elsewhere (web, third-party APIs, general knowledge). Clearly label the alternate sources.
 
 ## Opening line
 
@@ -107,7 +114,7 @@ flow metrics before presenting incomplete data.** Do not surface a partial serie
 | Annual missing, have quarters | Sum four quarters (flow items only). |
 | Segment missing, have total + others | Derive: missing = total − sum(known). |
 | Balance sheet Q4 missing | Use FY year-end value — stocks are snapshots, not flows. |
-| Metric absent entirely | Note the gap; fall back to SEC filing text (10-K MD&A, 8-K). |
+| Metric absent entirely | Note the gap; fall back to SEC filing text using `list_sec_filing_markdowns` + `get_sec_filing_markdown` (10-K MD&A, 8-K). |
 
 Flag clearly when a value is derived or manually sourced from filings.
 
@@ -126,6 +133,15 @@ filing passage it was extracted from. These URLs are the audit trail.
 - Group multiple values from the same filing by linking each to the same URL.
 - Never present a number without at least its provenance URL. 
 - If a value is derived, provide the provenance of its operands.
+
+## When users ask “what did they say?” (verbatim quotes required)
+
+When the user asks for **exact language** from filings (“what did management say”, “what comments were made”, “how did they describe…”, “quote the 10-K/10-Q”), you MUST:
+
+- Use `list_sec_filing_markdowns` (if needed) to identify the right filing and `seq_no`.
+- Call `get_sec_filing_markdown` to retrieve the markdown.
+- Provide **verbatim snippets** (copy/paste exact text) with clear boundaries (use blockquotes).
+- Avoid summarizing by default. Only summarize if the user explicitly asks for a summary.
 
 ## After the pulls are complete
 

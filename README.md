@@ -24,7 +24,7 @@ The installer builds one directory, **`revelata-deepkpi/`** (root `SKILL.md` + t
 | `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |
 | `analyst-report-stress-test` | Stress-tests sell-side analyst reports by mapping their claims to supporting and countervailing evidence from SEC filings.|
 | `format-deepkpi-for-excel` | Canonical `.xlsx` layout, styling, formulas, hyperlinks. Edit or override this skill to implement your own formatting conventions. |
-| `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
+| `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search, `company_summary_search`, company summary, segment breakdown). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
 | `custom-deepkpi-skill` | **Stub / template** — summarizes shared rules, links to the skills above, and a minimal "hello world" response. Fork and customize for your org. |
 
 ## Installation

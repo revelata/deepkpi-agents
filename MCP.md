@@ -29,7 +29,7 @@ Support and troubleshooting for **Claude Desktop**, **Claude.ai**, and similar c
 
 ## MCP tools
 
-The server exposes three tools: 
+The server exposes eight tools:
 
 ### `query_company_id`
 
@@ -61,12 +61,64 @@ Lists **all KPIs** available for a given company, **organized by category**. Use
 
 ---
 
+### `company_summary_search`
+
+**Semantic search** over **all companies’ 10-K-derived summaries** — returns the best-matching tickers/CIKs for a natural-language `query` (peers, thematic screens, “companies that …”). **1 credit per company** returned (cap **15** via `top_k_companies`); empty results cost nothing.
+
+**Parameters:** `query` (string), `top_k_companies` (optional, default `10`, max `15`).
+
+**Credits:** **1** per company in the response — check your balance at [AI credits](https://www.revelata.com/ai-credits).
+
+---
+
+### `get_company_summary`
+
+Returns a **narrative company summary** (derived from the company’s latest 10-K). Use when you need prose context on what the business does, segments, and strategy — not for pulling numeric KPI time series (use **`search_kpis`** for that).
+
+**Parameters:** `company_id` (string) — for US companies, the **SEC CIK** (same as for **`list_kpis`** / **`search_kpis`**). If you only have a name, call **`query_company_id`** first.
+
+**Credits:** **3** per successful call.
+
+---
+
+### `get_company_segments`
+
+Returns a **structured segment breakdown** (derived from the company’s latest 10-K). Use for high-level segment mix and narrative structure; for detailed segment **metrics** over time, prefer **`list_kpis`** + **`search_kpis`**.
+
+**Parameters:** `company_id` (string) — SEC CIK for US companies; resolve with **`query_company_id`** if needed.
+
+**Credits:** **3** per successful call.
+
+---
+
+### `list_sec_filing_markdowns`
+
+Lists SEC filings available as markdown for a given **CIK**. Use this to discover valid `acc_no` and `seq_no` values before fetching content.
+
+**Parameters:** `cik` (int), `form_type` (optional string, e.g. `10-K`), `start_date` (optional `YYYY-MM-DD`), `end_date` (optional `YYYY-MM-DD`).
+
+**Credits:** None — free.
+
+---
+
+### `get_sec_filing_markdown`
+
+Fetches the markdown content for a specific SEC filing.
+
+**Parameters:** `cik` (int), `acc_no` (string), `seq_no` (optional int, default `1`).
+
+**Credits:** **10** per successful call.
+
+**Critical quoting rule:** When the user asks “what did they say”, “what comments were made”, “exact language”, or similar, you MUST return **verbatim quotes/snippets** from the markdown (with clear snippet boundaries). Do not paraphrase by default.
+
+---
+
 ## Authentication issues
 
 | Symptom | What to try |
 |---------|-------------|
 | Redirect loop or “access denied” | Confirm you’re signed into the expected Revelata account. |
-| Connector works but **search** fails | You may be out of **credits**. **`list_kpis`** and **`query_company_id`** are free; **`search_kpis`** uses credits. Check your balance at [AI credits](https://www.revelata.com/ai-credits). Note that all accounts receive 100 free credits each month. |
+| Connector works but **search** / **summary** / **filing markdown** calls fail | You may be out of **credits**. **`list_kpis`**, **`query_company_id`**, and **`list_sec_filing_markdowns`** are free. **`search_kpis`** uses **1 credit per result**; **`company_summary_search`** uses **1 credit per company** returned; **`get_company_summary`** and **`get_company_segments`** each use **3 credits** on success; **`get_sec_filing_markdown`** uses **10 credits** on success. Check your balance at [AI credits](https://www.revelata.com/ai-credits). Note that all accounts receive 100 free credits each month. |
 
 ---
 
@@ -90,7 +142,7 @@ Lists **all KPIs** available for a given company, **organized by category**. Use
 
 | Runtime | How you use deepKPI |
 |--------|----------------------|
-| **Claude + MCP** | Connector URL **`…/mcp`**, OAuth — tools **`query_company_id`**, **`list_kpis`**, **`search_kpis`**. |
+| **Claude + MCP** | Connector URL **`…/mcp`**, OAuth — tools **`query_company_id`**, **`list_kpis`**, **`search_kpis`**, **`company_summary_search`**, **`get_company_summary`**, **`get_company_segments`**, **`list_sec_filing_markdowns`**, **`get_sec_filing_markdown`**. |
 | **OpenClaw** | Install **`revelata-deepkpi`**, set **`DEEPKPI_API_KEY`**, call REST per [`deepkpi-api/deepkpi-api.md`](./deepkpi-api/deepkpi-api.md). |
 
 Do not paste the MCP URL into OpenClaw as a substitute for the REST skill flow.

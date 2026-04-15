@@ -2,7 +2,8 @@
 name: deepkpi-api
 description: >
   REST API access to Revelata's deepKPI endpoints. Provides company lookup,
-  KPI discovery, and KPI search for US public companies via HTTP + API key.
+  KPI discovery, KPI search, similarity search over company summaries, company
+  narrative summary, and segment breakdown for US public companies via HTTP + API key.
   Required for OpenClaw; usable as env-var fallback for Claude when MCP is
   unavailable. Other deepKPI skills (retrieve-kpi-data, derive-implied-metric,
   etc.) call through this skill when MCP tools are not present.
@@ -34,7 +35,7 @@ Content-Type: application/json
 X-API-Key: $DEEPKPI_API_KEY
 ```
 
-Three endpoints:
+Endpoints:
 
 ### POST /v1.0/query_company_id
 Look up a company's identifier by name. For US companies, this returns the SEC
@@ -67,6 +68,67 @@ curl -s -X POST "https://deepkpi-api.revelata.com/v1.0/search_kpis" \
   -H "X-API-Key: $DEEPKPI_API_KEY" \
   -d '{"company_id": "940944", "query": "Olive Garden same-restaurant sales", "num_of_res": 3}'
 ```
+
+### POST /v1.0/company_summary_search
+
+Find companies whose **10-K-derived narrative summary** best matches a natural-language `query`.
+**1 credit per company** returned (via `top_k_companies`, max **15**). Empty results cost nothing.
+
+```bash
+curl -s -X POST "https://deepkpi-api.revelata.com/v1.0/company_summary_search" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $DEEPKPI_API_KEY" \
+  -d '{"query": "companies that make AIs", "top_k_companies": 10}'
+```
+
+### POST /v1.0/get_company_summary
+
+Narrative summary for one company (from latest 10-K). **3 credits** on success.
+Same `company_id` as other endpoints (SEC CIK for US companies).
+
+```bash
+curl -s -X POST "https://deepkpi-api.revelata.com/v1.0/get_company_summary" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $DEEPKPI_API_KEY" \
+  -d '{"company_id": "940944"}'
+```
+
+### POST /v1.0/get_company_segments
+
+Structured segment breakdown for one company (from latest 10-K). **3 credits** on success.
+
+```bash
+curl -s -X POST "https://deepkpi-api.revelata.com/v1.0/get_company_segments" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $DEEPKPI_API_KEY" \
+  -d '{"company_id": "940944"}'
+```
+
+### POST /v1.0/list_sec_filing_markdowns
+
+List filings available as markdown for a given CIK. **Free**.
+
+```bash
+curl -s -X POST "https://deepkpi-api.revelata.com/v1.0/list_sec_filing_markdowns" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $DEEPKPI_API_KEY" \
+  -d '{"cik": 1326801, "form_type": "10-K", "start_date": "2025-01-01", "end_date": "2026-12-31"}'
+```
+
+`form_type` is optional. If omitted, all form types under the CIK are included.
+
+### POST /v1.0/get_sec_filing_markdown
+
+Fetch the markdown content for a specific filing. **10 credits** per successful call.
+
+```bash
+curl -s -X POST "https://deepkpi-api.revelata.com/v1.0/get_sec_filing_markdown" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $DEEPKPI_API_KEY" \
+  -d '{"cik": 1326801, "acc_no": "0001628280-26-003942", "seq_no": 1}'
+```
+
+`seq_no` is optional and defaults to `1`.
 
 ## Workflow
 
@@ -123,6 +185,21 @@ Call `/v1.0/search_kpis` with:
 **Multiple searches are normal.** A single user question often needs 2–4
 searches with different query strings. For example, "How is Darden doing?" needs
 separate searches for revenue, same-restaurant sales, margins, and unit growth.
+
+### Optional — find companies by theme (summary similarity)
+
+When the user asks for **peers**, **comps**, or a **thematic screen** (e.g. “companies
+like …”, “who makes …”) before you have a ticker, call `/v1.0/company_summary_search`. Then
+use **`query_company_id`** / **`list_kpis`** / **`search_kpis`** on the returned
+`company_id` values as usual.
+
+### Optional — narrative and segment context
+
+When the user wants **how the company describes itself** (business model, segments
+at a narrative level) rather than numeric time series, call
+`/v1.0/get_company_summary` or `/v1.0/get_company_segments` after you have
+`company_id`. Each call costs **3 credits** on success — use sparingly and
+prefer **`list_kpis`** / **`search_kpis`** when the task is metric extraction.
 
 ## Response guidelines
 

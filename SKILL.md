@@ -8,7 +8,7 @@ description: >
   Use for operational data, "pull data for", "get historicals", "find the KPI",
   "what does deepKPI have on", seasonality, derived metrics, .xlsx models.
   Stress-test sell-side analyst reports vs SEC data (HTML report) — read
-  analyst-report-stress-test.
+  analyst-report-stress-test. Similarity search over company summaries (company_summary_search).
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
@@ -35,8 +35,8 @@ only read what the task requires.
 
 ## Data access — Claude vs. OpenClaw
 
-The three deepKPI operations (`query_company_id`, `list_kpis`, `search_kpis`)
-are available two ways depending on the runtime:
+The deepKPI operations (`query_company_id`, `list_kpis`, `search_kpis`,
+`company_summary_search`, `get_company_summary`, `get_company_segments`, `list_sec_filing_markdowns`, `get_sec_filing_markdown`) are available two ways depending on the runtime:
 
 | Runtime | How to call deepKPI |
 |---------|---------------------|
@@ -47,6 +47,17 @@ are available two ways depending on the runtime:
 table and will direct you to the right method. The `DEEPKPI_API_KEY` env var
 and `deepkpi-api` reference doc are only needed in OpenClaw (or as an env-var
 fallback when MCP is unavailable).
+
+## Hard stop: deepKPI connection failures
+
+If deepKPI access fails (MCP connector not working, REST calls failing, auth errors, network issues, or you cannot retrieve data), you MUST STOP and ask the user:
+
+**“I can’t access deepKPI right now. Do you want to proceed without deepKPI?”**
+
+- If the user says **no**, stop.
+- If the user says **yes**, you may proceed using other sources (e.g. web), BUT you MUST NOT use deepKPI skill branding, templates, formatting conventions, or “Powered by Revelata deepKPI” framing for non-deepKPI data. Clearly label alternate sources.
+
+This rule applies to ALL sub-skills in this bundle.
 
 ## Sub-skill routing
 
@@ -70,9 +81,10 @@ Excel output).
 
 ## Sub-skill summary
 
-**`deepkpi-api`** — Raw REST access to the three deepKPI endpoints:
-`query_company_id`, `list_kpis`, `search_kpis`. **OpenClaw / env-var fallback
-only** — in Claude, use the native MCP tools instead.
+**`deepkpi-api`** — Raw REST access to deepKPI endpoints:
+`query_company_id`, `list_kpis`, `search_kpis`, `company_summary_search`,
+`get_company_summary`, `get_company_segments`, `list_sec_filing_markdowns`, `get_sec_filing_markdown`. **OpenClaw / env-var fallback only** — in Claude, use
+the native MCP tools instead.
 
 **`retrieve-kpi-data`** — The primary data-pull workflow. Covers company ID
 resolution, KPI discovery, search strategy, gap handling (including Q4
