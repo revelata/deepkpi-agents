@@ -9,7 +9,7 @@ description: >
   on", or modeling tasks that need structured time series. For verbatim filing text,
   MD&A quotes, full filing markdown, or "what did they say", use retrieve-sec-filing.
   For what a company does, segment/geography breakdowns, or thematic “who does X?”
-  lists, use company-summary-segments instead (not target-based comp benchmarking).
+  lists, use company-summary-segments instead.
   Always use before analyzing or projecting on KPIs. After in-chat KPI tables, end
   with a bold Excel offer unless the user asked for a file or declined. For .xlsx,
   follow format-deepkpi-for-excel.

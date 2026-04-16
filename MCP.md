@@ -63,7 +63,7 @@ Lists **all KPIs** available for a given company, **organized by category**. Use
 
 ### `company_summary_search`
 
-**Semantic search** over **all companies’ 10-K-derived summaries** — returns the best-matching tickers/CIKs for a natural-language `query` (**thematic** discovery: “companies that …”, “who operates in …”). **Not** the tool for “most similar to **Target Co.**” benchmarking (separate skill). **1 credit per company** returned (cap **15** via `top_k_companies`); empty results cost nothing.
+**Semantic search** over **all companies’ 10-K-derived summaries** — returns the best-matching tickers/CIKs for a natural-language `query` (**thematic** discovery: “companies that …”, “who operates in …”). **1 credit per company** returned (cap **15** via `top_k_companies`); empty results cost nothing.
 
 **Parameters:** `query` (string), `top_k_companies` (optional, default `10`, max `15`).
 

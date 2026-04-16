@@ -191,8 +191,7 @@ separate searches for revenue, same-restaurant sales, margins, and unit growth.
 ### Optional — company narrative, segments, thematic discovery
 
 For **`get_company_summary`** (what a company does), **`get_company_segments`**
-(segment / geo structure), and **`company_summary_search`** (thematic “who does X?” —
-not target-based benchmarking), read **`company-summary-segments/company-summary-segments.md`**.
+(segment / geo structure), and **`company_summary_search`** (thematic “who does X?”), read **`company-summary-segments/company-summary-segments.md`**.
 When the user wants **metrics**, continue with **`list_kpis`** / **`search_kpis`** as
 in the steps above.
 
