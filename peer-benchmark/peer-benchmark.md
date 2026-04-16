@@ -22,6 +22,14 @@ Find comparable public companies ("benchmarks") for a target company or segment 
 The output is not a mechanical list of industry peers — it's a curated set where every benchmark
 adds a specific analytical lens, and where the gaps in coverage are as informative as the matches.
 
+**Do not pair companies that do wildly different work** — different end customers, different
+underlying need, different operating model — just because semantic search surfaced them together
+(e.g. a gym chain and a car-wash operator). That is not a useful whole-company benchmark. The
+only exception is when a **specific segment** of each business plausibly targets the **same
+customers** with products that serve the **same job-to-be-done**; in that case, treat the match as
+**segment-to-segment** (Step 3 sub-benchmarks, clearly labeled), not as "these two conglomerates
+are comps."
+
 The workflow is explicitly iterative. Segment sub-benchmarks are not pre-assumed based on what
 segments exist; they are discovered by diffing the target's KPI fingerprint against what the
 whole-company benchmarks can actually explain. If something in the target's operations has no
@@ -148,10 +156,23 @@ Coverage coding:
 
 **C. Tier the candidates**
 
-Based on the aligned KPI fingerprints (not just the description similarity):
-- **Tier 1**: Closest structural match — same business model, similar values on 3+ signature KPIs
-- **Tier 2**: Useful comparators — good match on some KPIs, different on others; adds a specific lens
-- **Tier 3**: Scale context — structurally different or much different scale, but useful as reference
+Based on the aligned KPI fingerprints (not just the description similarity), and only after
+passing the **structural fit gate** below:
+
+- **Tier 1**: Closest structural match — same business model and same customer/need, similar values on 3+ signature KPIs
+- **Tier 2**: Useful comparators — same overall job-to-be-done; good match on some KPIs, different on others; adds a specific lens
+- **Tier 3**: Same **kind** of business as the target, different scale, mix, or geography — still
+  a coherent comp (e.g. regional vs national airline). **Not** unrelated verticals "for color."
+
+**D. Structural fit gate (drop before the output table)**
+
+Before anything appears in the chat 1-pager or HTML as a whole-company benchmark, ask: *Would
+an investor reasonably describe this company as doing the **same job** for the **same type of
+buyer** as the target?* If **no**, exclude it from Tier 1–3 for whole-company analysis — even if
+a few metrics line up by coincidence. If there is a **real but narrow** overlap (same
+wallet, same purchase occasion, same enterprise buyer for a specific product line), keep the
+candidate **only** as a **segment** sub-benchmark in Step 3 with an explicit "Maps to: Segment …"
+story, not as a peer for the consolidated company.
 
 ---
 
@@ -175,6 +196,8 @@ a. Build a **segment-specific fingerprint** using the segment's own KPIs from St
    ("this segment, if it were a standalone public company, would look like:")
 
 b. Run a fresh `company_summary_search` describing that segment as a standalone business.
+   Sub-benchmarks must still satisfy **same customer + same need** for that segment; do not
+   pull unrelated verticals "for coverage."
    Use the segment's KPIs as the anchor — e.g., for a refinery segment:
    `"independent petroleum refiner crude oil throughput barrels per day capacity utilization refining margin per barrel crack spread"`.
    Not: `"refinery"`.
@@ -283,3 +306,6 @@ Annual periods as columns; green cells for target values; clickable provenance l
   to the whole-company benchmark set.
 - **Too much prose in chat**: The 1-pager is a reference artifact. Cut until it hurts.
 - **Skipping list_kpis**: Free call that prevents wasted credits on metrics that don't exist.
+- **Unrelated verticals as comps**: A gym and a car wash are not whole-company benchmarks for
+  each other unless you have a defensible segment-level story (same customers, same need). If you
+  cannot write that one sentence without hand-waving, drop the name.
