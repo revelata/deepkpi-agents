@@ -14,7 +14,8 @@ BUNDLE_SUBDIRS = \
 	derive-implied-metric \
 	format-deepkpi-for-excel \
 	analyze-seasonality \
-	analyst-report-pressure-test
+	analyst-report-pressure-test \
+	peer-benchmark
 
 .PHONY: package release clean
 

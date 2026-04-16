@@ -26,6 +26,7 @@ BUNDLE_SUBDIRS=(
   format-deepkpi-for-excel
   analyze-seasonality
   analyst-report-pressure-test
+  peer-benchmark
 )
 
 # Must match `name:` in root SKILL.md (same as install folder basename).

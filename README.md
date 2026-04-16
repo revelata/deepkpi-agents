@@ -25,8 +25,9 @@ The installer builds one directory, **`revelata-deepkpi/`** (root `SKILL.md` + t
 | `derive-implied-metric` | Computes derived metrics based on reported data with transparent formulas and source-data links. Example uses include Q4 imputation, segment remainders, per-unit metrics, AUV, Rule of 40, etc. |
 | `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |
 | `analyst-report-pressure-test` | Pressure-tests sell-side analyst reports by mapping their claims to supporting and countervailing evidence from SEC filings.|
+| `peer-benchmark` | **Peers / comps / similar companies** — fingerprint and discover operationally similar companies, including peers for individual segments |
 | `format-deepkpi-for-excel` | Canonical `.xlsx` layout, styling, formulas, hyperlinks. Edit or override this skill to implement your own formatting conventions. |
-| `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search, `company_summary_search`, company summary, segment breakdown). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
+| `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search, company summary search, company summary, segment breakdown). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
 | `custom-deepkpi-skill` | **Stub / template** — summarizes shared rules, links to the skills above, and a minimal "hello world" response. Fork and customize for your org. |
 
 ## Installation

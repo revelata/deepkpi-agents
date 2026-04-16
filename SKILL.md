@@ -10,7 +10,8 @@ description: >
   "get historicals", "find the KPI", "what does deepKPI have on", seasonality,
   derived metrics, .xlsx models, or filing excerpts when explicitly requested.
   Pressure-test sell-side analyst reports vs SEC data (HTML report) — read
-  analyst-report-pressure-test. What a company does, segment/geography breakdowns, and thematic company discovery —
+  analyst-report-pressure-test. Compare to peers, find comps, benchmark, or most-similar companies —
+  peer-benchmark. What a company does, segment/geography breakdowns, and thematic company discovery —
   company-summary-segments (get_company_summary, get_company_segments, company_summary_search).
 version: 1.0.0
 homepage: https://www.revelata.com
@@ -79,6 +80,7 @@ may apply to a single request — load all that are relevant.
 | Produce an Excel workbook (.xlsx) from deepKPI data | `format-deepkpi-for-excel/format-deepkpi-for-excel.md` |
 | REST API calls (OpenClaw / env-var fallback only) | `deepkpi-api/deepkpi-api.md` |
 | Pressure-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `analyst-report-pressure-test/analyst-report-pressure-test.md` |
+| **Peers / comps**, **benchmark** a company, **most similar** public companies, or operational comp sets (not price multiples) | `peer-benchmark/peer-benchmark.md` — read `retrieve-kpi-data` first for KPI mechanics |
 
 **Default entry point:** For **metrics and modeling feeds**, start with
 `retrieve-kpi-data/retrieve-kpi-data.md` (it references `derive-implied-metric`,
@@ -131,3 +133,8 @@ emit a Revelata-branded interactive HTML report (`references/html-template.md`,
 mechanics; use `retrieve-sec-filing` when the test needs verbatim filing
 passages; use `company-summary-segments` for business description / segment structure /
 thematic lists when useful; use `derive-implied-metric` when filling Q4 or segment gaps.
+
+**`peer-benchmark`** — Curated **operational** benchmark sets (not trading multiples):
+`company_summary_search` for candidates, KPI fingerprint + alignment, diff-driven
+segment sub-benchmarks, chat 1-pager, optional HTML (`references/html-template.md`),
+Excel via `format-deepkpi-for-excel`. **Always** read `retrieve-kpi-data` first.
