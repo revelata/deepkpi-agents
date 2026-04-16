@@ -11,7 +11,7 @@ Integration instructions for Claude Cowork, OpenClaw, or generic API access and 
 ## Layout
 
 - **Root `SKILL.md`** — Agent-facing skill package (**`revelata-deepkpi`**): YAML frontmatter + router doc.
-- **Subfolders** — Reference markdown used by that skill (e.g. `retrieve-kpi-data/retrieve-kpi-data.md`, `retrieve-sec-filing/retrieve-sec-filing.md`, `deepkpi-api/deepkpi-api.md`). 
+- **Subfolders** — Reference markdown used by that skill (e.g. `retrieve-kpi-data/retrieve-kpi-data.md`, `company-summary-segments/company-summary-segments.md`, `retrieve-sec-filing/retrieve-sec-filing.md`, `deepkpi-api/deepkpi-api.md`). 
 
 The installer builds one directory, **`revelata-deepkpi/`** (root `SKILL.md` + those folders), and either copies it for **OpenClaw** or zips it for **Claude** as a **single** deliverable.
 
@@ -20,6 +20,7 @@ The installer builds one directory, **`revelata-deepkpi/`** (root `SKILL.md` + t
 | Folder | Role |
 |---|---|
 | `retrieve-kpi-data` | Pulls **structured KPI** time series from filings into agent and chat workflows, with Excel export. MCP (Claude) or `deepkpi-api` (OpenClaw). |
+| `company-summary-segments` | **What a company does** (`get_company_summary`), **segments / geos** (`get_company_segments`), **thematic discovery** (`company_summary_search`).|
 | `retrieve-sec-filing` | Pulls **SEC filing markdown** into chat — full filing or excerpts — plus verbatim quotes / MD&A / risk language (`list_sec_filing_markdowns` / `get_sec_filing_markdown`). Separate purpose from KPI pulls. |
 | `derive-implied-metric` | Computes derived metrics based on reported data with transparent formulas and source-data links. Example uses include Q4 imputation, segment remainders, per-unit metrics, AUV, Rule of 40, etc. |
 | `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |

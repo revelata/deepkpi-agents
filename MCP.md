@@ -63,21 +63,25 @@ Lists **all KPIs** available for a given company, **organized by category**. Use
 
 ### `company_summary_search`
 
-**Semantic search** over **all companies’ 10-K-derived summaries** — returns the best-matching tickers/CIKs for a natural-language `query` (peers, thematic screens, “companies that …”). **1 credit per company** returned (cap **15** via `top_k_companies`); empty results cost nothing.
+**Semantic search** over **all companies’ 10-K-derived summaries** — returns the best-matching tickers/CIKs for a natural-language `query` (**thematic** discovery: “companies that …”, “who operates in …”). **Not** the tool for “most similar to **Target Co.**” benchmarking (separate skill). **1 credit per company** returned (cap **15** via `top_k_companies`); empty results cost nothing.
 
 **Parameters:** `query` (string), `top_k_companies` (optional, default `10`, max `15`).
 
 **Credits:** **1** per company in the response — check your balance at [AI credits](https://www.revelata.com/ai-credits).
 
+**Agent workflow:** **`company-summary-segments/company-summary-segments.md`** — use for **thematic lists**; for a **named** company’s profile use **`get_company_summary`** / **`get_company_segments`** first (Workflow A in that doc).
+
 ---
 
 ### `get_company_summary`
 
-Returns a **narrative company summary** (derived from the company’s latest 10-K). Use when you need prose context on what the business does, segments, and strategy — not for pulling numeric KPI time series (use **`search_kpis`** for that).
+Returns a **narrative company summary** (derived from the company’s latest 10-K). Primary source for **“what does this company do?”** — not for pulling numeric KPI time series (use **`search_kpis`** for that). May follow **`company_summary_search`** when a thematic hit needs full prose.
 
 **Parameters:** `company_id` (string) — for US companies, the **SEC CIK** (same as for **`list_kpis`** / **`search_kpis`**). If you only have a name, call **`query_company_id`** first.
 
 **Credits:** **3** per successful call.
+
+**Agent workflow:** **`company-summary-segments/company-summary-segments.md`**.
 
 ---
 
@@ -88,6 +92,8 @@ Returns a **structured segment breakdown** (derived from the company’s latest 
 **Parameters:** `company_id` (string) — SEC CIK for US companies; resolve with **`query_company_id`** if needed.
 
 **Credits:** **3** per successful call.
+
+**Agent workflow:** **`company-summary-segments/company-summary-segments.md`**.
 
 ---
 

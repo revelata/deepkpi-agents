@@ -17,6 +17,7 @@ BUNDLE_DIR_NAME="revelata-deepkpi"
 # Reference-doc folders copied into the bundle (repo root layout; no skills/ prefix).
 BUNDLE_SUBDIRS=(
   deepkpi-api
+  company-summary-segments
   retrieve-kpi-data
   retrieve-sec-filing
   derive-implied-metric

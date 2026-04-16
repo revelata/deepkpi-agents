@@ -68,8 +68,11 @@ This skill relies on **`retrieve-kpi-data`** for **KPI** retrieval and on
 (not just structured metrics). Before starting, read
 `retrieve-kpi-data/retrieve-kpi-data.md` for metrics workflow, provenance, and gaps;
 read `retrieve-sec-filing/retrieve-sec-filing.md` when claims
-must be checked against exact filing language. This skill handles the analytical
-framework and HTML output.
+must be checked against exact filing language. Use
+`company-summary-segments/company-summary-segments.md` for **business description**,
+**segment structure**, or **thematic** lists when helpful (not required for every run).
+This skill
+handles the analytical framework and HTML output.
 
 ## Scope
 

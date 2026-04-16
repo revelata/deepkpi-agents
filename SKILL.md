@@ -3,14 +3,15 @@ name: revelata-deepkpi
 description: >
   Financial and operational KPI research for US public companies using Revelata deepKPI.
   Pulls SEC filing metrics (10-K, 10-Q, 8-K): revenue by segment, unit KPIs (stores,
-  comps, ARPU, users), statements, cash flow.   Full SEC filing markdown in chat and verbatim quotes
+  comps, ARPU, users), statements, cash flow. Full SEC filing markdown in chat and verbatim quotes
   (MD&A, risk factors, "what did they say") via retrieve-sec-filing.
   Derived metrics (implied Q4, segment remainders, per-unit), seasonality-driven
   quarterly splits, Excel workbook export. Use for operational data, "pull data for",
   "get historicals", "find the KPI", "what does deepKPI have on", seasonality,
   derived metrics, .xlsx models, or filing excerpts when explicitly requested.
   Pressure-test sell-side analyst reports vs SEC data (HTML report) — read
-  analyst-report-pressure-test. Similarity search over company summaries (company_summary_search).
+  analyst-report-pressure-test. What a company does, segment/geography breakdowns, and thematic company discovery —
+  company-summary-segments (get_company_summary, get_company_segments, company_summary_search).
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
@@ -46,9 +47,11 @@ The deepKPI operations (`query_company_id`, `list_kpis`, `search_kpis`,
 | **OpenClaw** (no MCP) | Read `deepkpi-api/deepkpi-api.md` and call the REST endpoints using `$DEEPKPI_API_KEY` |
 
 `retrieve-kpi-data/retrieve-kpi-data.md` is the KPI metrics workflow;
-`retrieve-sec-filing/retrieve-sec-filing.md` is the SEC
-filing text / quotes workflow. The `DEEPKPI_API_KEY` env var and `deepkpi-api`
-reference doc are only needed in OpenClaw (or as an env-var fallback when MCP is unavailable).
+`retrieve-sec-filing/retrieve-sec-filing.md` is the SEC filing markdown workflow;
+`company-summary-segments/company-summary-segments.md` is **what companies do** (summary),
+**segment / geo structure**, and **thematic discovery** (`get_company_summary`,
+`get_company_segments`, `company_summary_search`). The `DEEPKPI_API_KEY` env var and `deepkpi-api` reference doc
+are only needed in OpenClaw (or as an env-var fallback when MCP is unavailable).
 
 ## Hard stop: deepKPI connection failures
 
@@ -69,6 +72,7 @@ may apply to a single request — load all that are relevant.
 | User need | File to read |
 |-----------|--------------|
 | Pull historical KPIs / financials from deepKPI | `retrieve-kpi-data/retrieve-kpi-data.md` |
+| **What a company does**, **segments / geographies**, or **thematic** “who does X?” lists | `company-summary-segments/company-summary-segments.md` — named company: `get_company_summary` / `get_company_segments`; discovery: `company_summary_search` then hydrate as needed |
 | Pull **full filing markdown** into chat, **verbatim SEC text**, quotes, MD&A / risk-factor language, or “what did they say” | `retrieve-sec-filing/retrieve-sec-filing.md` — **before any web/SEC.gov**: `list_sec_filing_markdowns` (free) → `get_sec_filing_markdown` (10 credits). Return full markdown when they want the document; blockquoted excerpts for quote-style asks; no paraphrase as quotes |
 | Derive missing Q4 numbers, a segment remainder, or per-unit economics (ASP, ARPU, AUV, take rate) | `derive-implied-metric/derive-implied-metric.md` |
 | Split annual forecasts into quarterly estimates / seasonality patterns | `analyze-seasonality/analyze-seasonality.md` |
@@ -78,9 +82,11 @@ may apply to a single request — load all that are relevant.
 
 **Default entry point:** For **metrics and modeling feeds**, start with
 `retrieve-kpi-data/retrieve-kpi-data.md` (it references `derive-implied-metric`,
-`analyze-seasonality`, and `format-deepkpi-for-excel` as needed). For **filing markdown (full or excerpts) and verbatim quotes**, start with
-`retrieve-sec-filing/retrieve-sec-filing.md`. If a request
-mixes both, read **both** docs.
+`analyze-seasonality`, and `format-deepkpi-for-excel` as needed). For **business
+description, segment structure, or thematic company lists**, start with
+`company-summary-segments/company-summary-segments.md`. For **filing markdown (full or
+excerpts) and verbatim quotes**, start with `retrieve-sec-filing/retrieve-sec-filing.md`.
+If a request mixes these, read **every** doc that applies.
 
 ## Sub-skill summary
 
@@ -92,6 +98,10 @@ the native MCP tools instead.
 **`retrieve-kpi-data`** — Primary workflow for **structured KPIs** (company ID,
 `list_kpis` / `search_kpis`, gap handling including Q4 derivation), provenance
 rules, in-chat tables, and the mandatory post-pull Excel offer.
+
+**`company-summary-segments`** — **`get_company_summary`** (what they do) and
+**`get_company_segments`** (how they break out segments / geos); **`company_summary_search`**
+for **thematic** “who does X?” discovery. Not for KPI time series.
 
 **`retrieve-sec-filing`** — **SEC filing markdown** in chat: full filing or
 excerpts, verbatim quotes, MD&A / risk language. Tools: `list_sec_filing_markdowns`
@@ -119,4 +129,5 @@ extract 4–6 claims, pull granular deepKPI metrics per claim, build paired
 emit a Revelata-branded interactive HTML report (`references/html-template.md`,
 `references/chart-patterns.md`). **Always** read `retrieve-kpi-data` for KPI
 mechanics; use `retrieve-sec-filing` when the test needs verbatim filing
-passages; use `derive-implied-metric` when filling Q4 or segment gaps.
+passages; use `company-summary-segments` for business description / segment structure /
+thematic lists when useful; use `derive-implied-metric` when filling Q4 or segment gaps.

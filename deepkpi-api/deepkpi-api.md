@@ -6,7 +6,7 @@ description: >
   narrative summary, and segment breakdown for US public companies via HTTP + API key.
   Required for OpenClaw; usable as env-var fallback for Claude when MCP is
   unavailable. Other deepKPI skills (retrieve-kpi-data, retrieve-sec-filing,
-  derive-implied-metric, etc.) call through this skill when MCP tools are not present.
+  company-summary-segments, derive-implied-metric, etc.) call through this skill when MCP tools are not present.
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
@@ -188,20 +188,13 @@ Call `/v1.0/search_kpis` with:
 searches with different query strings. For example, "How is Darden doing?" needs
 separate searches for revenue, same-restaurant sales, margins, and unit growth.
 
-### Optional — find companies by theme (summary similarity)
+### Optional — company narrative, segments, thematic discovery
 
-When the user asks for **peers**, **comps**, or a **thematic screen** (e.g. “companies
-like …”, “who makes …”) before you have a ticker, call `/v1.0/company_summary_search`. Then
-use **`query_company_id`** / **`list_kpis`** / **`search_kpis`** on the returned
-`company_id` values as usual.
-
-### Optional — narrative and segment context
-
-When the user wants **how the company describes itself** (business model, segments
-at a narrative level) rather than numeric time series, call
-`/v1.0/get_company_summary` or `/v1.0/get_company_segments` after you have
-`company_id`. Each call costs **3 credits** on success — use sparingly and
-prefer **`list_kpis`** / **`search_kpis`** when the task is metric extraction.
+For **`get_company_summary`** (what a company does), **`get_company_segments`**
+(segment / geo structure), and **`company_summary_search`** (thematic “who does X?” —
+not target-based benchmarking), read **`company-summary-segments/company-summary-segments.md`**.
+When the user wants **metrics**, continue with **`list_kpis`** / **`search_kpis`** as
+in the steps above.
 
 ## Response guidelines
 
