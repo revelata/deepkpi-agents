@@ -10,6 +10,8 @@
 set -euo pipefail
 
 GITHUB_CODELOAD="https://codeload.github.com/revelata/deepkpi-agents/tar.gz/main"
+# Stable prebuilt Claude zip (built by Makefile release target).
+GITHUB_LATEST_ZIP_URL="https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip"
 
 # Installed folder name (OpenClaw skills dir and Claude zip root).
 BUNDLE_DIR_NAME="revelata-deepkpi"
@@ -133,6 +135,16 @@ zip_bundle_for_claude() {
   rm -f "${out_dir}/${BUNDLE_DIR_NAME}.zip"
   echo "Writing: ${out_dir}/${BUNDLE_DIR_NAME}.zip"
   (cd "$parent" && zip -qr "${out_dir}/${BUNDLE_DIR_NAME}.zip" "$BUNDLE_DIR_NAME")
+}
+
+download_latest_zip_for_claude() {
+  local out_dir="$1"
+  mkdir -p "$out_dir"
+  rm -f "${out_dir}/${BUNDLE_DIR_NAME}.zip"
+  echo "Downloading latest prebuilt ZIP..."
+  echo "  ${GITHUB_LATEST_ZIP_URL}"
+  echo "Writing: ${out_dir}/${BUNDLE_DIR_NAME}.zip"
+  curl -fsSL -L "${GITHUB_LATEST_ZIP_URL}" -o "${out_dir}/${BUNDLE_DIR_NAME}.zip"
 }
 
 install_openclaw_bundle() {
@@ -259,9 +271,13 @@ fi
 
 case "$MODE" in
   claude-desktop)
-    BUNDLE_PATH="$(stage_bundle)"
     OUT="$(default_zip_out_dir)"
-    zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
+    if $HAS_LOCAL; then
+      BUNDLE_PATH="$(stage_bundle)"
+      zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
+    else
+      download_latest_zip_for_claude "$OUT"
+    fi
     echo ""
     echo "Next steps (Claude Desktop):"
     echo "  1. Open Claude Desktop and sign in."
@@ -275,9 +291,13 @@ case "$MODE" in
     ;;
 
   claude-web)
-    BUNDLE_PATH="$(stage_bundle)"
     OUT="$(default_zip_out_dir)"
-    zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
+    if $HAS_LOCAL; then
+      BUNDLE_PATH="$(stage_bundle)"
+      zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
+    else
+      download_latest_zip_for_claude "$OUT"
+    fi
     echo ""
     echo "Next steps (Claude.ai):"
     echo "  1. Sign in at https://claude.ai"

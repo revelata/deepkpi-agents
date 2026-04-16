@@ -41,7 +41,7 @@ The installer prompts you to choose **Claude Desktop**, **Claude.ai**, or
 **OpenClaw**, then stages **`revelata-deepkpi/`** from this repo (or downloads it)
 and walks you through setup.
 
-- **Claude (Desktop or web):** creates **`revelata-deepkpi.zip`** — upload that as a custom skill to access all of the functionality.
+- **Claude (Desktop or web):** downloads the latest prebuilt **`revelata-deepkpi.zip`** (from the stable “latest release” asset) — upload that as a custom skill to access all of the functionality.
 - **OpenClaw:** installs to **`~/.openclaw/skills/revelata-deepkpi/`** and configures **`skills.entries.revelata-deepkpi`** with `DEEPKPI_API_KEY` (skill **`name:`** in root `SKILL.md` matches that key).
 
 To skip the prompt and go straight to a specific platform:
