@@ -22,13 +22,15 @@ accurate.
 |-------|-------------|
 | **`deepkpi-api`** | REST API access layer. Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. Other skills call through this for data access. |
 | **`retrieve-kpi-data`** | Every number from SEC-sourced KPIs; `list_kpis` / `search_kpis`; provenance `[value](url)`; in-chat tables; mandatory Excel offer after data pulls. |
+| **`retrieve-sec-filing`** | SEC filing markdown (full document or excerpts): `list_sec_filing_markdowns` / `get_sec_filing_markdown`; blockquotes for quotes; not for structured KPI series. |
 | **`derive-implied-metric`** | Implied metrics (Q4, segment remainders, per-unit, etc.); **imputed values in the same row** as the series, not a spare line item; flow vs stock. |
 | **`format-deepkpi-for-excel`** | `.xlsx` / CSV layout: PLNT-style wide grid, **C1** title, formulas not hardcoded, hyperlinks on value cells, **`format-deepkpi-for-excel`** checklist. |
 | **`analyze-seasonality`** | Seasonal ratios, quarterly splits from annuals; same provenance and Excel rules. |
 | **`analyst-report-pressure-test`** | Pressure-test analyst PDFs vs. SEC KPIs; HTML + Chart.js output; see `analyst-report-pressure-test/analyst-report-pressure-test.md`. |
 
 **Compose:** **`deepkpi-api`** provides data access (OpenClaw) or use MCP (Claude).
-Run **`retrieve-kpi-data`** before anything that needs figures. Add
+Run **`retrieve-kpi-data`** before anything that needs figures; use
+**`retrieve-sec-filing`** for full filing markdown / “what did they say” / quotes. Add
 **`derive-implied-metric`** when something is computed, **`analyze-seasonality`** for
 seasonal work, and **`format-deepkpi-for-excel`** whenever you build a spreadsheet file.
 

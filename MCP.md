@@ -93,7 +93,7 @@ Returns a **structured segment breakdown** (derived from the company’s latest 
 
 ### `list_sec_filing_markdowns`
 
-Lists SEC filings available as markdown for a given **CIK**. Use this to discover valid `acc_no` and `seq_no` values before fetching content.
+Lists SEC filings available as markdown for a given **CIK**. Use this to discover valid `acc_no` and `seq_no` values before fetching content. **Agent workflow:** `retrieve-sec-filing/retrieve-sec-filing.md` (tool-first, before web/SEC.gov).
 
 **Parameters:** `cik` (int), `form_type` (optional string, e.g. `10-K`), `start_date` (optional `YYYY-MM-DD`), `end_date` (optional `YYYY-MM-DD`).
 
@@ -109,7 +109,7 @@ Fetches the markdown content for a specific SEC filing.
 
 **Credits:** **10** per successful call.
 
-**Critical quoting rule:** When the user asks “what did they say”, “what comments were made”, “exact language”, or similar, you MUST return **verbatim quotes/snippets** from the markdown (with clear snippet boundaries). Do not paraphrase by default.
+**Critical quoting rule:** When the user asks “what did they say”, “what comments were made”, “exact language”, or similar, you MUST return **verbatim quotes/snippets** from the markdown (with clear snippet boundaries). Do not paraphrase by default. Full rules: **`retrieve-sec-filing/retrieve-sec-filing.md`**.
 
 ---
 

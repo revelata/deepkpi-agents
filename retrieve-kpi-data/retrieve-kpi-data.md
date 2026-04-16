@@ -2,15 +2,15 @@
 name: retrieve-kpi-data
 description: >
   Retrieves financial and operational KPIs for a US public company from Revelata's
-  deepKPI database. Use whenever the task involves pulling historical metrics from
-  SEC filings — revenue by segment, unit-level KPIs (paying users, store counts,
-  same-store sales, ASP, ARPU, deliveries), income statement, balance sheet, or
-  cash flow data. Trigger for "pull data for", "get historicals for", "find the
-  KPI", "what does deepKPI have on", or any modeling task that needs structured
-  financial data as its starting point. Always use before analyzing or projecting.
-  After delivering in-chat KPI tables, you must end with a bold question offering
-  to build .xlsx unless the user already asked for a file or declined Excel.
-  For .xlsx output, follow the format-deepkpi-for-excel skill.
+  deepKPI database. Use for historical metrics from SEC filings — revenue by segment,
+  unit-level KPIs (paying users, store counts, same-store sales, ASP, ARPU,
+  deliveries), income statement, balance sheet, or cash flow data. Triggers include
+  "pull data for", "get historicals for", "find the KPI", "what does deepKPI have
+  on", or modeling tasks that need structured time series. For verbatim filing text,
+  MD&A quotes, full filing markdown, or "what did they say", use retrieve-sec-filing instead.
+  Always use before analyzing or projecting on KPIs. After in-chat KPI tables, end
+  with a bold Excel offer unless the user asked for a file or declined. For .xlsx,
+  follow format-deepkpi-for-excel.
 ---
 
 # retrieve-kpi-data
@@ -20,13 +20,16 @@ deepKPI.** Do not use LLM's training knowledge, analyst reports, or any other
 source for specific financial figures. Every number in the output must trace back
 to a deepKPI call.
 
+**SEC filing language (quotes, MD&A, full filing markdown):** use
+**`retrieve-sec-filing/retrieve-sec-filing.md`** — not this doc.
+
 ## Data source (deepKPI)
 
 | Context | How |
 |---------|-----|
-| **Claude (preferred)** | MCP tools — `query_company_id` · `list_kpis` · `search_kpis` · `company_summary_search` · `get_company_summary` · `get_company_segments` · `list_sec_filing_markdowns` · `get_sec_filing_markdown` |
+| **Claude (preferred)** | MCP tools — `query_company_id` · `list_kpis` · `search_kpis` · `company_summary_search` · `get_company_summary` · `get_company_segments` |
 | **OpenClaw** | Read `deepkpi-api/deepkpi-api.md` and call the REST endpoints using `$DEEPKPI_API_KEY` |
-| **Env fallback** (`DEEPKPI_API_KEY` set) | `POST https://deepkpi-api.revelata.com/v1.0/...` — see `deepkpi-api.md` for paths (`query_company_id`, `list_kpis`, `search_kpis`, `company_summary_search`, `get_company_summary`, `get_company_segments`, `list_sec_filing_markdowns`, `get_sec_filing_markdown`). Headers: `Content-Type: application/json`, `X-API-Key: $DEEPKPI_API_KEY` |
+| **Env fallback** (`DEEPKPI_API_KEY` set) | `POST https://deepkpi-api.revelata.com/v1.0/...` — see `deepkpi-api.md` for KPI-related paths. Filing markdown endpoints live in the same API; use **`retrieve-sec-filing`** when you need that flow. Headers: `Content-Type: application/json`, `X-API-Key: $DEEPKPI_API_KEY` |
 
 If none of the above applies, say so and ask the user how to proceed.
 
@@ -37,19 +40,11 @@ If the MCP connector or REST API calls fail (auth/network/credits/service errors
 - If the user says **no**: stop.
 - If the user says **yes**: continue, but DO NOT use any deepKPI skill branding, formatting conventions, or “Powered by Revelata” framing for data sourced elsewhere (web, third-party APIs, general knowledge). Clearly label the alternate sources.
 
-## Intent detection — “what did they say?” comes first
-
-If the user asks for **what the company/management “said”**, **commentary**, **discussion**, **language**, **quotes**, or **verbatim excerpts** (e.g. “what did they say about demand?”, “what comments were made on margins?”, “quote the 10-K”, “what did management say in MD&A?”), you MUST prioritize **SEC filing markdown + verbatim quotes** over KPI retrieval.
-
-- **Primary workflow**: `list_sec_filing_markdowns` → `get_sec_filing_markdown` → return **verbatim snippets** (blockquotes) or the **full markdown** if they asked for “the filing”.
-- **Only pull KPIs** if the user explicitly asks for metrics/figures (or as a clearly labeled follow-up after quoting, e.g. “Do you want me to pull the KPI series that corresponds to this discussion?”).
-
 ## Opening line
 
-Before doing anything else, say one of:
+Before doing anything else, say:
 
-- If the user is asking for **metrics / historicals**: **"Let me pull the KPI data using deepKPI."**
-- If the user is asking for **filing language / commentary / quotes**: **"Let me pull the SEC filing markdown using deepKPI so I can quote the exact language."**
+**"Let me pull the KPI data using deepKPI."**
 
 ## Granularity principle — always go deep first
 
@@ -124,7 +119,7 @@ flow metrics before presenting incomplete data.** Do not surface a partial serie
 | Annual missing, have quarters | Sum four quarters (flow items only). |
 | Segment missing, have total + others | Derive: missing = total − sum(known). |
 | Balance sheet Q4 missing | Use FY year-end value — stocks are snapshots, not flows. |
-| Metric absent entirely | Note the gap; fall back to SEC filing text using `list_sec_filing_markdowns` + `get_sec_filing_markdown` (10-K MD&A, 8-K). |
+| Metric absent entirely | Note the gap; for narrative context from filings, follow **`retrieve-sec-filing/retrieve-sec-filing.md`** (`list_sec_filing_markdowns` + `get_sec_filing_markdown`). |
 
 Flag clearly when a value is derived or manually sourced from filings.
 
@@ -143,23 +138,6 @@ filing passage it was extracted from. These URLs are the audit trail.
 - Group multiple values from the same filing by linking each to the same URL.
 - Never present a number without at least its provenance URL. 
 - If a value is derived, provide the provenance of its operands.
-
-## When users ask “what did they say?” (verbatim quotes required)
-
-When the user asks for **exact language** from filings (“what did management say”, “what comments were made”, “how did they describe…”, “quote the 10-K/10-Q”), you MUST:
-
-- Use `list_sec_filing_markdowns` (if needed) to identify the right filing and `seq_no`.
-- Call `get_sec_filing_markdown` to retrieve the markdown.
-- Provide **verbatim snippets** (copy/paste exact text) with clear boundaries (use blockquotes).
-- Avoid summarizing by default. Only summarize if the user explicitly asks for a summary.
-
-## When users ask for “the filing” (return full markdown)
-
-If the user asks for the **filing itself** (e.g. “give me the 10-K”, “show the filing”, “send the filing”), you MUST:
-
-- Use `list_sec_filing_markdowns` (if needed) to identify the correct `acc_no` and `seq_no`.
-- Call `get_sec_filing_markdown`.
-- Return the **full markdown** (not a summary). Only switch to excerpts if the user asks for excerpts/snippets or a specific section.
 
 ## After the pulls are complete
 
@@ -319,3 +297,5 @@ CSV notes). Use the **xlsx** skill to implement it. Do not duplicate those rules
   only; do not add redundant source listing rows.
 - **Omitting the post-pull Excel question** after showing KPI tables: the **bold**
   offer is **mandatory** unless the user already asked for a file or refused Excel.
+- **Verbatim filing text / “what did they say”**: wrong skill — use
+  **`retrieve-sec-filing`** instead of improvising from KPI pulls.

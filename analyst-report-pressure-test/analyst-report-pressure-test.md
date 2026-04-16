@@ -63,11 +63,13 @@ Each of these steps is detailed below. Follow **Chat pacing and verbosity** for 
 
 ## Dependencies
 
-This skill relies on **`retrieve-kpi-data`** for all data retrieval. Before starting,
-read `retrieve-kpi-data/retrieve-kpi-data.md` for the full
-retrieval workflow, provenance rules, and gap-handling logic. That skill handles
-the mechanics of talking to deepKPI — this skill handles the analytical framework
-and HTML output.
+This skill relies on **`retrieve-kpi-data`** for **KPI** retrieval and on
+**`retrieve-sec-filing`** when you need **verbatim SEC filing passages** or **full filing markdown**
+(not just structured metrics). Before starting, read
+`retrieve-kpi-data/retrieve-kpi-data.md` for metrics workflow, provenance, and gaps;
+read `retrieve-sec-filing/retrieve-sec-filing.md` when claims
+must be checked against exact filing language. This skill handles the analytical
+framework and HTML output.
 
 ## Scope
 

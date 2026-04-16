@@ -18,6 +18,7 @@ BUNDLE_DIR_NAME="revelata-deepkpi"
 BUNDLE_SUBDIRS=(
   deepkpi-api
   retrieve-kpi-data
+  retrieve-sec-filing
   derive-implied-metric
   format-deepkpi-for-excel
   analyze-seasonality
