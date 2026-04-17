@@ -37,7 +37,7 @@ below** the fingerprint grid (after `</div><!-- grid-wrap -->`), not inside `.he
 - No "red" tickers — companies with no match simply aren't included
 
 **Cell color coding in the grid:**
-- `td.cell.target-col` — `background: rgba(255,255,255,0.04); color: #fff` (subtle white)
+- `td.cell.target-col` — `background: transparent; color: #fff` (target text reads white; row hover adds a light wash — see **Fingerprint grid** CSS)
 - `td.cell.match-strong` — `background: var(--green-mid); color: #86efac`
 - `td.cell.match-partial` — `background: var(--yellow-mid); color: #fde68a`
 - `td.cell.match-none` — transparent, `color: var(--text-dim)`, shows `—` or brief note
@@ -310,7 +310,7 @@ DISCLOSURES
 /* Sticky row label — KPI names only (left-aligned); grid has no prose rows */
 .fp-grid th.row-header, .fp-grid td.row-header {
   position: sticky; left: 0; z-index: 2;
-  background: var(--surface2); min-width: 140px; max-width: 160px;
+  background: var(--bg); min-width: 140px; max-width: 160px;
   text-align: left;
   vertical-align: top;
 }
@@ -336,8 +336,13 @@ DISCLOSURES
   font-family: 'JetBrains Mono', monospace; font-size: 0.71rem;
 }
 
+/* Row hover highlight */
+.fp-grid tbody tr { transition: background 0.1s ease; }
+.fp-grid tbody tr:not(.group-header):hover { background: rgba(255,255,255,0.035); }
+.fp-grid tbody tr.group-header { background: var(--bg) !important; }
+
 /* Cell states */
-td.cell.target-col  { background: rgba(255,255,255,0.04); color: #fff; font-weight: 600; }
+td.cell.target-col  { background: transparent; color: #fff; font-weight: 600; }
 td.cell.match-strong { background: var(--green-mid); color: #86efac; }
 td.cell.match-partial { background: var(--yellow-mid); color: #fde68a; }
 td.cell.match-none   { background: transparent; color: var(--text-dim); }
