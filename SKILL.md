@@ -11,7 +11,8 @@ description: >
   derived metrics, .xlsx models, or filing excerpts when explicitly requested.
   Pressure-test sell-side analyst reports vs SEC data (HTML report) — read
   analyst-report-pressure-test. Compare to peers, find comps, benchmark, or most-similar companies —
-  peer-benchmark. What a company does, segment/geography breakdowns, and thematic company discovery —
+  peer-benchmark. Open-ended idea discovery ("what should I invest in?", new ideas, interesting companies) —
+  idea-generation-survey. What a company does, segment/geography breakdowns, and thematic company discovery —
   company-summary-segments (get_company_summary, get_company_segments, company_summary_search).
 version: 1.0.0
 homepage: https://www.revelata.com
@@ -72,6 +73,7 @@ may apply to a single request — load all that are relevant.
 
 | User need | File to read |
 |-----------|--------------|
+| No specific company or thesis — "what should I invest in?", **new ideas**, **interesting companies**, boredom / open exploration | `idea-generation-survey/idea-generation-survey.md` — interactive funnel + `company_summary_search` screen; then `retrieve-kpi-data` for deep pulls |
 | Pull historical KPIs / financials from deepKPI | `retrieve-kpi-data/retrieve-kpi-data.md` |
 | **What a company does**, **segments / geographies**, or **thematic** “who does X?” lists | `company-summary-segments/company-summary-segments.md` — named company: `get_company_summary` / `get_company_segments`; discovery: `company_summary_search` then hydrate as needed |
 | Pull **full filing markdown** into chat, **verbatim SEC text**, quotes, MD&A / risk-factor language, or “what did they say” | `retrieve-sec-filing/retrieve-sec-filing.md` — **before any web/SEC.gov**: `list_sec_filing_markdowns` (free) → `get_sec_filing_markdown` (10 credits). Return full markdown when they want the document; blockquoted excerpts for quote-style asks; no paraphrase as quotes |
@@ -80,7 +82,7 @@ may apply to a single request — load all that are relevant.
 | Produce an Excel workbook (.xlsx) from deepKPI data | `format-deepkpi-for-excel/format-deepkpi-for-excel.md` |
 | REST API calls (OpenClaw / env-var fallback only) | `deepkpi-api/deepkpi-api.md` |
 | Pressure-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `analyst-report-pressure-test/analyst-report-pressure-test.md` |
-| **Peers / comps**, **benchmark** a company, **most similar** public companies, or operational comp sets (not price multiples) | `peer-benchmark/peer-benchmark.md` — read `retrieve-kpi-data` first for KPI mechanics |
+| **Peers / comps**, **benchmark** a company, **most similar** public companies, or operational comp sets | `peer-benchmark/peer-benchmark.md` — read `retrieve-kpi-data` first for KPI mechanics |
 
 **Default entry point:** For **metrics and modeling feeds**, start with
 `retrieve-kpi-data/retrieve-kpi-data.md` (it references `derive-implied-metric`,
@@ -138,3 +140,9 @@ thematic lists when useful; use `derive-implied-metric` when filling Q4 or segme
 `company_summary_search` for candidates, KPI fingerprint + alignment, diff-driven
 segment sub-benchmarks, chat 1-pager, optional HTML (`references/html-template.md`),
 Excel via `format-deepkpi-for-excel`. **Always** read `retrieve-kpi-data` first.
+
+**`idea-generation-survey`** — Onramp when the user has **no ticker and no thesis**: rapid interview
+(multiple-choice by default), `company_summary_search` for a 10–15 name screen with thesis-matched
+KPIs, then deep pulls on 1–2 chosen names per `retrieve-kpi-data`. `references/sector-kpi-map.md`
+for diagnostic KPI concepts. **No** default Excel offer. Not for users who already named a company
+or a specific metric — use `retrieve-kpi-data` instead.

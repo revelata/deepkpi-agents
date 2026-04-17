@@ -27,6 +27,7 @@ BUNDLE_SUBDIRS=(
   analyze-seasonality
   analyst-report-pressure-test
   peer-benchmark
+  idea-generation-survey
 )
 
 # Must match `name:` in root SKILL.md (same as install folder basename).

@@ -15,7 +15,8 @@ BUNDLE_SUBDIRS = \
 	format-deepkpi-for-excel \
 	analyze-seasonality \
 	analyst-report-pressure-test \
-	peer-benchmark
+	peer-benchmark \
+	idea-generation-survey
 
 .PHONY: package release clean
 
