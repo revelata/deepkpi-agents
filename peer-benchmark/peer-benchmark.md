@@ -285,7 +285,9 @@ from it (keep Tier 3 in the benchmark table only).
 
 Read `references/html-template.md`. Key structure:
 
-- **Fingerprint box** (amber border): target company profile with KPI pills, each linking to provenance
+- **Hero fingerprint grid** (`table.fp-grid`): KPIs × benchmark columns only — **no prose inside the grid**
+  (no "Why it matters", thesis blurbs, or `fp-context`-style rows). Put narrative in benchmark cards
+  and diff insight. **`.legend-strip`** (color key) sits **below** the grid, not in the page header.
 - **Benchmark cards** (one per company): order **same-vertical** peers before cross-vertical or
   segment-mapped names. Tier-colored top border, similar/different columns,
   key KPI values hyperlinked. Segment sub-benchmarks use purple border + "Segment:" badge.
@@ -310,6 +312,9 @@ Annual periods as columns; green cells for target values; clickable provenance l
   earns its keep precisely because the gaps are often surprising.
 - **Narrative-only fingerprint**: If Step 1 doesn't pull actual KPI values, the diff in Step 3
   has nothing to work with. The fingerprint must have numbers.
+- **Prose inside the HTML hero grid**: Do not add "Why it matters", thesis blurbs, or other
+  commentary rows inside `table.fp-grid` — the grid is KPI labels and numbers only. Use benchmark
+  cards and diff insight for narrative (`references/html-template.md`).
 - **Skipping KPI alignment for candidates**: Checking description similarity is not enough.
   Pull the actual metrics — two companies can describe themselves similarly but operate very
   differently when you look at unit economics.

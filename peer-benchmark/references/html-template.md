@@ -6,10 +6,11 @@ Benchmark cards below the grid provide narrative context per company.
 
 **Logo:** The Revelata wordmark is **inlined as SVG** in the header (same asset as Analysis Pressure
 Test reports). No external image file. The logo link targets `https://www.revelata.com/for-ai-builders`.
-**Header layout:** `.header` is a **flex row** — `.header-main` on the left (`.header-brand` with
-SVG, **deepKPI · Benchmark Analysis** product label, pipe, **Peer benchmark (GitHub)** link, then
-`h1` with cyan `.ticker` span, then `.header-meta`), and `.legend` on the right with square
-`.legend-swatch` items. This keeps the wordmark and legend aligned without stacking bugs (see **Page shell** below).
+**Header layout:** `.header` is a **single-column stack** — `.header-brand` row with SVG,
+pipe divider, **Benchmark Analysis (GitHub)** link (no separate product label in that row);
+then `h1` with cyan `.ticker` span; then `.header-meta`. **No legend in the header.**
+**Legend placement:** `.legend-strip` is a **standalone** horizontal flex row placed **immediately
+below** the fingerprint grid (after `</div><!-- grid-wrap -->`), not inside `.header`.
 **Fonts:** Inter + Figtree (Google Fonts `@import`) plus JetBrains Mono for numeric cells.
 
 ---
@@ -17,8 +18,11 @@ SVG, **deepKPI · Benchmark Analysis** product label, pipe, **Peer benchmark (Gi
 ## Design principles for benchmarking reports
 
 - Fingerprint × coverage grid as hero
-- Optional **context rows** in the hero (why these KPIs matter for the thesis) use **left-aligned**
-  prose — never center that copy; numeric benchmark cells stay centered.
+- **No commentary or prose inside the grid.** The hero table is **data only**: group-header rows,
+  column headers, KPI label rows, numeric cells (with provenance links), and `—` for missing
+  coverage. Do **not** add rows such as "Why it matters", thesis blurbs, `fp-context`, or any
+  explanatory copy inside `table.fp-grid`. Put all narrative in **Benchmark Detail** cards and
+  **Diff Insight** below the grid.
 - Plain category dividers (lighter font, no tier numbers)
 - **Tickers only** in column headers
 - **White** = target column (amber/yellow means partial match)
@@ -65,16 +69,16 @@ SVG, **deepKPI · Benchmark Analysis** product label, pipe, **Peer benchmark (Gi
 The **top of every benchmark HTML file** uses the same `body` canvas as Analysis Pressure Test
 (`padding: 2.5rem`, `max-width: 900px`, `font-size: 14.5px`). The **header chrome** matches the
 pressure-test asset and links: **inlined Revelata SVG** in an anchor to
-`https://www.revelata.com/for-ai-builders`, product line **deepKPI · Benchmark Analysis**, pipe,
-and **Peer benchmark (GitHub)**. Unlike a single-column stack, `.header` is a **horizontal flex**
-row so the **legend** sits top-right and does not collide with the wordmark or title.
+`https://www.revelata.com/for-ai-builders`, pipe divider, and **Benchmark Analysis (GitHub)** —
+all inline in `.header-brand`. The header is a **single-column stack** (no legend inside it). The
+color legend is a separate **`.legend-strip`** placed **after the fingerprint grid** (see **Grid skeleton** below).
 
 Use the **complete** last `<path>` for the coin mark (inner strokes) — truncated copies omit detail
 and look wrong. Title line: `h1` with `<span class="ticker">[TICKER]</span>` in cyan; metadata:
 `.header-meta` with optional `.meta-dot` on the first item.
 
-Merge this **after** the benchmark `:root` block. `.header h1`, `.header-meta`, and `.header .legend`
-selectors are scoped so they do not fight other headings if you add section titles later.
+Merge this **after** the benchmark `:root` block. `.header h1` and `.header-meta` are scoped under
+`.header` so they do not fight other headings if you add section titles later.
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&display=swap');
@@ -89,15 +93,13 @@ body {
   font-size: 14.5px; -webkit-font-smoothing: antialiased;
 }
 
-/* Header — flex: main block left, legend right */
+/* Header — single-column stack, no legend */
 .header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
 }
-.header-main { flex: 1; min-width: 0; }
 .header-brand {
   display: flex;
   align-items: center;
@@ -110,12 +112,6 @@ body {
   height: 22px;
   width: auto;
   flex-shrink: 0;
-}
-.header-product {
-  font-family: 'Figtree', 'Inter', system-ui, sans-serif;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-dim);
 }
 .header-brand > a {
   color: inherit;
@@ -172,18 +168,24 @@ body {
   flex-shrink: 0;
 }
 
-.header .legend {
+/* Legend strip — standalone element BELOW the grid, not inside the header */
+.legend-strip {
   display: flex;
-  gap: 1.2rem;
-  flex-shrink: 0;
+  flex-direction: row;
   flex-wrap: wrap;
-  padding-top: 1.5rem;
+  gap: 1.4rem;
   align-items: center;
   font-size: 0.78rem;
   color: var(--text-muted);
+  padding: 0.65rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-top: 0.6rem;
+  margin-bottom: 2.5rem;
 }
-.header .legend-item { display: flex; align-items: center; gap: 0.4rem; }
-.header .legend-swatch {
+.legend-strip .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.legend-strip .legend-swatch {
   width: 10px;
   height: 10px;
   border-radius: 2px;
@@ -192,8 +194,6 @@ body {
 
 @media (max-width: 700px) {
   body { padding: 1.2rem; }
-  .header { flex-direction: column; gap: 1rem; }
-  .header .legend { padding-top: 0; }
 }
 
 ```
@@ -203,7 +203,6 @@ body {
 ```html
 <!-- ===== HEADER ===== -->
 <div class="header">
-  <div class="header-main">
     <div class="header-brand">
       <a href="https://www.revelata.com/for-ai-builders" target="_blank" rel="noopener noreferrer" aria-label="Revelata">
         <svg class="header-logo" width="159" height="34" viewBox="0 0 159 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Revelata Inc">
@@ -215,9 +214,8 @@ body {
           <path d="M31.9318 30.2429C31.6471 30.2429 31.3754 30.1885 31.1166 30.0798C30.863 29.9711 30.6405 29.821 30.449 29.6295C30.2575 29.438 30.1074 29.2155 29.9987 28.9619C29.89 28.7031 29.8356 28.4314 29.8356 28.1467C29.8356 27.8517 29.89 27.5774 29.9987 27.3238C30.1074 27.0702 30.2575 26.8476 30.449 26.6561C30.6405 26.4646 30.863 26.3145 31.1166 26.2058C31.3754 26.0971 31.6471 26.0428 31.9318 26.0428C32.2268 26.0428 32.5011 26.0971 32.7547 26.2058C33.0084 26.3145 33.2309 26.4646 33.4224 26.6561C33.6139 26.8476 33.764 27.0702 33.8727 27.3238C33.9814 27.5774 34.0357 27.8517 34.0357 28.1467C34.0357 28.4314 33.9814 28.7031 33.8727 28.9619C33.764 29.2155 33.6139 29.438 33.4224 29.6295C33.2309 29.821 33.0084 29.9711 32.7547 30.0798C32.5011 30.1885 32.2268 30.2429 31.9318 30.2429ZM31.9318 29.8081C32.2579 29.8081 32.5451 29.7382 32.7936 29.5985C33.042 29.4587 33.2361 29.2647 33.3758 29.0162C33.5156 28.7626 33.5854 28.4728 33.5854 28.1467C33.5854 27.8155 33.5156 27.5256 33.3758 27.2772C33.2361 27.0287 33.042 26.8347 32.7936 26.6949C32.5451 26.55 32.2579 26.4775 31.9318 26.4775C31.6109 26.4775 31.3262 26.55 31.0778 26.6949C30.8294 26.8347 30.6353 27.0287 30.4955 27.2772C30.3558 27.5256 30.2859 27.8155 30.2859 28.1467C30.2859 28.4728 30.3558 28.7626 30.4955 29.0162C30.6353 29.2647 30.8294 29.4587 31.0778 29.5985C31.3262 29.7382 31.6109 29.8081 31.9318 29.8081ZM31.1477 29.2491V26.9822H31.9629C32.1958 26.9822 32.3873 27.0494 32.5374 27.184C32.6875 27.3134 32.7625 27.4868 32.7625 27.7042C32.7625 27.8491 32.7211 27.9785 32.6383 28.0924C32.5607 28.2062 32.4546 28.2916 32.32 28.3486L32.8557 29.2491H32.3976L31.9318 28.4262H31.5514V29.2491H31.1477ZM31.5514 28.0535H31.9784C32.0819 28.0535 32.1673 28.0225 32.2346 27.9604C32.307 27.8931 32.3433 27.8077 32.3433 27.7042C32.3433 27.5955 32.307 27.5101 32.2346 27.448C32.1621 27.3807 32.0664 27.3471 31.9473 27.3471H31.5514V28.0535Z" fill="#4FEAFF"/>
         </svg>
       </a>
-      <span class="header-product">deepKPI &middot; Benchmark Analysis</span>
       <span class="header-divider">|</span>
-      <span class="header-github"><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Peer benchmark (GitHub)</a></span>
+      <span class="header-github"><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Benchmark Analysis (GitHub)</a></span>
     </div>
     <h1><span class="ticker">[TICKER]</span> &mdash; [Company Name]</h1>
     <div class="header-meta">
@@ -226,28 +224,20 @@ body {
       <span>CIK [##########]</span>
       <span>[N] benchmarks &middot; [M] segment groups</span>
     </div>
-  </div>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-swatch" style="background:#fff;border:1px solid var(--border)"></div> Target</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:var(--green-mid)"></div> Strong match</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:var(--yellow-mid)"></div> Partial match</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:var(--purple-dim)"></div> Segment sub-benchmark</div>
-  </div>
 </div>
 
+<!-- NOTE: Legend is NOT in the header. Place it after the grid-wrap closes. See "Grid skeleton" below. -->
 ```
 
 ## Document structure
 
 ```
-HEADER (.header — flex row; same links and SVG as Analysis Pressure Test)
-  .header-main (left):
-    .header-brand: <a for-ai-builders> + inlined SVG | "deepKPI · Benchmark Analysis" | Peer benchmark (GitHub)
-    h1: <span class="ticker">[TICKER]</span> — [Company Name]
-    .header-meta: sector (with .meta-dot) · FY · CIK · benchmark / segment counts
-  .legend (right): .legend-swatch squares (target / strong / partial / segment)
+HEADER (.header — single-column stack; no legend inside)
+  .header-brand: <a for-ai-builders> + inlined SVG | Benchmark Analysis (GitHub)
+  h1: <span class="ticker">[TICKER]</span> — [Company Name]
+  .header-meta: sector (with .meta-dot) · FY · CIK · benchmark / segment counts
 
-FINGERPRINT × COVERAGE GRID   ← hero element
+FINGERPRINT × COVERAGE GRID   ← hero element (DATA ONLY — see design principles + Rules)
   (first content after .header closes — no extra title bar above the grid)
   fp-grid table:
     group-header row: "Target" | "Group A label" | "Group B label (seg, purple)"
@@ -255,9 +245,11 @@ FINGERPRINT × COVERAGE GRID   ← hero element
     KPI rows:
       row-header: kpi-name + kpi-sub (left-aligned text)
       cells: target-col | match-strong | match-partial | match-none | seg-cell (centered numbers)
-    optional fp-context rows: narrow label in row-header + colspan prose cell — **left-aligned**
-      explanation of why the KPI block above/below matters (ties to user thesis)
+    NO prose / commentary rows inside the table (no "Why it matters", no fp-context, no thesis copy)
     group-header separator rows for new KPI groups (e.g. segment-specific KPIs)
+
+LEGEND STRIP (.legend-strip — immediately AFTER </div><!-- grid-wrap -->)
+  Horizontal row: Target | Strong match | Partial match | Segment (.legend-swatch squares)
 
 BENCHMARK DETAIL
   section-label: "Benchmark Detail"
@@ -292,7 +284,7 @@ SOURCES
   sources-table: Ticker | CIK | Coverage | FY end | Notes
 
 FOOTER
-  "Benchmark data from SEC filings via Revelata deepKPI. All values link to source filing passages."
+  "Benchmark data sourced from SEC filings via Revelata deepKPI. All values link to source filing passages."
   Right: "FY[YEAR] · [Month YEAR]"
 
 CLOSING CTA ("try it yourself")
@@ -315,34 +307,12 @@ DISCLOSURES
 .grid-wrap { overflow-x: auto; }
 .fp-grid { border-collapse: collapse; width: 100%; font-size: 0.74rem; }
 
-/* Sticky row label — KPI names and context labels are always left-aligned */
+/* Sticky row label — KPI names only (left-aligned); grid has no prose rows */
 .fp-grid th.row-header, .fp-grid td.row-header {
   position: sticky; left: 0; z-index: 2;
   background: var(--surface2); min-width: 140px; max-width: 160px;
   text-align: left;
   vertical-align: top;
-}
-
-/* Hero rows that explain why KPIs matter (prose, not numbers) — full width of data columns, left aligned */
-.fp-grid tr.fp-context td.fp-context-cell {
-  text-align: left;
-  white-space: normal;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.68rem;
-  line-height: 1.45;
-  color: var(--text-muted);
-  padding: 0.45rem 0.65rem 0.5rem 0.65rem;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-}
-.fp-grid tr.fp-context td.row-header.fp-context-label {
-  background: var(--surface2);
-  font-size: 0.58rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
-  white-space: nowrap;
 }
 
 /* Group separator rows */
@@ -580,11 +550,6 @@ block matches the pressure-test template **word for word**.
       <th class="row-header">[Group name e.g. "Whole-company"]</th>
       <th></th><th></th><th></th><th></th>
     </tr>
-    <!-- Optional: why these KPIs matter (stays inside hero grid; prose is left-aligned) -->
-    <tr class="fp-context">
-      <td class="row-header fp-context-label">Why it matters</td>
-      <td colspan="4" class="fp-context-cell">[1–2 sentences, left-aligned — ties KPIs above/below to the user’s thesis. Adjust colspan to match column count.]</td>
-    </tr>
     <tr>
       <td class="row-header">
         <span class="kpi-name">[KPI label]</span>
@@ -609,6 +574,14 @@ block matches the pressure-test template **word for word**.
     </tr>
   </tbody>
 </table>
+</div><!-- grid-wrap -->
+
+<!-- ===== LEGEND STRIP (placed after grid, not in header) ===== -->
+<div class="legend-strip">
+  <div class="legend-item"><div class="legend-swatch" style="background:#fff;border:1px solid var(--border)"></div> Target</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--green-mid)"></div> Strong match</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--yellow-mid)"></div> Partial match</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--purple-dim)"></div> Segment sub-benchmark</div>
 </div>
 ```
 
@@ -675,8 +648,7 @@ block matches the pressure-test template **word for word**.
    is informative. Never arbitrarily cap the fingerprint at N dimensions or expose only the segments
    with the best benchmark matches.
 10. **Page canvas**: use the **Page shell** `body` rules (`padding: 2.5rem`, `max-width: 900px`) and
-    the flex `.header` (main block + right-aligned `.legend`) so chrome matches the template. For
-    denser benchmark blocks below the header,
+    the single-column `.header` (no legend inside). For denser benchmark blocks below the legend strip,
     optional inner wrappers may use tighter padding; section label margins `1.5rem 0 0.4rem`; tab
     panels `0.7rem 0.9rem`; benchmark card data `0.45rem 0.7rem`.
 11. **Footer + closing CTA + disclosures**: Always append the `.footer`, `.closing-cta`, and
@@ -685,6 +657,15 @@ block matches the pressure-test template **word for word**.
 12. **Header logo:** Keep the **inlined SVG** from the **Page shell** section (same paths as
     `analyst-report-pressure-test/references/html-template.md`). Never substitute an external logo
     image or a different wordmark.
-13. **Hero context copy:** Any row in the fingerprint grid that explains **why KPIs matter** (not
-    numeric cells) must use `tr.fp-context` / `td.fp-context-cell` (or equivalent) with **`text-align: left`**.
-    Do not center-wrap that prose to match ticker columns.
+13. **Fingerprint grid is data-only.** Do not add prose, thesis, "Why it matters", `tr.fp-context`,
+    merged narrative cells, footnotes, or any non-KPI / non-numeric row inside `table.fp-grid`.
+    Allowed: `thead` / `tbody` group-header rows, column headers, KPI label rows (`row-header` +
+    `kpi-name` / `kpi-sub`), data cells (linked numbers, `—`, optional brief `match-none` note),
+    and segment group separators. All interpretation belongs in **Benchmark Detail** cards and
+    **Diff Insight**.
+14. **Legend placement.** Render **`.legend-strip`** immediately **after** `</div><!-- grid-wrap -->`
+    closes — never inside `.header`. Use the skeleton markup and `.legend-strip` CSS spacing
+    (`margin-top: 0.6rem` gap above the strip).
+15. **Header brand row.** In `.header-brand`, use only: inlined Revelata SVG (link to for-ai-builders),
+    pipe divider, and **Benchmark Analysis (GitHub)**. Do not add a separate "deepKPI" product label
+    in that row unless product marketing explicitly requests it.
