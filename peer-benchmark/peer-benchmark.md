@@ -49,9 +49,9 @@ Every number displayed must have a `[value](provenance-url)` link. No exceptions
 
 **Before pulling any data**, ask the user which output format they want:
 
-> "Would you like an **interactive HTML report** (opens in browser, clickable provenance links, Chart.js charts) or **in-chat markdown** output? Or both?"
+> "Would you like an **interactive HTML report** (opens in browser, clickable provenance links, Chart.js **time-series** charts) or **in-chat markdown** output? Or both?"
 
-- If **HTML**: generate the full HTML report (dark Revelata branding, Chart.js, fingerprint grid). Also produce the chat 1-pager as a compact summary.
+- If **HTML**: generate the full HTML report (dark Revelata branding, Chart.js line charts for KPI **trends over time**, fingerprint grid). Also produce the chat 1-pager as a compact summary.
 - If **in-chat**: produce only the chat 1-pager with full markdown provenance links (see rules below). Offer the HTML at the end.
 - If **both**: produce chat 1-pager first, then generate the HTML.
 
@@ -62,7 +62,7 @@ Offer Excel at the end regardless of which mode is chosen, unless the user alrea
 | Format | When | Description |
 |--------|------|-------------|
 | Chat 1-pager | Always | Fingerprint pill rows + master table + KPI alignment + ≤5 notes — **all values hyperlinked** |
-| HTML report | If user chose HTML or both | Dark Revelata-branded report with fingerprint grid, benchmark cards, and Chart.js KPI charts |
+| HTML report | If user chose HTML or both | Dark Revelata-branded report with fingerprint grid, benchmark cards, and Chart.js **KPI trends over time** (line charts: target vs benchmarks on a shared period axis) |
 | Excel workbook | User requests .xlsx | KPI alignment table, periods as columns per format spec |
 
 ### In-chat provenance link rules (non-negotiable)
@@ -291,8 +291,7 @@ Read `references/html-template.md`. Key structure:
 - **Benchmark cards** (one per company): order **same-vertical** peers before cross-vertical or
   segment-mapped names. Tier-colored top border, similar/different columns,
   key KPI values hyperlinked. Segment sub-benchmarks use purple border + "Segment:" badge.
-- **KPI alignment section**: Chart.js grouped bar charts for the 2-3 most important metrics,
-  showing target vs. all benchmarks. Table below the charts with full alignment.
+- **KPI trends over time (charts + alignment table)**: This section is where deepKPI’s edge shows up—**filing-resolved time series** most vendors do not reconstruct at this depth. For the **2–3 most important** signature KPIs, pull **multi-period** values for the target **and every benchmark** (prefer quarterly where coverage is solid; otherwise annual—follow `retrieve-kpi-data` for period selection, scaling, and provenance). Render **Chart.js line charts** (not single-period grouped bars): **x-axis = time** (ordered FY/FQ labels), **one line per company** so the reader compares **trajectory, inflection, and pace** across competitors on the **same** metric. Put the full **KPI alignment** table (with hyperlinked values) **below** the charts as today. If a KPI truly has fewer than three comparable periods across the set, you may show a sparse line chart **or** a one-line caption pointing readers to the table—do not imply a cross-sectional bar is equivalent to the time-series view.
 - **Diff insight box** (cyan glow, same as synthesis in pressure test): 2 paragraphs on what
   the benchmark set reveals that whole-company analysis would miss.
 - **Notes** and **Sources** footer.

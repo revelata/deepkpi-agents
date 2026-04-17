@@ -259,15 +259,22 @@ BENCHMARK DETAIL
   cat-divider (segment, purple): "[Segment] — segment sub-benchmarks"
   bmark-list: (segment benchmarks)
 
-KPI CHARTS
-  section-label: "KPI Charts"
-  chart-tabs: tabbed interface — one tab per fingerprint KPI
+KPI TRENDS OVER TIME
+  section-label: "KPI trends over time"
+  section-intro (one line under the label, optional but recommended):
+    "Same metric, multiple companies, filing-resolved periods—compare **trajectory**, not just a single snapshot."
+  chart-tabs: tabbed interface — one tab per fingerprint KPI (typically 2–3)
     Tab nav: .tab-btn elements, active tab highlighted in var(--cyan)
-    Tab panels: one canvas per tab, Chart.js bar chart
-    Chart colors match ticker colors: target=rgba(255,255,255,0.15), strong=rgba(34,197,94,0.55),
-      partial=rgba(234,179,8,0.45), seg=rgba(168,85,247,0.4)
-    DRI target segments shown as separate bars within the target color range (rgba(255,255,255,0.08-0.15))
-    Log scale for metrics with extreme range differences (e.g. energy GWh)
+    Tab panels: one canvas per tab, Chart.js **line** chart (`type: 'line'`)
+    X-axis: ordered reporting periods (FY… and/or FQ…), aligned across tickers where data exists
+    Y-axis: KPI value (unit in tab label or chart subtitle); **log scale** when ranges are extreme (e.g. energy GWh)
+    Datasets: **one line per company** (target + each benchmark). Line / point colors match ticker tier colors
+      (same palette as the fingerprint grid — see **Chart color conventions**)
+    DRI target segments: separate **lines** (e.g. dashed vs solid) within the target white/gray palette,
+      not separate bars
+    Data: multi-period pulls per `retrieve-kpi-data` / `peer-benchmark.md` — this section showcases
+      deepKPI **time series** competitors rarely get elsewhere; do not substitute a one-year grouped
+      bar chart unless history is too sparse (&lt;3 shared periods); if forced, state the limitation in the chart caption
 
 DIFF INSIGHT
   section-label: "Diff Insight"
@@ -625,13 +632,15 @@ block matches the pressure-test template **word for word**.
 ## Chart color conventions
 
 ```js
-// Chart.js backgroundColor / borderColor
-// Target: rgba(255,255,255,0.15) / rgba(255,255,255,0.4)
-// Strong match: rgba(34,197,94,0.55) / rgba(34,197,94,0.9)
-// Partial match: rgba(234,179,8,0.45) / rgba(234,179,8,0.8)
-// Segment sub-benchmark: rgba(168,85,247,0.4) / rgba(168,85,247,0.8)
-// Target segment breakdown: rgba(255,255,255,0.08) / rgba(255,255,255,0.25)
-// Negative values: rgba(239,68,68,0.35) / rgba(239,68,68,0.8)
+// Line charts (KPI trends over time): use borderColor (+ borderWidth ~2) for each series;
+// pointBackgroundColor / pointBorderColor match the same tier; fill: false (or a very light
+// under-fill for the target line only—keep competitor lines unfilled for readability).
+// Target: rgba(255,255,255,0.85) / rgba(255,255,255,1)
+// Strong match: rgba(34,197,94,0.9) / rgba(34,197,94,1)
+// Partial match: rgba(234,179,8,0.85) / rgba(234,179,8,1)
+// Segment sub-benchmark: rgba(168,85,247,0.85) / rgba(168,85,247,1)
+// Target segment breakdown (extra lines): rgba(255,255,255,0.45) dashed, or rgba(255,255,255,0.25) solid
+// Negative values (if metric signed): rgba(239,68,68,0.85) / rgba(239,68,68,1)
 ```
 
 ---
@@ -646,7 +655,7 @@ block matches the pressure-test template **word for word**.
 6. **Coverage gaps are visualized as blank rows** — rows where all benchmark columns show `—` make
    the gap immediately visible without prose explanation.
 7. **Segment sub-benchmark headers and tickers use purple** — `var(--purple)` #a855f7.
-8. **Chart colors match ticker colors** — visual consistency between grid and charts.
+8. **Chart colors match ticker colors** — same tier palette on **line** series as on grid headers (trends-over-time section).
 9. **All segments or none** — if the target company has multiple reportable brand/business segments,
    include a grid row group for every segment (comps + AUV, or equivalent KPIs), not just the one
    with the best coverage. The benchmark columns for sparse segments will naturally show `—`, which
