@@ -6,8 +6,10 @@ Benchmark cards below the grid provide narrative context per company.
 
 **Logo:** The Revelata wordmark is **inlined as SVG** in the header (same asset as Analysis Pressure
 Test reports). No external image file. The logo link targets `https://www.revelata.com/for-ai-builders`.
-**Header row** matches the pressure-test template: `.header-brand` with SVG, pipe divider, GitHub
-link, then `h1` + `p.subtitle` + in-header `.legend` (see **Page shell** below).
+**Header layout:** `.header` is a **flex row** — `.header-main` on the left (`.header-brand` with
+SVG, **deepKPI · Benchmark Analysis** product label, pipe, **Peer benchmark (GitHub)** link, then
+`h1` with cyan `.ticker` span, then `.header-meta`), and `.legend` on the right with square
+`.legend-swatch` items. This keeps the wordmark and legend aligned without stacking bugs (see **Page shell** below).
 **Fonts:** Inter + Figtree (Google Fonts `@import`) plus JetBrains Mono for numeric cells.
 
 ---
@@ -60,15 +62,19 @@ link, then `h1` + `p.subtitle` + in-header `.legend` (see **Page shell** below).
 
 ## Page shell: fonts, body, and header (match Analysis Pressure Test)
 
-The **top of every benchmark HTML file** must match the Analysis Pressure Test layout: same
-`body` canvas (`padding: 2.5rem`, `max-width: 900px`, `font-size: 14.5px`), same `.header` /
-`.header-brand` row with **inlined Revelata SVG** (link to `https://www.revelata.com/for-ai-builders`),
-pipe divider, and GitHub link — only the GitHub label reads **Peer benchmark (GitHub)** instead of
-"Analysis Pressure Test". Title is `h1` + `p.subtitle` for sector / FY / CIK / benchmark counts;
-then the color `legend` inside `.header` (benchmark-specific swatches below).
+The **top of every benchmark HTML file** uses the same `body` canvas as Analysis Pressure Test
+(`padding: 2.5rem`, `max-width: 900px`, `font-size: 14.5px`). The **header chrome** matches the
+pressure-test asset and links: **inlined Revelata SVG** in an anchor to
+`https://www.revelata.com/for-ai-builders`, product line **deepKPI · Benchmark Analysis**, pipe,
+and **Peer benchmark (GitHub)**. Unlike a single-column stack, `.header` is a **horizontal flex**
+row so the **legend** sits top-right and does not collide with the wordmark or title.
 
-Merge this **after** the benchmark `:root` block. `h1` / `.subtitle` / `.legend` selectors are
-scoped under `.header` so they do not fight other `h1`s if you add section titles later.
+Use the **complete** last `<path>` for the coin mark (inner strokes) — truncated copies omit detail
+and look wrong. Title line: `h1` with `<span class="ticker">[TICKER]</span>` in cyan; metadata:
+`.header-meta` with optional `.meta-dot` on the first item.
+
+Merge this **after** the benchmark `:root` block. `.header h1`, `.header-meta`, and `.header .legend`
+selectors are scoped so they do not fight other headings if you add section titles later.
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&display=swap');
@@ -83,44 +89,111 @@ body {
   font-size: 14.5px; -webkit-font-smoothing: antialiased;
 }
 
-/* Header — same structure as analyst-report-pressure-test/references/html-template.md */
-.header { margin-bottom: 2.5rem; }
-.header-brand { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+/* Header — flex: main block left, legend right */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+.header-main { flex: 1; min-width: 0; }
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
 .header-brand .header-logo {
-  display: block; height: 28px; width: auto; flex-shrink: 0;
+  display: block;
+  height: 22px;
+  width: auto;
+  flex-shrink: 0;
 }
-.header-brand span {
+.header-product {
   font-family: 'Figtree', 'Inter', system-ui, sans-serif;
-  font-size: 1.1rem; font-weight: 600;
-  color: var(--cyan);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dim);
 }
-.header-brand span a { color: var(--cyan); font-family: inherit; }
-.header-brand .header-divider {
+.header-brand > a {
+  color: inherit;
+  text-decoration: none;
+  line-height: 0;
+}
+.header-brand > a:hover { opacity: 0.9; }
+.header-divider {
   color: var(--border-light);
   font-weight: 300;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   line-height: 1;
-  margin: 0 0.1rem;
+  margin: 0 0.05rem;
 }
-.header a { color: inherit; text-decoration: none; }
-.header a:hover { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.header-github a {
+  font-family: 'Figtree', 'Inter', system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cyan);
+  text-decoration: none;
+}
+.header-github a:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
 .header h1 {
-  font-size: 1.6rem; font-weight: 700;
-  letter-spacing: -0.03em; color: #fff; margin-bottom: 0.3rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 0.35rem;
 }
-.header .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.header h1 .ticker { color: var(--cyan); }
+.header-meta {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.header-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.meta-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
 
-.legend {
-  display: flex; gap: 2rem; padding: 0.9rem 1.2rem;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; font-size: 0.8rem; color: var(--text-muted);
+.header .legend {
+  display: flex;
+  gap: 1.2rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  padding-top: 1.5rem;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
 }
-.legend-item { display: flex; align-items: center; gap: 0.5rem; }
-.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.header .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.header .legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
 
 @media (max-width: 700px) {
   body { padding: 1.2rem; }
-  .legend { flex-direction: column; gap: 0.5rem; }
+  .header { flex-direction: column; gap: 1rem; }
+  .header .legend { padding-top: 0; }
 }
 
 ```
@@ -130,30 +203,35 @@ body {
 ```html
 <!-- ===== HEADER ===== -->
 <div class="header">
-  <div class="header-brand">
-    <a href="https://www.revelata.com/for-ai-builders" target="_blank" rel="noopener noreferrer" aria-label="Revelata">
-      <svg class="header-logo" width="159" height="34" viewBox="0 0 159 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Revelata Inc">
-        <path d="M42.4412 26.6676V7.28626H48.7539C50.0091 7.28626 51.1166 7.53545 52.0765 8.03382C53.0548 8.5322 53.8116 9.22439 54.3468 10.1104C54.9006 10.9964 55.1775 12.0116 55.1775 13.156C55.1775 14.3005 54.8821 15.3157 54.2915 16.2017C53.7008 17.0877 52.8979 17.7891 51.8826 18.3059C50.8674 18.8043 49.723 19.0535 48.4494 19.0535H44.7946V26.6676H42.4412ZM53.3778 26.6676L48.7263 18.7213L50.5813 17.503L55.9527 26.6676H53.3778ZM44.7946 16.8939H49.0862C49.7876 16.8939 50.4152 16.737 50.969 16.4232C51.5227 16.0909 51.9657 15.6479 52.298 15.0942C52.6487 14.522 52.824 13.8759 52.824 13.156C52.824 12.0485 52.4364 11.1533 51.6611 10.4703C50.9043 9.76891 49.9168 9.4182 48.6986 9.4182H44.7946V16.8939ZM65.1997 26.9999C63.8523 26.9999 62.6617 26.6953 61.628 26.0862C60.5944 25.4586 59.7822 24.6003 59.1915 23.5112C58.6193 22.4222 58.3332 21.167 58.3332 19.7457C58.3332 18.3244 58.6193 17.0692 59.1915 15.9802C59.7822 14.8911 60.5851 14.042 61.6004 13.4329C62.634 12.8053 63.8154 12.4915 65.1444 12.4915C66.4365 12.4915 67.5532 12.8146 68.4946 13.4606C69.436 14.0882 70.1651 14.9742 70.6819 16.1186C71.1987 17.263 71.4572 18.6105 71.4572 20.161H60.0222L60.5759 19.6903C60.5759 20.7978 60.7697 21.7484 61.1574 22.5421C61.5634 23.3359 62.1264 23.945 62.8463 24.3695C63.5662 24.7756 64.3876 24.9787 65.3105 24.9787C66.2888 24.9787 67.1102 24.7479 67.7747 24.2865C68.4577 23.825 68.9837 23.2159 69.3529 22.4591L71.2633 23.4281C70.9126 24.148 70.4419 24.7756 69.8513 25.3109C69.2791 25.8462 68.5961 26.2615 67.8024 26.5569C67.0271 26.8522 66.1596 26.9999 65.1997 26.9999ZM60.7144 18.7489L60.1329 18.3059H69.6851L69.1037 18.7766C69.1037 17.8906 68.9283 17.1246 68.5776 16.4786C68.2269 15.8325 67.7562 15.3341 67.1656 14.9834C66.5749 14.6327 65.8919 14.4574 65.1167 14.4574C64.3599 14.4574 63.64 14.6327 62.957 14.9834C62.2925 15.3341 61.748 15.8325 61.3235 16.4786C60.9174 17.1061 60.7144 17.8629 60.7144 18.7489ZM78.1355 26.6676L83.7838 12.8238H86.1095L80.3228 26.6676H78.1355ZM77.9971 26.6676L72.2103 12.8238H74.5084L80.1567 26.6676H77.9971ZM94.023 26.9999C92.6755 26.9999 91.485 26.6953 90.4513 26.0862C89.4176 25.4586 88.6055 24.6003 88.0148 23.5112C87.4426 22.4222 87.1565 21.167 87.1565 19.7457C87.1565 18.3244 87.4426 17.0692 88.0148 15.9802C88.6055 14.8911 89.4084 14.042 90.4236 13.4329C91.4573 12.8053 92.6386 12.4915 93.9676 12.4915C95.2597 12.4915 96.3765 12.8146 97.3178 13.4606C98.2592 14.0882 98.9883 14.9742 99.5052 16.1186C100.022 17.263 100.28 18.6105 100.28 20.161H88.8454L89.3992 19.6903C89.3992 20.7978 89.593 21.7484 89.9806 22.5421C90.3867 23.3359 90.9497 23.945 91.6696 24.3695C92.3894 24.7756 93.2108 24.9787 94.1338 24.9787C95.1121 24.9787 95.9335 24.7479 96.598 24.2865C97.2809 23.825 97.807 23.2159 98.1762 22.4591L100.087 23.4281C99.7359 24.148 99.2652 24.7756 98.6745 25.3109C98.1023 25.8462 97.4194 26.2615 96.6256 26.5569C95.8504 26.8522 94.9828 26.9999 94.023 26.9999ZM89.5376 18.7489L88.9562 18.3059H98.5084L97.927 18.7766C97.927 17.8906 97.7516 17.1246 97.4009 16.4786C97.0502 15.8325 96.5795 15.3341 95.9888 14.9834C95.3982 14.6327 94.7152 14.4574 93.9399 14.4574C93.1832 14.4574 92.4633 14.6327 91.7803 14.9834C91.1158 15.3341 90.5713 15.8325 90.1467 16.4786C89.7407 17.1061 89.5376 17.8629 89.5376 18.7489ZM103.074 26.6676V7.28626H105.289V26.6676H103.074ZM117.686 26.6676L117.575 24.3972V19.3581C117.575 18.269 117.455 17.3738 117.215 16.6724C116.975 15.9525 116.597 15.408 116.08 15.0388C115.563 14.6696 114.889 14.485 114.058 14.485C113.302 14.485 112.646 14.6419 112.093 14.9557C111.557 15.2511 111.114 15.731 110.764 16.3955L108.77 15.6202C109.121 14.9742 109.545 14.4204 110.044 13.959C110.542 13.4791 111.124 13.1191 111.788 12.8792C112.453 12.6207 113.209 12.4915 114.058 12.4915C115.351 12.4915 116.412 12.75 117.243 13.2668C118.092 13.7652 118.728 14.5127 119.153 15.5095C119.578 16.4878 119.781 17.706 119.762 19.1643L119.734 26.6676H117.686ZM113.532 26.9999C111.908 26.9999 110.634 26.6307 109.712 25.8923C108.807 25.1356 108.355 24.0927 108.355 22.7636C108.355 21.3608 108.816 20.2902 109.739 19.5519C110.681 18.7951 111.991 18.4167 113.671 18.4167H117.63V20.2718H114.169C112.877 20.2718 111.954 20.484 111.4 20.9086C110.865 21.3331 110.598 21.9422 110.598 22.736C110.598 23.4558 110.865 24.028 111.4 24.4526C111.936 24.8587 112.683 25.0617 113.643 25.0617C114.437 25.0617 115.129 24.8956 115.72 24.5633C116.31 24.2126 116.763 23.7235 117.076 23.0959C117.409 22.4499 117.575 21.6931 117.575 20.8255H118.516C118.516 22.7083 118.092 24.2126 117.243 25.3386C116.393 26.4461 115.157 26.9999 113.532 26.9999ZM128.477 26.9999C127.13 26.9999 126.087 26.6491 125.349 25.9477C124.61 25.2463 124.241 24.2588 124.241 22.9851V8.50451H126.456V22.7636C126.456 23.4651 126.641 24.0096 127.01 24.3972C127.397 24.7664 127.933 24.951 128.616 24.951C128.837 24.951 129.049 24.9233 129.252 24.8679C129.474 24.7941 129.76 24.6279 130.111 24.3695L130.969 26.1692C130.489 26.483 130.055 26.6953 129.668 26.806C129.28 26.9352 128.883 26.9999 128.477 26.9999ZM121.832 14.7896V12.8238H130.609V14.7896H121.832ZM142.183 26.6676L142.072 24.3972V19.3581C142.072 18.269 141.952 17.3738 141.712 16.6724C141.472 15.9525 141.094 15.408 140.577 15.0388C140.06 14.6696 139.386 14.485 138.556 14.485C137.799 14.485 137.143 14.6419 136.59 14.9557C136.054 15.2511 135.611 15.731 135.261 16.3955L133.267 15.6202C133.618 14.9742 134.042 14.4204 134.541 13.959C135.039 13.4791 135.621 13.1191 136.285 12.8792C136.95 12.6207 137.706 12.4915 138.556 12.4915C139.848 12.4915 140.909 12.75 141.74 13.2668C142.589 13.7652 143.226 14.5127 143.65 15.5095C144.075 16.4878 144.278 17.706 144.259 19.1643L144.232 26.6676H142.183ZM138.029 26.9999C136.405 26.9999 135.132 26.6307 134.209 25.8923C133.304 25.1356 132.852 24.0927 132.852 22.7636C132.852 21.3608 133.313 20.2902 134.236 19.5519C135.178 18.7951 136.488 18.4167 138.168 18.4167H142.127V20.2718H138.666C137.374 20.2718 136.451 20.484 135.898 20.9086C135.362 21.3331 135.095 21.9422 135.095 22.736C135.095 23.4558 135.362 24.028 135.898 24.4526C136.433 24.8587 137.18 25.0617 138.14 25.0617C138.934 25.0617 139.626 24.8956 140.217 24.5633C140.807 24.2126 141.26 23.7235 141.573 23.0959C141.906 22.4499 142.072 21.6931 142.072 20.8255H143.013C143.013 22.7083 142.589 24.2126 141.74 25.3386C140.891 26.4461 139.654 26.9999 138.029 26.9999Z" fill="#ffffff"/>
-        <path d="M146.357 28.6888V26.6676H157.432V28.6888H146.357Z" fill="#4FEAFF"/>
-        <path d="M5.08739 7.94839L16.9844 2.21909L28.8814 7.94839L31.8197 20.822L23.5868 31.1459H10.3821L2.14907 20.822L5.08739 7.94839Z" stroke="#4FEAFF" stroke-width="1.78606"/>
-        <path d="M7.16529 15.9562L12.0207 8.8345L20.616 8.19038L26.4787 14.5088L25.194 23.0319L17.7294 27.3416L9.70589 24.1926L7.16529 15.9562Z" stroke="#4FEAFF" stroke-width="1.78606"/>
-        <path d="M13.3317 14.5225L16.9857 12.7628L20.6398 14.5225L21.5423 18.4765L19.0136 21.6474H14.9579L12.4292 18.4765L13.3317 14.5225Z" stroke="#4FEAFF" stroke-width="1.78606"/>
-        <path d="M31.9318 30.2429C31.6471 30.2429 31.3754 30.1885 31.1166 30.0798C30.863 29.9711 30.6405 29.821 30.449 29.6295C30.2575 29.438 30.1074 29.2155 29.9987 28.9619C29.89 28.7031 29.8356 28.4314 29.8356 28.1467C29.8356 27.8517 29.89 27.5774 29.9987 27.3238C30.1074 27.0702 30.2575 26.8476 30.449 26.6561C30.6405 26.4646 30.863 26.3145 31.1166 26.2058C31.3754 26.0971 31.6471 26.0428 31.9318 26.0428C32.2268 26.0428 32.5011 26.0971 32.7547 26.2058C33.0084 26.3145 33.2309 26.4646 33.4224 26.6561C33.6139 26.8476 33.764 27.0702 33.8727 27.3238C33.9814 27.5774 34.0357 27.8517 34.0357 28.1467C34.0357 28.4314 33.9814 28.7031 33.8727 28.9619C33.764 29.2155 33.6139 29.438 33.4224 29.6295C33.2309 29.821 33.0084 29.9711 32.7547 30.0798C32.5011 30.1885 32.2268 30.2429 31.9318 30.2429ZM31.9318 29.8081C32.2579 29.8081 32.5451 29.7382 32.7936 29.5985C33.042 29.4587 33.2361 29.2647 33.3758 29.0162C33.5156 28.7626 33.5854 28.4728 33.5854 28.1467C33.5854 27.8155 33.5156 27.5256 33.3758 27.2772C33.2361 27.0287 33.042 26.8347 32.7936 26.6949C32.5451 26.55 32.2579 26.4775 31.9318 26.4775C31.6109 26.4775 31.3262 26.55 31.0778 26.6949C30.8294 26.8347 30.6353 27.0287 30.4955 27.2772C30.3558 27.5256 30.2859 27.8155 30.2859 28.1467C30.2859 28.4728 30.3558 28.7626 30.4955 29.0162C30.6353 29.2647 30.8294 29.4587 31.0778 29.5985C31.3262 29.7382 31.6109 29.8081 31.9318 29.8081ZM31.1477 29.2491V26.9822H31.9629C32.1958 26.9822 32.3873 27.0494 32.5374 27.184C32.6875 27.3134 32.7625 27.4868 32.7625 27.7042C32.7625 27.8491 32.7211 27.9785 32.6383 28.0924C32.5607 28.2062 32.4546 28.2916 32.32 28.3486L32.8557 29.2491H32.3976L31.9318 28.4262H31.5514V29.2491H31.1477ZM31.5514 28.0535H31.9784C32.0819 28.0535 32.1673 28.0225 32.2346 27.9604C32.307 27.8931 32.3433 27.8077 32.3433 27.7042C32.3433 27.5955 32.307 27.5101 32.2346 27.448C32.1621 27.3807 32.0664 27.3471 31.9473 27.3471H31.5514V28.0535Z" fill="#4FEAFF"/>
-      </svg>
-    </a>
-    <span class="header-divider">|</span>
-    <span><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Peer benchmark (GitHub)</a></span>
+  <div class="header-main">
+    <div class="header-brand">
+      <a href="https://www.revelata.com/for-ai-builders" target="_blank" rel="noopener noreferrer" aria-label="Revelata">
+        <svg class="header-logo" width="159" height="34" viewBox="0 0 159 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Revelata Inc">
+          <path d="M42.4412 26.6676V7.28626H48.7539C50.0091 7.28626 51.1166 7.53545 52.0765 8.03382C53.0548 8.5322 53.8116 9.22439 54.3468 10.1104C54.9006 10.9964 55.1775 12.0116 55.1775 13.156C55.1775 14.3005 54.8821 15.3157 54.2915 16.2017C53.7008 17.0877 52.8979 17.7891 51.8826 18.3059C50.8674 18.8043 49.723 19.0535 48.4494 19.0535H44.7946V26.6676H42.4412ZM53.3778 26.6676L48.7263 18.7213L50.5813 17.503L55.9527 26.6676H53.3778ZM44.7946 16.8939H49.0862C49.7876 16.8939 50.4152 16.737 50.969 16.4232C51.5227 16.0909 51.9657 15.6479 52.298 15.0942C52.6487 14.522 52.824 13.8759 52.824 13.156C52.824 12.0485 52.4364 11.1533 51.6611 10.4703C50.9043 9.76891 49.9168 9.4182 48.6986 9.4182H44.7946V16.8939ZM65.1997 26.9999C63.8523 26.9999 62.6617 26.6953 61.628 26.0862C60.5944 25.4586 59.7822 24.6003 59.1915 23.5112C58.6193 22.4222 58.3332 21.167 58.3332 19.7457C58.3332 18.3244 58.6193 17.0692 59.1915 15.9802C59.7822 14.8911 60.5851 14.042 61.6004 13.4329C62.634 12.8053 63.8154 12.4915 65.1444 12.4915C66.4365 12.4915 67.5532 12.8146 68.4946 13.4606C69.436 14.0882 70.1651 14.9742 70.6819 16.1186C71.1987 17.263 71.4572 18.6105 71.4572 20.161H60.0222L60.5759 19.6903C60.5759 20.7978 60.7697 21.7484 61.1574 22.5421C61.5634 23.3359 62.1264 23.945 62.8463 24.3695C63.5662 24.7756 64.3876 24.9787 65.3105 24.9787C66.2888 24.9787 67.1102 24.7479 67.7747 24.2865C68.4577 23.825 68.9837 23.2159 69.3529 22.4591L71.2633 23.4281C70.9126 24.148 70.4419 24.7756 69.8513 25.3109C69.2791 25.8462 68.5961 26.2615 67.8024 26.5569C67.0271 26.8522 66.1596 26.9999 65.1997 26.9999ZM60.7144 18.7489L60.1329 18.3059H69.6851L69.1037 18.7766C69.1037 17.8906 68.9283 17.1246 68.5776 16.4786C68.2269 15.8325 67.7562 15.3341 67.1656 14.9834C66.5749 14.6327 65.8919 14.4574 65.1167 14.4574C64.3599 14.4574 63.64 14.6327 62.957 14.9834C62.2925 15.3341 61.748 15.8325 61.3235 16.4786C60.9174 17.1061 60.7144 17.8629 60.7144 18.7489ZM78.1355 26.6676L83.7838 12.8238H86.1095L80.3228 26.6676H78.1355ZM77.9971 26.6676L72.2103 12.8238H74.5084L80.1567 26.6676H77.9971ZM94.023 26.9999C92.6755 26.9999 91.485 26.6953 90.4513 26.0862C89.4176 25.4586 88.6055 24.6003 88.0148 23.5112C87.4426 22.4222 87.1565 21.167 87.1565 19.7457C87.1565 18.3244 87.4426 17.0692 88.0148 15.9802C88.6055 14.8911 89.4084 14.042 90.4236 13.4329C91.4573 12.8053 92.6386 12.4915 93.9676 12.4915C95.2597 12.4915 96.3765 12.8146 97.3178 13.4606C98.2592 14.0882 98.9883 14.9742 99.5052 16.1186C100.022 17.263 100.28 18.6105 100.28 20.161H88.8454L89.3992 19.6903C89.3992 20.7978 89.593 21.7484 89.9806 22.5421C90.3867 23.3359 90.9497 23.945 91.6696 24.3695C92.3894 24.7756 93.2108 24.9787 94.1338 24.9787C95.1121 24.9787 95.9335 24.7479 96.598 24.2865C97.2809 23.825 97.807 23.2159 98.1762 22.4591L100.087 23.4281C99.7359 24.148 99.2652 24.7756 98.6745 25.3109C98.1023 25.8462 97.4194 26.2615 96.6256 26.5569C95.8504 26.8522 94.9828 26.9999 94.023 26.9999ZM89.5376 18.7489L88.9562 18.3059H98.5084L97.927 18.7766C97.927 17.8906 97.7516 17.1246 97.4009 16.4786C97.0502 15.8325 96.5795 15.3341 95.9888 14.9834C95.3982 14.6327 94.7152 14.4574 93.9399 14.4574C93.1832 14.4574 92.4633 14.6327 91.7803 14.9834C91.1158 15.3341 90.5713 15.8325 90.1467 16.4786C89.7407 17.1061 89.5376 17.8629 89.5376 18.7489ZM103.074 26.6676V7.28626H105.289V26.6676H103.074ZM117.686 26.6676L117.575 24.3972V19.3581C117.575 18.269 117.455 17.3738 117.215 16.6724C116.975 15.9525 116.597 15.408 116.08 15.0388C115.563 14.6696 114.889 14.485 114.058 14.485C113.302 14.485 112.646 14.6419 112.093 14.9557C111.557 15.2511 111.114 15.731 110.764 16.3955L108.77 15.6202C109.121 14.9742 109.545 14.4204 110.044 13.959C110.542 13.4791 111.124 13.1191 111.788 12.8792C112.453 12.6207 113.209 12.4915 114.058 12.4915C115.351 12.4915 116.412 12.75 117.243 13.2668C118.092 13.7652 118.728 14.5127 119.153 15.5095C119.578 16.4878 119.781 17.706 119.762 19.1643L119.734 26.6676H117.686ZM113.532 26.9999C111.908 26.9999 110.634 26.6307 109.712 25.8923C108.807 25.1356 108.355 24.0927 108.355 22.7636C108.355 21.3608 108.816 20.2902 109.739 19.5519C110.681 18.7951 111.991 18.4167 113.671 18.4167H117.63V20.2718H114.169C112.877 20.2718 111.954 20.484 111.4 20.9086C110.865 21.3331 110.598 21.9422 110.598 22.736C110.598 23.4558 110.865 24.028 111.4 24.4526C111.936 24.8587 112.683 25.0617 113.643 25.0617C114.437 25.0617 115.129 24.8956 115.72 24.5633C116.31 24.2126 116.763 23.7235 117.076 23.0959C117.409 22.4499 117.575 21.6931 117.575 20.8255H118.516C118.516 22.7083 118.092 24.2126 117.243 25.3386C116.393 26.4461 115.157 26.9999 113.532 26.9999ZM128.477 26.9999C127.13 26.9999 126.087 26.6491 125.349 25.9477C124.61 25.2463 124.241 24.2588 124.241 22.9851V8.50451H126.456V22.7636C126.456 23.4651 126.641 24.0096 127.01 24.3972C127.397 24.7664 127.933 24.951 128.616 24.951C128.837 24.951 129.049 24.9233 129.252 24.8679C129.474 24.7941 129.76 24.6279 130.111 24.3695L130.969 26.1692C130.489 26.483 130.055 26.6953 129.668 26.806C129.28 26.9352 128.883 26.9999 128.477 26.9999ZM121.832 14.7896V12.8238H130.609V14.7896H121.832ZM142.183 26.6676L142.072 24.3972V19.3581C142.072 18.269 141.952 17.3738 141.712 16.6724C141.472 15.9525 141.094 15.408 140.577 15.0388C140.06 14.6696 139.386 14.485 138.556 14.485C137.799 14.485 137.143 14.6419 136.59 14.9557C136.054 15.2511 135.611 15.731 135.261 16.3955L133.267 15.6202C133.618 14.9742 134.042 14.4204 134.541 13.959C135.039 13.4791 135.621 13.1191 136.285 12.8792C136.95 12.6207 137.706 12.4915 138.556 12.4915C139.848 12.4915 140.909 12.75 141.74 13.2668C142.589 13.7652 143.226 14.5127 143.65 15.5095C144.075 16.4878 144.278 17.706 144.259 19.1643L144.232 26.6676H142.183ZM138.029 26.9999C136.405 26.9999 135.132 26.6307 134.209 25.8923C133.304 25.1356 132.852 24.0927 132.852 22.7636C132.852 21.3608 133.313 20.2902 134.236 19.5519C135.178 18.7951 136.488 18.4167 138.168 18.4167H142.127V20.2718H138.666C137.374 20.2718 136.451 20.484 135.898 20.9086C135.362 21.3331 135.095 21.9422 135.095 22.736C135.095 23.4558 135.362 24.028 135.898 24.4526C136.433 24.8587 137.18 25.0617 138.14 25.0617C138.934 25.0617 139.626 24.8956 140.217 24.5633C140.807 24.2126 141.26 23.7235 141.573 23.0959C141.906 22.4499 142.072 21.6931 142.072 20.8255H143.013C143.013 22.7083 142.589 24.2126 141.74 25.3386C140.891 26.4461 139.654 26.9999 138.029 26.9999Z" fill="#ffffff"/>
+          <path d="M146.357 28.6888V26.6676H157.432V28.6888H146.357Z" fill="#4FEAFF"/>
+          <path d="M5.08739 7.94839L16.9844 2.21909L28.8814 7.94839L31.8197 20.822L23.5868 31.1459H10.3821L2.14907 20.822L5.08739 7.94839Z" stroke="#4FEAFF" stroke-width="1.78606"/>
+          <path d="M7.16529 15.9562L12.0207 8.8345L20.616 8.19038L26.4787 14.5088L25.194 23.0319L17.7294 27.3416L9.70589 24.1926L7.16529 15.9562Z" stroke="#4FEAFF" stroke-width="1.78606"/>
+          <path d="M13.3317 14.5225L16.9857 12.7628L20.6398 14.5225L21.5423 18.4765L19.0136 21.6474H14.9579L12.4292 18.4765L13.3317 14.5225Z" stroke="#4FEAFF" stroke-width="1.78606"/>
+          <path d="M31.9318 30.2429C31.6471 30.2429 31.3754 30.1885 31.1166 30.0798C30.863 29.9711 30.6405 29.821 30.449 29.6295C30.2575 29.438 30.1074 29.2155 29.9987 28.9619C29.89 28.7031 29.8356 28.4314 29.8356 28.1467C29.8356 27.8517 29.89 27.5774 29.9987 27.3238C30.1074 27.0702 30.2575 26.8476 30.449 26.6561C30.6405 26.4646 30.863 26.3145 31.1166 26.2058C31.3754 26.0971 31.6471 26.0428 31.9318 26.0428C32.2268 26.0428 32.5011 26.0971 32.7547 26.2058C33.0084 26.3145 33.2309 26.4646 33.4224 26.6561C33.6139 26.8476 33.764 27.0702 33.8727 27.3238C33.9814 27.5774 34.0357 27.8517 34.0357 28.1467C34.0357 28.4314 33.9814 28.7031 33.8727 28.9619C33.764 29.2155 33.6139 29.438 33.4224 29.6295C33.2309 29.821 33.0084 29.9711 32.7547 30.0798C32.5011 30.1885 32.2268 30.2429 31.9318 30.2429ZM31.9318 29.8081C32.2579 29.8081 32.5451 29.7382 32.7936 29.5985C33.042 29.4587 33.2361 29.2647 33.3758 29.0162C33.5156 28.7626 33.5854 28.4728 33.5854 28.1467C33.5854 27.8155 33.5156 27.5256 33.3758 27.2772C33.2361 27.0287 33.042 26.8347 32.7936 26.6949C32.5451 26.55 32.2579 26.4775 31.9318 26.4775C31.6109 26.4775 31.3262 26.55 31.0778 26.6949C30.8294 26.8347 30.6353 27.0287 30.4955 27.2772C30.3558 27.5256 30.2859 27.8155 30.2859 28.1467C30.2859 28.4728 30.3558 28.7626 30.4955 29.0162C30.6353 29.2647 30.8294 29.4587 31.0778 29.5985C31.3262 29.7382 31.6109 29.8081 31.9318 29.8081ZM31.1477 29.2491V26.9822H31.9629C32.1958 26.9822 32.3873 27.0494 32.5374 27.184C32.6875 27.3134 32.7625 27.4868 32.7625 27.7042C32.7625 27.8491 32.7211 27.9785 32.6383 28.0924C32.5607 28.2062 32.4546 28.2916 32.32 28.3486L32.8557 29.2491H32.3976L31.9318 28.4262H31.5514V29.2491H31.1477ZM31.5514 28.0535H31.9784C32.0819 28.0535 32.1673 28.0225 32.2346 27.9604C32.307 27.8931 32.3433 27.8077 32.3433 27.7042C32.3433 27.5955 32.307 27.5101 32.2346 27.448C32.1621 27.3807 32.0664 27.3471 31.9473 27.3471H31.5514V28.0535Z" fill="#4FEAFF"/>
+        </svg>
+      </a>
+      <span class="header-product">deepKPI &middot; Benchmark Analysis</span>
+      <span class="header-divider">|</span>
+      <span class="header-github"><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Peer benchmark (GitHub)</a></span>
+    </div>
+    <h1><span class="ticker">[TICKER]</span> &mdash; [Company Name]</h1>
+    <div class="header-meta">
+      <span><span class="meta-dot"></span>[Sector / business description]</span>
+      <span>FY [date]</span>
+      <span>CIK [##########]</span>
+      <span>[N] benchmarks &middot; [M] segment groups</span>
+    </div>
   </div>
-  <h1>[TICKER] &mdash; [Company Name]</h1>
-  <p class="subtitle">
-    [Sector] &middot; FY [date] &middot; CIK [##########] &middot; [N] benchmarks &middot; [M] segment groups
-  </p>
-
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#fff"></div> Target</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Strong match</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div> Partial match</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Segment sub-benchmark</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#fff;border:1px solid var(--border)"></div> Target</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--green-mid)"></div> Strong match</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--yellow-mid)"></div> Partial match</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--purple-dim)"></div> Segment sub-benchmark</div>
   </div>
 </div>
 
@@ -162,11 +240,12 @@ body {
 ## Document structure
 
 ```
-HEADER (.header — same chrome as Analysis Pressure Test)
-  .header-brand: <a for-ai-builders> wrapping inlined SVG wordmark | "Peer benchmark (GitHub)" link
-  h1: [TICKER] — [Company Name]
-  p.subtitle: sector · FY date · CIK · N benchmarks · N segment groups
-  .legend (inside .header): color swatches (target / strong / partial / segment)
+HEADER (.header — flex row; same links and SVG as Analysis Pressure Test)
+  .header-main (left):
+    .header-brand: <a for-ai-builders> + inlined SVG | "deepKPI · Benchmark Analysis" | Peer benchmark (GitHub)
+    h1: <span class="ticker">[TICKER]</span> — [Company Name]
+    .header-meta: sector (with .meta-dot) · FY · CIK · benchmark / segment counts
+  .legend (right): .legend-swatch squares (target / strong / partial / segment)
 
 FINGERPRINT × COVERAGE GRID   ← hero element
   (first content after .header closes — no extra title bar above the grid)
@@ -595,8 +674,9 @@ block matches the pressure-test template **word for word**.
    with the best coverage. The benchmark columns for sparse segments will naturally show `—`, which
    is informative. Never arbitrarily cap the fingerprint at N dimensions or expose only the segments
    with the best benchmark matches.
-10. **Page canvas**: use the **Page shell** `body` rules (`padding: 2.5rem`, `max-width: 900px`) so the
-    header matches Analysis Pressure Test reports. For denser benchmark blocks below the header,
+10. **Page canvas**: use the **Page shell** `body` rules (`padding: 2.5rem`, `max-width: 900px`) and
+    the flex `.header` (main block + right-aligned `.legend`) so chrome matches the template. For
+    denser benchmark blocks below the header,
     optional inner wrappers may use tighter padding; section label margins `1.5rem 0 0.4rem`; tab
     panels `0.7rem 0.9rem`; benchmark card data `0.45rem 0.7rem`.
 11. **Footer + closing CTA + disclosures**: Always append the `.footer`, `.closing-cta`, and
