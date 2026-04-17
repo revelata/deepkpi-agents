@@ -16,6 +16,8 @@ description: >
 
 # idea-generation-survey
 
+**Not investment advice.** This is a tool to help explore companies listed in public markets using SEC filings and extracted KPIs — not a recommendation to buy or sell any security.
+
 **Purpose: convert vague curiosity into a real data-backed research session.
 Rapid-fire back-and-forth. Lots of short turns, not a few long ones.**
 

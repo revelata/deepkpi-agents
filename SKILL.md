@@ -68,7 +68,7 @@ may apply to a single request — load all that are relevant.
 
 | User need | File to read |
 |-----------|--------------|
-| No specific company or thesis — "what should I invest in?", **new ideas**, **interesting companies**, boredom / open exploration | `idea-generation-survey/idea-generation-survey.md` — interactive funnel + `company_summary_search` screen; then `retrieve-kpi-data` for deep pulls |
+| No specific company or thesis — "what should I invest in?", "what stock should I buy?", **new ideas**, **interesting companies**, boredom / open exploration | `idea-generation-survey/idea-generation-survey.md` — interactive funnel + `company_summary_search` screen; then `retrieve-kpi-data` for deep pulls |
 | Pull historical KPIs / financials from deepKPI | `retrieve-kpi-data/retrieve-kpi-data.md` |
 | **What a company does**, **segments / geographies**, or **thematic** “who does X?” lists | `company-summary-segments/company-summary-segments.md` — named company: `get_company_summary` / `get_company_segments`; discovery: `company_summary_search` then hydrate as needed |
 | Pull **full filing markdown** into chat, **verbatim SEC text**, quotes, MD&A / risk-factor language, or “what did they say” | `retrieve-sec-filing/retrieve-sec-filing.md` — **before any web/SEC.gov**: `list_sec_filing_markdowns` (free) → `get_sec_filing_markdown` (10 credits). Return full markdown when they want the document; blockquoted excerpts for quote-style asks; no paraphrase as quotes |
