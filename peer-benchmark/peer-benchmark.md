@@ -1,20 +1,13 @@
 ---
 name: peer-benchmark
 description: >
-  Find benchmark companies for any US public company using deepKPI's semantic search across
-  the company universe. Produces three outputs: a tight in-chat 1-pager, an Excel KPI workbook,
-  and a Revelata-branded HTML report. The core workflow is: (1) build a KPI-enriched fingerprint
-  of the target from SEC data, (2) find and KPI-align whole-company benchmark candidates,
-  (3) diff the aligned fingerprints to identify segments or operational quirks that no whole-company
-  benchmark covers, then iterate to find segment-specific sub-benchmarks for those gaps,
-  (4) produce outputs. Prioritize **same-vertical** comps before reaching outside the sector.
-  Use whenever the user asks to compare a company to peers, find comps,
-  benchmark a company or division, find the most similar companies, build a comp set,
-  find peers for valuation, identify similar businesses, triangulate segment economics, or asks
-  "what companies are like X?" or "what's the best comp for Y?" The word "benchmarking" is used
-  instead of financial "comps" (price multiples) where that ambiguity matters. Also use when the
-  user wants to understand a specific segment of a large company by finding standalone public
-  companies that resemble that segment.
+  Operational peer / comp discovery for US public companies via deepKPI semantic search—not
+  valuation multiples. Build KPI fingerprint from SEC data; company_summary_search (same-vertical
+  first); align KPIs; diff gaps → segment sub-benchmarks. Outputs: tight chat 1-pager, optional
+  Revelata HTML, optional Excel. Use when comparing to peers, finding comps or most-similar
+  companies, benchmarking, comp sets, valuation peers, thematic "what's like X?", or segment
+  pure-plays. Exclude unrelated verticals (e.g. gym vs car wash) except clear segment-to-segment,
+  same customer + same need.
 ---
 
 # peer-benchmark

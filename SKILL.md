@@ -1,19 +1,14 @@
 ---
 name: revelata-deepkpi
 description: >
-  Financial and operational KPI research for US public companies using Revelata deepKPI.
-  Pulls SEC filing metrics (10-K, 10-Q, 8-K): revenue by segment, unit KPIs (stores,
-  comps, ARPU, users), statements, cash flow. Full SEC filing markdown in chat and verbatim quotes
-  (MD&A, risk factors, "what did they say") via retrieve-sec-filing.
-  Derived metrics (implied Q4, segment remainders, per-unit), seasonality-driven
-  quarterly splits, Excel workbook export. Use for operational data, "pull data for",
-  "get historicals", "find the KPI", "what does deepKPI have on", seasonality,
-  derived metrics, .xlsx models, or filing excerpts when explicitly requested.
-  Pressure-test sell-side analyst reports vs SEC data (HTML report) — read
-  analyst-report-pressure-test. Compare to peers, find comps, benchmark, or most-similar companies —
-  peer-benchmark. Open-ended idea discovery ("what should I invest in?", new ideas, interesting companies) —
-  idea-generation-survey. What a company does, segment/geography breakdowns, and thematic company discovery —
-  company-summary-segments (get_company_summary, get_company_segments, company_summary_search).
+  Financial and operational KPI research for US public companies using Revelata deepKPI. Pulls
+  SEC metrics (10-K/10-Q/8-K): segments, unit KPIs (stores, comps, ARPU, users), statements, cash
+  flow; filing markdown and verbatim quotes via retrieve-sec-filing; implied Q4/per-unit, seasonality,
+  Excel. For "pull data", historicals, "find the KPI", seasonality, .xlsx, filing excerpts. Also:
+  analyst-report-pressure-test (analyst PDF vs SEC HTML); peer-benchmark (peers, comps, benchmark,
+  similar companies—operating, vertical-first); idea-generation-survey ("what should I invest in?",
+  new ideas, interesting companies—no ticker); company-summary-segments (what cos do, segments,
+  thematic discovery). OpenClaw: deepkpi-api.
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
