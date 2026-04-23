@@ -153,6 +153,11 @@ For each candidate: call `list_kpis` (free), then `search_kpis` for the target's
 metrics (from Step 1C). This produces aligned rows — the target's metrics sitting next to each
 candidate's equivalent metrics.
 
+**Recency rule (do this from the start):** when the user’s question is about “current” / “latest”
+comparability, prefer the **most recent quarterly periods** available (10‑Q-derived) for each KPI
+over stopping at the last 10‑K annual figure. Use annual series for long-cycle context, but do not
+ship a benchmark set that effectively says “data is old” if newer 10‑Q periods exist for the KPI.
+
 The alignment reveals two things:
 1. How close each candidate is on the dimensions that matter (similar range = structurally comparable)
 2. Where candidates have no data or wildly different values (poor fit on that dimension)
@@ -260,12 +265,12 @@ Segments: [Segment A] XX% rev | [Segment B] XX% rev
 | Ticker | Maps to | Similar on | Different on | Scale vs [TARGET] |
 |--------|---------|------------|--------------|-------------------|
 
-## KPI alignment — FY[YEAR]
+## KPI alignment — latest available period(s)
 
 | Company | [metric1] | [metric2] | [metric3] | [segment metric] | Period |
 |---------|-----------|-----------|-----------|-----------------|--------|
-| [TARGET] | [val](pvid-url) | [val](pvid-url) | [val](pvid-url) | [val](pvid-url) | FY... |
-| BENCH1   | [val](pvid-url) | [val](pvid-url) | — | — | FY... |
+| [TARGET] | [val](pvid-url) | [val](pvid-url) | [val](pvid-url) | [val](pvid-url) | FY... or FY..-Q.. |
+| BENCH1   | [val](pvid-url) | [val](pvid-url) | — | — | FY... or FY..-Q.. |
 
 Column headers are plain text. Only the value cells carry hyperlinks.
 Estimates/derived values: `~$X est.` with no link.
@@ -292,6 +297,8 @@ Read `references/html-template.md`. Key structure:
   segment-mapped names. Tier-colored top border, similar/different columns,
   key KPI values hyperlinked. Segment sub-benchmarks use purple border + "Segment:" badge.
 - **KPI trends over time (charts + alignment table)**: This section is where deepKPI’s edge shows up—**filing-resolved time series** most vendors do not reconstruct at this depth. For the **2–3 most important** signature KPIs, pull **multi-period** values for the target **and every benchmark** (prefer quarterly where coverage is solid; otherwise annual—follow `retrieve-kpi-data` for period selection, scaling, and provenance). Render **Chart.js line charts** (not single-period grouped bars): **x-axis = time** (ordered FY/FQ labels), **one line per company** so the reader compares **trajectory, inflection, and pace** across competitors on the **same** metric. Put the full **KPI alignment** table (with hyperlinked values) **below** the charts as today. If a KPI truly has fewer than three comparable periods across the set, you may show a sparse line chart **or** a one-line caption pointing readers to the table—do not imply a cross-sectional bar is equivalent to the time-series view.
+- **Chronology QA for every time-series chart (mandatory)**: Ensure the plotted points are in **chronological order** for every company series and the x-axis labels are in **ascending time**. **Do not rely on input order.** Sort by a real time key (prefer **period end date**; otherwise parse FY/FQ labels into a comparable key) before passing points to Chart.js. A zig-zagging line is almost always an ordering bug.
+- **Y-axis QA for every time-series chart (mandatory)**: **Double-check** each chart’s **Y scale** before shipping HTML. The visible **min/max domain must include every non-null plotted point** across **all** series (target + benchmarks). **Do not** set fixed `min`/`max`, `suggestedMin`/`suggestedMax`, or `beginAtZero` unless those bounds are **recomputed from the union** of all series values—wrong bounds **clip lines off-canvas** so they look missing. Prefer automatic scaling plus **padding** (e.g. Chart.js `scales.y.grace` as a %) so tight clusters stay visible. For **log** scales, omit non-positive points or avoid log if that would drop the series; confirm lines still render. **Mentally verify each tab**: any ticker with data must show a **visible** polyline or points—not a legend entry with no trace.
 - **Diff insight box** (cyan glow, same as synthesis in pressure test): 2 paragraphs on what
   the benchmark set reveals that whole-company analysis would miss.
 - **Notes** and **Sources** footer.
@@ -320,6 +327,8 @@ Annual periods as columns; green cells for target values; clickable provenance l
 - **Treating all segments equally**: Not every segment warrants a sub-benchmark search.
   Focus on segments where: (a) the parent discloses separate KPIs, and (b) the KPIs are foreign
   to the whole-company benchmark set.
+- **Time series plotted out of order**: If any chart line zig-zags “backward,” the points are not time-sorted. Sort each series by **period end date** (or FY/FQ key) before charting, and make sure the shared x-axis label list is in ascending order too.
+- **Y-axis clips time series in HTML**: Hard-coded or guessed Y bounds, or `beginAtZero` used without checking the data band, often **hides entire lines** outside the drawable range. Always derive bounds from **all** series (or use defaults + `grace`) and re-check before delivery.
 - **Too much prose in chat**: The 1-pager is a reference artifact. Cut until it hurts.
 - **Skipping list_kpis**: Free call that prevents wasted credits on metrics that don't exist.
 - **Unrelated verticals as comps**: A gym and a car wash are not whole-company benchmarks for

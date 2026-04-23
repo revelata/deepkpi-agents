@@ -16,7 +16,8 @@ description: >
 
 # idea-generation-survey
 
-**Not investment advice.** This is a tool to help explore companies listed in public markets using SEC filings and extracted KPIs — not a recommendation to buy or sell any security.
+**General Disclosure:** The information provided is for informational purposes only and is not intended to constitute financial advice or a recommendation to buy, sell, or hold any securities.  
+We are not a licensed financial advisor, broker, or dealer, and this tool is not intended to provide investment, legal, accounting, or tax advice.
 
 **Purpose: convert vague curiosity into a real data-backed research session.
 Rapid-fire back-and-forth. Lots of short turns, not a few long ones.**
@@ -38,6 +39,12 @@ For diagnostic KPI *concepts* by sector when choosing what to pull, see `referen
 high-tempo dialogue — many short exchanges — not a few monologues. Don't
 front-load; let information come out over multiple turns as the user
 reacts.
+
+- **Mandatory opener (always).** The **first line of your first message** must be:  
+  **"General Disclosure: The information provided is for informational purposes only and is not intended to constitute financial advice or a recommendation to buy, sell, or hold any securities."**  
+  The **second line** must be:  
+  **"We are not a licensed financial advisor, broker, or dealer, and this tool is not intended to provide investment, legal, accounting, or tax advice."**  
+  Then continue into the interview. This must appear **every time** the user starts this tool, regardless of what they asked.
 
 - **One thing per turn.** One question, or one compact data block, or one
   observation. Not three.

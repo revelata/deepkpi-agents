@@ -126,7 +126,9 @@ column grouping, and no redundant Source rows.
 extract 4–6 claims, pull granular deepKPI metrics per claim, build paired
 "supports" / "complicates" evidence with mandatory provenance hyperlinks, and
 emit a Revelata-branded interactive HTML report (`references/html-template.md`,
-`references/chart-patterns.md`). **Always** read `retrieve-kpi-data` for KPI
+`references/chart-patterns.md`). After the draft HTML exists, run the mandatory internal
+**draft HTML QA** rubric in `analyst-report-pressure-test/pressure-test-double-check.md`,
+then revise and re-check as needed before presenting the file. **Always** read `retrieve-kpi-data` for KPI
 mechanics; use `retrieve-sec-filing` when the test needs verbatim filing
 passages; use `company-summary-segments` for business description / segment structure /
 thematic lists when useful; use `derive-implied-metric` when filling Q4 or segment gaps.

@@ -76,6 +76,19 @@ This applies to both data pulls and analysis. When writing analysis, build
 the narrative from the unit economics up — don't start with "revenue grew X%"
 when you have store count, traffic, and ticket data to explain why.
 
+## Recency principle — never settle for avoidably stale data
+
+If deepKPI has quarterly coverage (10‑Q-derived periods) that is more recent than the
+last annual 10‑K figure for the same KPI, **use the quarterly data** when the user’s
+question is about “current”, “latest”, “recent”, or near-term dynamics.
+
+- Do **not** write (or imply) “our data is a little old” if a more recent 10‑Q period
+  exists for the KPI in question.
+- Use annual (10‑K) series for **long-cycle** context, not as an excuse to stop early
+  on recency.
+- If quarterly data is genuinely unavailable for a KPI, say so plainly and use the
+  freshest available period; do not shrug or hand-wave.
+
 ## Retrieval workflow
 
 ### 1. Resolve company ID
@@ -295,6 +308,9 @@ CSV notes). Use the **xlsx** skill to implement it. Do not duplicate those rules
 - **Skipping list_kpis**: it's free and consistently guides better, cheaper searches.
 - **Querying too broadly**: "revenue" returns weak matches; use segment-specific terms.
 - **Leading with top-line when granular data exists**: always check for unit-level and segment KPIs first; only use consolidated totals when detail is unavailable. Showing same-store sales + traffic + ticket is more valuable than consolidated revenue alone.
+- **Apologizing for stale 10‑K data when a newer 10‑Q exists**: if the KPI has a more
+  recent quarterly period available, use it. Reserve annual-only caveats for cases
+  where quarterlies truly aren’t present in deepKPI.
 - **Mixing period types silently**: always label each value as annual or quarterly.
 - **Balance sheet items as flows**: receivables at Dec 31 IS Q4 — don't subtract.
 - **Hallucinating a URL**: if you don't have the exact URL, say so; never construct one.

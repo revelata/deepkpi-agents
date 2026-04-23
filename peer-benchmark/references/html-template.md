@@ -268,6 +268,11 @@ KPI TRENDS OVER TIME
     Tab panels: one canvas per tab, Chart.js **line** chart (`type: 'line'`)
     X-axis: ordered reporting periods (FY… and/or FQ…), aligned across tickers where data exists
     Y-axis: KPI value (unit in tab label or chart subtitle); **log scale** when ranges are extreme (e.g. energy GWh)
+    Y-axis QA (mandatory): **Double-check** the Y domain **includes every plotted value** for **every**
+      series. Wrong `min`/`max`, `suggestedMin`/`suggestedMax`, or `beginAtZero` **clips** lines so they
+      vanish—derive bounds from the **union** of all series or rely on Chart.js auto scales plus **padding**
+      (`scales.y.grace`, e.g. 5–15%). Log scale: drop or skip non-positive values; confirm remaining lines render.
+      If any legend entry has data but **no visible line**, treat it as a **blocking bug** and fix the axis.
     Datasets: **one line per company** (target + each benchmark). Line / point colors match ticker tier colors
       (same palette as the fingerprint grid — see **Chart color conventions**)
     DRI target segments: separate **lines** (e.g. dashed vs solid) within the target white/gray palette,
@@ -635,6 +640,8 @@ block matches the pressure-test template **word for word**.
 // Line charts (KPI trends over time): use borderColor (+ borderWidth ~2) for each series;
 // pointBackgroundColor / pointBorderColor match the same tier; fill: false (or a very light
 // under-fill for the target line only—keep competitor lines unfilled for readability).
+// Y scale: never hard-code min/max without verifying against ALL series; use grace/padding so
+// lines are not clipped (invisible lines = invalid chart).
 // Target: rgba(255,255,255,0.85) / rgba(255,255,255,1)
 // Strong match: rgba(34,197,94,0.9) / rgba(34,197,94,1)
 // Partial match: rgba(234,179,8,0.85) / rgba(234,179,8,1)
@@ -683,3 +690,6 @@ block matches the pressure-test template **word for word**.
 15. **Header brand row.** In `.header-brand`, use only: inlined Revelata SVG (link to for-ai-builders),
     pipe divider, and **Benchmark Analysis (GitHub)**. Do not add a separate "deepKPI" product label
     in that row unless product marketing explicitly requests it.
+16. **Time-series Y-axis must show the data.** Every KPI-over-time chart: verify the Y scale’s range
+    **contains all non-null points** for every dataset; add vertical padding (`grace`) when values cluster.
+    Do not ship charts where lines disappear because the axis was restricted—recompute or remove bad bounds.

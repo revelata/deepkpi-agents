@@ -42,8 +42,12 @@ Keep the **conversation** thin; put the depth in the **HTML report**.
 - **Automatically build and save the HTML report** when pulls and drafting are
   complete. Do **not** ask whether to generate the file unless the user explicitly
   asked for a non-HTML deliverable only.
-- After the file exists: **present** it (`present_files` or equivalent) and add
-  **1–2 sentences** on the sharpest takeaway — no full recap.
+- **Before presenting the HTML**, run the **pressure-test double-check** pass
+  (see below). In chat, a single line is enough, e.g. `Running pressure-test QA on the draft HTML…`
+- After the artifact is **double-checked** and any **Critical** issues are
+  addressed (or explicitly accepted by you as the authoring agent): **present**
+  the file (`present_files` or equivalent) and add **1–2 sentences** on the
+  sharpest takeaway — no full recap.
 
 ## High-level workflow
 
@@ -57,7 +61,11 @@ Keep the **conversation** thin; put the depth in the **HTML report**.
    take the analyst didn't give you
 6. **Generate the HTML** — an interactive, dark-themed report with Chart.js charts,
    source attribution, and provenance links (**default deliverable — produce it without asking**)
-7. **Deliver** — save to the workspace and present to the user (**short wrap-up only**)
+7. **Double-check the draft HTML** — mandatory QA pass before the user sees the file;
+   structured review only (see **Step 7**)
+8. **Revise and iterate** — you decide which findings to fix; re-run the double-check
+   after material edits until **Overall: Pass** or remaining issues are only **Suggested** / **Optional**
+9. **Deliver** — present the final HTML to the user (**short wrap-up only**)
 
 Each of these steps is detailed below. Follow **Chat pacing and verbosity** for what to say in-thread vs. what belongs only in the HTML.
 
@@ -73,6 +81,9 @@ must be checked against exact filing language. Use
 **segment structure**, or **thematic** lists when helpful (not required for every run).
 This skill
 handles the analytical framework and HTML output.
+
+For the mandatory QA rubric on the finished HTML, read **`pressure-test-double-check.md`**
+in this same folder (internal to this skill — not a separate user-facing skill).
 
 ## Scope
 
@@ -132,6 +143,33 @@ The report structure includes:
 - Header link label: **\"Analysis Pressure Test (GitHub)\"**
 - Title: \"[Company] ([Ticker]): Pressure-Testing the [Firm] [Action]\"
 
+## Step 7: Double-check the draft HTML (mandatory)
+
+After the draft HTML file is written (saved path known), you **must** run the
+**pressure-test double-check** before `present_files` / showing it to the user.
+
+1. **Read** `pressure-test-double-check.md` in this folder (`analyst-report-pressure-test/`).
+2. **Execute the procedure** in that document against the draft HTML:
+   - If your host can invoke a **separate reviewer agent**, give it that doc plus
+     the HTML path (and the analyst PDF path when available) and collect its output.
+   - Otherwise, **perform the same pass yourself** in a distinct step: read the HTML
+     end-to-end, build the claim graph, run rules **R1–R12**, and emit the **exact
+     output format** specified there (structured review — **do not rewrite** the
+     HTML inside the double-check output).
+3. Pass the **source PDF path** into the double-check whenever you still have it;
+   otherwise R1 and R8 must appear under **`Not checked`** in the review.
+
+**You** (the authoring agent) **own revisions**: use the review's severity-ranked
+findings to patch the HTML. Typical loop:
+
+- Fix all **Critical** before delivery. **Fail** overall → treat as blocking until
+  addressed or the user explicitly waives QA (only if they say so).
+- **Needs Revision** → fix Critical, then re-run Step 7 on the updated file.
+- **Pass** with only **Suggested** / **Optional** → you may still polish, then deliver.
+
+Re-running Step 7 after substantive edits is **recommended** so regressions do not
+ship.
+
 ---
 
 ## Reference files
@@ -140,4 +178,5 @@ The report structure includes:
 |------|-------------|
 | `references/html-template.md` | Always — contains the full HTML/CSS/JS template |
 | `references/chart-patterns.md` | When building charts — palette, dash patterns, examples |
+| `pressure-test-double-check.md` | **Always after draft HTML exists** — mandatory internal QA rubric and output format |
 

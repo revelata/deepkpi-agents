@@ -29,6 +29,7 @@ package:
 		if [ ! -d "$$d" ]; then echo "Missing folder: $$d"; exit 1; fi; \
 		cp -R "$$d" "dist/$(FOLDER)/"; \
 	done
+	@rm -f "$(ZIP_NAME)"
 	@(cd dist && zip -r "../$(ZIP_NAME)" "$(FOLDER)/" >/dev/null)
 	@echo "Wrote $(ZIP_NAME)"
 
