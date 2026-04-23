@@ -1,35 +1,64 @@
-# deepKPI MCP — documentation
+# Revelata deepKPI MCP Server — Documentation
 
-Support and troubleshooting for **Claude Desktop**, **Claude.ai**, and similar clients that use Revelata’s **remote MCP server** (Streamable HTTP).
+Fundamental data, including operating KPIs, you can't even find on Bloomberg — pre-structured, fully cited, and agent-ready.
 
-**OpenClaw** does not use this MCP URL for deepKPI — it uses the **REST API** and **`DEEPKPI_API_KEY`**. See [`deepkpi-api/deepkpi-api.md`](./deepkpi-api/deepkpi-api.md). Hosted API docs: [deepkpi-api.revelata.com/docs](https://deepkpi-api.revelata.com/docs).
+## Deep fundamental data for financial AI, delivered over MCP
+
+Fundamental data that actually drives analysis — comparable sales, ARPU, unit counts, backlog, segment-level revenue, management guidance, non-GAAP breakouts — lives in the text, tables, and charts of SEC filings.  Revelata's deepKPI surfaces and pre-structures exactly that information into KPI time series, with sentence-level citations for every data point, so you and your agent can trust the numbers. 
+
+We pair this with the underlying textual context and commentary, so your AI agents become analysts you can finally trust.
+
+### What you get:
+- **3.3M company-specific KPI time series** across US public companies (S&P 500, 400, 600), structured as queryable time series with 10+ years of history and daily updates
+- **Natural-language KPI discovery and semantic search** — ask "Olive Garden foot traffic" or "AI capex guidance" and find the right metric without knowing the filing's exact wording
+- **SEC filings (10-K, 10-Q, 8-K) converted to markdown** with tables, charts, and structure preserved — retrievable in full so your agent can quote management verbatim
+- **Thematic company discovery** — semantic search across 10-K-derived summaries to surface companies by what they actually do, not just by SIC code
+- **Company summaries and segment breakdowns** on demand, derived from each company's latest 10-K
+
+### Built for agents that need to be right. 
+We provide trusted context for your financial AI agents.  Every returned KPI data point carries its unit, scale, period, and a link to the exact source sentence. Every filing retrieval returns verbatim markdown, so agents don't paraphrase material facts. 
+
+### Agent skills also available
+Open source agentic skills that teach agents how to use these tools for common workflows — seasonality analysis, implied metric derivation, analyst report pressure-testing, benchmarking, and more — can be found at [GitHub](https://github.com/revelata/deepkpi-agents).  
+
+### Free to try. 
+100 free credits/month per user. Lookups and filing listings are always free; extraction and search calls are priced per result. International coverage (Japan, China, Hong Kong, and Singapore) available to enterprise clients.
 
 ---
 
-## Basic setup (Claude)
+## Setup Instructions
 
-1. **Create a free Revelata account** — [Sign up](https://www.revelata.com/signup?product_id=0). 
+First, **create a free Revelata account** — [Sign up](https://www.revelata.com/signup?product_id=0). 
 
-3. **Copy the following MCP server URL** 
+Then, follow the instructions below to use the server with **Claude Desktop**, **Claude.ai**, and similar clients.
+
+**Note:** OpenClaw does not use our MCP server; it uses the **REST API** and **`DEEPKPI_API_KEY`**. See [`deepkpi-api/deepkpi-api.md`](./deepkpi-api/deepkpi-api.md). Hosted API docs: [deepkpi-api.revelata.com/docs](https://deepkpi-api.revelata.com/docs).
+
+---
+
+### Basic setup (Claude)
+
+
+1. **Copy the following MCP server URL** 
 ```https://deepkpi-mcp.revelata.com/mcp```
 
-4. **Allow required capabilities** — In Claude, enable **Code execution and file creation** by navigating to **Settings → Capabilities** on Claude.ai. For other clients, consult your documentation for connecting to MCP servers. 
+2. **Allow required capabilities** — In Claude, enable **Code execution and file creation** by navigating to **Settings → Capabilities** on Claude.ai. For other clients, consult your documentation for connecting to MCP servers. 
 
-5. **Add a custom connector** —  
+3. **Add a custom connector** —  
    **Claude Desktop:** **Settings → Connectors → Add custom connector**.  
    **Claude.ai (web):** Use **Settings → Customize**.
 
-6. **Configure the connector** — Enter **Revelata deepKPI** under name and paste the **server URL** from step 3 exactly as copied. Click connect. 
+4. **Configure the connector** — Enter **Revelata deepKPI** under name and paste the **server URL** from step 3 exactly as copied. Click 'Add'. 
 
-7. **Complete OAuth** — Begin a chat or task. When prompted to authenticate, sign in with your Revelata account in the browser. 
+5. **Complete OAuth** — Begin a chat or task. When prompted to authenticate, sign in with your Revelata account in the browser. 
 
-8. **Begin using deepKPI data in your analyses!**
+6. **Begin using deepKPI data in your analyses!**
 
 ---
 
 ## MCP tools
 
-The server exposes eight tools:
+The server exposes the following tools:
 
 ### `query_company_id`
 
@@ -119,7 +148,8 @@ Fetches the markdown content for a specific SEC filing.
 
 ---
 
-## Authentication issues
+## Troubleshooting
+### Authentication issues
 
 | Symptom | What to try |
 |---------|-------------|
@@ -128,7 +158,7 @@ Fetches the markdown content for a specific SEC filing.
 
 ---
 
-## Network and TLS
+### Network and TLS
 
 - Use **HTTPS** only for the MCP endpoint.
 - Allow outbound **HTTPS** to your MCP host; some corporate networks interfere with long-lived streaming — try another network to test.
@@ -136,7 +166,7 @@ Fetches the markdown content for a specific SEC filing.
 
 ---
 
-## Tools don’t appear
+### Tools don’t appear
 
 1. **Restart** Claude after changing the connector.
 2. **Re-add** the connector and complete OAuth again.
@@ -144,7 +174,7 @@ Fetches the markdown content for a specific SEC filing.
 
 ---
 
-## OpenClaw vs MCP
+### OpenClaw vs MCP
 
 | Runtime | How you use deepKPI |
 |--------|----------------------|
@@ -155,7 +185,7 @@ Do not paste the MCP URL into OpenClaw as a substitute for the REST skill flow.
 
 ---
 
-## Skill bundle (this repo)
+## Get the Agentic Skills bundle, too
 
 Agent instructions and OpenClaw install:
 
