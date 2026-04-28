@@ -374,30 +374,16 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
 </div>
 
 <!-- ===== CLOSING CTA ===== -->
-<!-- Plain on page background (no box). Headline link in Figtree/cyan. Two
-     parallel install paths for Claude and OpenClaw. -->
+<!-- Plain on page background (no box). Keep this CTA minimal: link out to GitHub
+     for installation and setup (do not embed shell commands here). -->
 <div class="closing-cta">
-  <p class="cta-setup-label"><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Run this on any report with your agent:</a></p>
-
-  <div class="cta-paths">
-    <div class="cta-path">
-      <div class="cta-path-label">For Claude</div>
-      <ol>
-        <li>Claude Settings → Connectors → Add Custom Connector: <code>https://deepkpi-mcp.revelata.com/mcp</code></li>
-        <li>Install Revelata deepKPI agents: <code>curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash</code></li>
-        <li>Upload an analyst report and ask Claude to "Pressure test this report."</li>
-      </ol>
-    </div>
-
-    <div class="cta-path">
-      <div class="cta-path-label">For OpenClaw</div>
-      <ol>
-        <li><a href="https://www.revelata.com/for-ai-builders" target="_blank" rel="noopener noreferrer">Get a DEEPKPI_API_KEY</a></li>
-        <li>Install Revelata deepKPI agents: <code>curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw</code></li>
-        <li>Upload an analyst report and ask your agent to "Pressure test this report."</li>
-      </ol>
-    </div>
-  </div>
+  <p class="cta-setup-label">
+    <a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Run this on any report with your agent:</a>
+  </p>
+  <p>
+    Install and setup instructions (Claude connector + OpenClaw) live on GitHub:
+    <a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">deepkpi-agents</a>.
+  </p>
 </div>
 
 <!-- ===== DISCLOSURES ===== -->
@@ -437,5 +423,5 @@ const grid = { color: 'rgba(255,255,255,0.05)' };
 1. **Never change the CSS custom properties** — they are the brand identity
 2. **Logo is inlined as SVG in the header** — no external file reference. Links to `https://www.revelata.com/for-ai-builders`.
 3. **Header divider is a vertical pipe** (`|`) styled in `--border-light` at 1.5rem — sits between the wordmark and the "Analysis Pressure Test (GitHub)" label.
-4. **CTA install paths are verbatim** — do not paraphrase the commands or URLs. The Claude path ends with “Pressure test this report.”
+4. **Closing CTA is minimal** — do not embed install commands in the HTML. Link to the GitHub repo for setup.
 

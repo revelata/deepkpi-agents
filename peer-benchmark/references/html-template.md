@@ -503,27 +503,13 @@ block matches the pressure-test template **word for word**.
 
 <!-- ===== CLOSING CTA (try it yourself) ===== -->
 <div class="closing-cta">
-  <p class="cta-setup-label"><a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Run this on any report with your agent:</a></p>
-
-  <div class="cta-paths">
-    <div class="cta-path">
-      <div class="cta-path-label">For Claude</div>
-      <ol>
-        <li>Claude Settings → Connectors → Add Custom Connector: <code>https://deepkpi-mcp.revelata.com/mcp</code></li>
-        <li>Install Revelata deepKPI agents: <code>curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash</code></li>
-        <li>Ask Claude to benchmark a company, find peers or comps, or identify the most similar public companies.</li>
-      </ol>
-    </div>
-
-    <div class="cta-path">
-      <div class="cta-path-label">For OpenClaw</div>
-      <ol>
-        <li><a href="https://www.revelata.com/for-ai-builders" target="_blank" rel="noopener noreferrer">Get a DEEPKPI_API_KEY</a></li>
-        <li>Install Revelata deepKPI agents: <code>curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw</code></li>
-        <li>Ask your agent to benchmark a company, find peers or comps, or identify the most similar public companies.</li>
-      </ol>
-    </div>
-  </div>
+  <p class="cta-setup-label">
+    <a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Try it yourself:</a>
+  </p>
+  <p>
+    Installation and setup instructions live on GitHub:
+    <a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">deepkpi-agents</a>.
+  </p>
 </div>
 
 <!-- ===== DISCLOSURES (same as Analysis Pressure Test template) ===== -->
