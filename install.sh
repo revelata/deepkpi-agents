@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Unified installer for deepkpi-agents — single bundled skill (revelata-deepkpi).
-# The repo root SKILL.md is the master controller; subfolders hold reference docs.
-# Supports Claude Desktop, Claude.ai (web), and OpenClaw.
+# Unified installer for deepkpi-agents — builds the single-skill ZIP
+# (revelata-deepkpi) from the plugin layout under skills/. Supports Claude
+# Desktop, Claude.ai (web), and OpenClaw.
 #
 # Usage:
 #   ./install.sh              Interactive — prompts for platform
@@ -14,23 +14,8 @@ GITHUB_CODELOAD="https://codeload.github.com/revelata/deepkpi-agents/tar.gz/main
 GITHUB_LATEST_ZIP_URL="https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip"
 
 # Installed folder name (OpenClaw skills dir and Claude zip root).
+# Must match `name:` in installer/orchestrator-template.md.
 BUNDLE_DIR_NAME="revelata-deepkpi"
-
-# Reference-doc folders copied into the bundle (repo root layout; no skills/ prefix).
-BUNDLE_SUBDIRS=(
-  deepkpi-api
-  company-summary-segments
-  retrieve-kpi-data
-  retrieve-sec-filing
-  derive-implied-metric
-  format-deepkpi-for-excel
-  analyze-seasonality
-  analyst-report-pressure-test
-  peer-benchmark
-  idea-generation-survey
-)
-
-# Must match `name:` in root SKILL.md (same as install folder basename).
 OPENCLAW_SKILL_ENTRY_KEY="${BUNDLE_DIR_NAME}"
 
 OPENCLAW_SKILLS_ROOT="${OPENCLAW_SKILLS_ROOT:-${HOME}/.openclaw/skills}"
@@ -43,8 +28,8 @@ if [[ -z "$SCRIPT_DIR" ]]; then
   die "could not resolve script directory"
 fi
 
-# Local clone = repo root SKILL.md present (layout after skills/ → root move).
-if [[ -f "${SCRIPT_DIR}/SKILL.md" ]]; then
+# Local clone is detected by the plugin manifest (post-refactor layout).
+if [[ -f "${SCRIPT_DIR}/.claude-plugin/plugin.json" ]]; then
   HAS_LOCAL=true
   DEFAULT_REPO_ROOT="$SCRIPT_DIR"
 else
@@ -55,15 +40,22 @@ fi
 TMP_EXTRACT=""
 TMP_BUNDLE=""
 cleanup() {
-  [[ -n "${TMP_EXTRACT}" && -d "${TMP_EXTRACT}" ]] && rm -rf "${TMP_EXTRACT}"
-  [[ -n "${TMP_BUNDLE}" && -d "${TMP_BUNDLE}" ]] && rm -rf "${TMP_BUNDLE}"
+  if [[ -n "${TMP_EXTRACT}" && -d "${TMP_EXTRACT}" ]]; then
+    rm -rf "${TMP_EXTRACT}"
+  fi
+  if [[ -n "${TMP_BUNDLE}" && -d "${TMP_BUNDLE}" ]]; then
+    rm -rf "${TMP_BUNDLE}"
+  fi
+  return 0
 }
 trap cleanup EXIT
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 default_zip_out_dir() {
-  if [[ -d "${HOME}/Desktop" ]]; then
+  if [[ -n "${DEEPKPI_ZIP_OUT_DIR:-}" ]]; then
+    echo "${DEEPKPI_ZIP_OUT_DIR}"
+  elif [[ -d "${HOME}/Desktop" ]]; then
     echo "${HOME}/Desktop/deepkpi-skills"
   elif [[ -d "${HOME}/Downloads" ]]; then
     echo "${HOME}/Downloads/deepkpi-skills"
@@ -72,9 +64,22 @@ default_zip_out_dir() {
   fi
 }
 
-# Download and extract GitHub tarball; print absolute repo root path on stdout.
+# Allocate TMP_BUNDLE / TMP_EXTRACT in the parent shell so the EXIT trap can
+# clean them up. Must be called before any helper that captures stdout via
+# $(...) — assignments inside subshells don't propagate to the parent.
+allocate_temp_dirs() {
+  if [[ -z "${TMP_BUNDLE}" ]]; then
+    TMP_BUNDLE="$(mktemp -d)"
+  fi
+  if ! $HAS_LOCAL && [[ -z "${TMP_EXTRACT}" ]]; then
+    TMP_EXTRACT="$(mktemp -d)"
+  fi
+}
+
+# Download and extract GitHub tarball into pre-allocated TMP_EXTRACT; print
+# absolute repo root path on stdout.
 fetch_repo_root_from_github() {
-  TMP_EXTRACT="$(mktemp -d)"
+  [[ -n "${TMP_EXTRACT}" && -d "${TMP_EXTRACT}" ]] || die "TMP_EXTRACT not allocated"
   echo "Downloading repository tarball from GitHub..." >&2
   (
     cd "$TMP_EXTRACT"
@@ -89,7 +94,7 @@ fetch_repo_root_from_github() {
   echo "${topdirs[0]}"
 }
 
-# Resolve directory containing SKILL.md and all BUNDLE_SUBDIRS.
+# Resolve directory containing the plugin manifest and skills/ tree.
 resolve_repo_root() {
   if $HAS_LOCAL; then
     echo "$DEFAULT_REPO_ROOT"
@@ -98,30 +103,73 @@ resolve_repo_root() {
   fetch_repo_root_from_github
 }
 
-# Build ${dest_parent}/${BUNDLE_DIR_NAME} from repo root.
+# Lint check: cross-skill references must go through _common/, not directly to
+# another skill's SKILL.md. The latter works in plugin context but breaks in
+# the ZIP because skill SKILL.md files are renamed to <name>/<name>.md.
+lint_skills() {
+  local repo_root="$1"
+  local skills_root="${repo_root}/skills"
+  local hits
+  hits="$(grep -rEn '\.\./[^_][^/]*/SKILL\.md' "$skills_root" 2>/dev/null || true)"
+  if [[ -n "$hits" ]]; then
+    echo "Cross-skill SKILL.md references found (must go through _common/):" >&2
+    echo "$hits" >&2
+    die "lint failed"
+  fi
+}
+
+# Build ${dest_parent}/${BUNDLE_DIR_NAME} from repo root in plugin layout.
 build_bundle_at() {
   local repo_root="$1"
   local dest_parent="$2"
   local bundle_root="${dest_parent}/${BUNDLE_DIR_NAME}"
 
-  [[ -f "${repo_root}/SKILL.md" ]] || die "SKILL.md not found in ${repo_root}"
+  local skills_root="${repo_root}/skills"
+  local common_root="${skills_root}/_common"
+  local template="${repo_root}/installer/orchestrator-template.md"
+
+  [[ -d "$skills_root" ]] || die "skills/ not found in ${repo_root}"
+  [[ -d "$common_root" ]] || die "skills/_common/ not found"
+  [[ -f "$common_root/deepkpi-api.md" ]] || die "skills/_common/deepkpi-api.md not found"
+  [[ -f "$template" ]] || die "installer/orchestrator-template.md not found"
+
+  lint_skills "$repo_root"
 
   rm -rf "$bundle_root"
   mkdir -p "$bundle_root"
-  cp "${repo_root}/SKILL.md" "${bundle_root}/SKILL.md"
 
-  local d
-  for d in "${BUNDLE_SUBDIRS[@]}"; do
-    [[ -d "${repo_root}/${d}" ]] || die "missing folder ${d}/ under ${repo_root}"
-    cp -R "${repo_root}/${d}" "${bundle_root}/"
+  # 1. Generated root SKILL.md (registered orchestrator for the ZIP).
+  cp "$template" "${bundle_root}/SKILL.md"
+
+  # 2. Each skill: skills/<name>/SKILL.md  →  <bundle>/<name>/<name>.md
+  #    Plus references/ subfolder if present. Other subfolders (evals/) are
+  #    development-only and not bundled.
+  local skill_dir skill_name
+  shopt -s nullglob
+  for skill_dir in "${skills_root}"/*/; do
+    skill_name="$(basename "$skill_dir")"
+    [[ "$skill_name" == "_common" ]] && continue
+    [[ "$skill_name" == "revelata" ]] && continue  # plugin-only orchestrator
+
+    [[ -f "${skill_dir}/SKILL.md" ]] || die "missing SKILL.md in skills/${skill_name}/"
+
+    mkdir -p "${bundle_root}/${skill_name}"
+    cp "${skill_dir}/SKILL.md" "${bundle_root}/${skill_name}/${skill_name}.md"
+    if [[ -d "${skill_dir}/references" ]]; then
+      cp -R "${skill_dir}/references" "${bundle_root}/${skill_name}/references"
+    fi
   done
+  shopt -u nullglob
+
+  # 3. Shared reference content (includes deepkpi-api.md for non-MCP runtimes).
+  cp -R "$common_root" "${bundle_root}/_common"
 }
 
-# Stage bundle in a temp dir; echo absolute path to .../revelata-deepkpi
+# Stage bundle in pre-allocated TMP_BUNDLE; echo absolute path to .../revelata-deepkpi
 stage_bundle() {
+  [[ -n "${TMP_BUNDLE}" && -d "${TMP_BUNDLE}" ]] || die "TMP_BUNDLE not allocated"
   local repo_root
   repo_root="$(resolve_repo_root)"
-  TMP_BUNDLE="$(mktemp -d)"
   build_bundle_at "$repo_root" "$TMP_BUNDLE"
   echo "${TMP_BUNDLE}/${BUNDLE_DIR_NAME}"
 }
@@ -275,6 +323,7 @@ case "$MODE" in
   claude-desktop)
     OUT="$(default_zip_out_dir)"
     if $HAS_LOCAL; then
+      allocate_temp_dirs
       BUNDLE_PATH="$(stage_bundle)"
       zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
     else
@@ -295,6 +344,7 @@ case "$MODE" in
   claude-web)
     OUT="$(default_zip_out_dir)"
     if $HAS_LOCAL; then
+      allocate_temp_dirs
       BUNDLE_PATH="$(stage_bundle)"
       zip_bundle_for_claude "$BUNDLE_PATH" "$OUT"
     else
@@ -316,6 +366,7 @@ case "$MODE" in
     echo ""
     echo "deepkpi-agents — OpenClaw installer"
     echo ""
+    allocate_temp_dirs
     BUNDLE_PATH="$(stage_bundle)"
     install_openclaw_bundle "$BUNDLE_PATH"
     configure_openclaw
