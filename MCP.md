@@ -32,7 +32,7 @@ First, **create a free Revelata account** — [Sign up](https://www.revelata.com
 
 Then, follow the instructions below to use the server with **Claude Desktop**, **Claude.ai**, and similar clients.
 
-**Note:** OpenClaw does not use our MCP server; it uses the **REST API** and **`DEEPKPI_API_KEY`**. See [`deepkpi-api/deepkpi-api.md`](./deepkpi-api/deepkpi-api.md). Hosted API docs: [deepkpi-api.revelata.com/docs](https://deepkpi-api.revelata.com/docs).
+**Note:** OpenClaw does not use our MCP server; it uses the **REST API** and **`DEEPKPI_API_KEY`**. See [`skills/_common/deepkpi-api.md`](./skills/_common/deepkpi-api.md). Hosted API docs: [deepkpi-api.revelata.com/docs](https://deepkpi-api.revelata.com/docs).
 
 ---
 
@@ -98,7 +98,7 @@ Lists **all KPIs** available for a given company, **organized by category**. Use
 
 **Credits:** **1** per company in the response — check your balance at [AI credits](https://www.revelata.com/ai-credits).
 
-**Agent workflow:** **`company-summary-segments/company-summary-segments.md`** — use for **thematic lists**; for a **named** company’s profile use **`get_company_summary`** / **`get_company_segments`** first (Workflow A in that doc).
+**Agent workflow:** the **`company-summary`** skill — use for **thematic lists**; for a **named** company’s profile use **`get_company_summary`** / **`get_company_segments`** first (Workflow A in that skill).
 
 ---
 
@@ -110,7 +110,7 @@ Returns a **narrative company summary** (derived from the company’s latest 10-
 
 **Credits:** **3** per successful call.
 
-**Agent workflow:** **`company-summary-segments/company-summary-segments.md`**.
+**Agent workflow:** the **`company-summary`** skill.
 
 ---
 
@@ -122,13 +122,13 @@ Returns a **structured segment breakdown** (derived from the company’s latest 
 
 **Credits:** **3** per successful call.
 
-**Agent workflow:** **`company-summary-segments/company-summary-segments.md`**.
+**Agent workflow:** the **`company-summary`** skill.
 
 ---
 
 ### `list_sec_filing_markdowns`
 
-Lists SEC filings available as markdown for a given **CIK**. Use this to discover valid `acc_no` and `seq_no` values before fetching content. **Agent workflow:** `retrieve-sec-filing/retrieve-sec-filing.md` (tool-first, before web/SEC.gov).
+Lists SEC filings available as markdown for a given **CIK**. Use this to discover valid `acc_no` and `seq_no` values before fetching content. **Agent workflow:** the **`filing`** skill (tool-first, before web/SEC.gov).
 
 **Parameters:** `cik` (int), `form_type` (optional string, e.g. `10-K`), `start_date` (optional `YYYY-MM-DD`), `end_date` (optional `YYYY-MM-DD`).
 
@@ -144,7 +144,7 @@ Fetches the markdown content for a specific SEC filing.
 
 **Credits:** **10** per successful call.
 
-**Critical quoting rule:** When the user asks “what did they say”, “what comments were made”, “exact language”, or similar, you MUST return **verbatim quotes/snippets** from the markdown (with clear snippet boundaries). Do not paraphrase by default. Full rules: **`retrieve-sec-filing/retrieve-sec-filing.md`**.
+**Critical quoting rule:** When the user asks “what did they say”, “what comments were made”, “exact language”, or similar, you MUST return **verbatim quotes/snippets** from the markdown (with clear snippet boundaries). Do not paraphrase by default. Full rules: the **`filing`** skill.
 
 ---
 
@@ -179,7 +179,7 @@ Fetches the markdown content for a specific SEC filing.
 | Runtime | How you use deepKPI |
 |--------|----------------------|
 | **Claude + MCP** | Connector URL **`…/mcp`**, OAuth — tools **`query_company_id`**, **`list_kpis`**, **`search_kpis`**, **`company_summary_search`**, **`get_company_summary`**, **`get_company_segments`**, **`list_sec_filing_markdowns`**, **`get_sec_filing_markdown`**. |
-| **OpenClaw** | Install **`revelata-deepkpi`**, set **`DEEPKPI_API_KEY`**, call REST per [`deepkpi-api/deepkpi-api.md`](./deepkpi-api/deepkpi-api.md). |
+| **OpenClaw** | Install **`revelata-deepkpi`**, set **`DEEPKPI_API_KEY`**, call REST per [`skills/_common/deepkpi-api.md`](./skills/_common/deepkpi-api.md). |
 
 Do not paste the MCP URL into OpenClaw as a substitute for the REST skill flow.
 

@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+    "name": "revelata-marketplace",
+    "description": "Trusted context for financial AI. Visit www.revelata.com.",
+    "owner": {
+        "name": "Revelata, Inc.",
+        "email": "support@revelata.com"
+    },
+    "plugins": [
+        {
+            "name": "revelata",
+            "source": "./",
+            "description": "Equity research and fundamental analysis skills powered by Revelata deepKPI.",
+            "skills": "./skills"
+        }
+    ]
+}

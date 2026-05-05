@@ -5,32 +5,19 @@ REPO_URL = https://github.com/revelata/deepkpi-agents
 GITHUB_API = https://api.github.com
 GITHUB_UPLOADS = https://uploads.github.com
 
-# Folders included in the bundled skill (must match install.sh)
-BUNDLE_SUBDIRS = \
-	deepkpi-api \
-	company-summary-segments \
-	retrieve-kpi-data \
-	retrieve-sec-filing \
-	derive-implied-metric \
-	format-deepkpi-for-excel \
-	analyze-seasonality \
-	analyst-report-pressure-test \
-	peer-benchmark \
-	idea-generation-survey
+# install.sh is the single source of truth for the bundle build. We invoke it
+# with DEEPKPI_ZIP_OUT_DIR to redirect the ZIP into ./dist, then rename to
+# $(ZIP_NAME) (preserves the historic releases/latest/download URL that
+# install.sh's curl-fallback uses).
 
 .PHONY: package release clean
 
 package:
 	@echo "Packaging $(FOLDER)..."
 	@rm -rf dist
-	@mkdir -p dist/$(FOLDER)
-	@cp SKILL.md dist/$(FOLDER)/SKILL.md
-	@for d in $(BUNDLE_SUBDIRS); do \
-		if [ ! -d "$$d" ]; then echo "Missing folder: $$d"; exit 1; fi; \
-		cp -R "$$d" "dist/$(FOLDER)/"; \
-	done
-	@rm -f "$(ZIP_NAME)"
-	@(cd dist && zip -r "../$(ZIP_NAME)" "$(FOLDER)/" >/dev/null)
+	@mkdir -p dist
+	@DEEPKPI_ZIP_OUT_DIR="$(CURDIR)/dist" ./install.sh claude-desktop >/dev/null
+	@mv "dist/$(FOLDER).zip" "$(ZIP_NAME)"
 	@echo "Wrote $(ZIP_NAME)"
 
 # Tag + push + package (GitHub Release can be created manually from the tag)

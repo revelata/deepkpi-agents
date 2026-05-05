@@ -1,87 +1,87 @@
-# deepkpi-agents
+# deepkpi-agents: Revelata Agentic Skills Library
 
-Example agent skills for automating finance workflows. These skills provide basic support for working with deepKPI data, as well as foundational examples for automating common analysis tasks. Every deepKPI datapoint comes with a link back to its original source. These hyperlinks are carried through any subsequent tool call to provide 1-click auditability. 
+**Open-source agentic skills for equity research and analysis, powered by [Revelata deepKPI](https://www.revelata.com).** Pull structured KPI time series, full SEC filing markdown (10-K, 10-Q, 8-K), 10-K-derived company summaries, and more — directly into Claude, ChatGPT, or OpenClaw.
 
-The skills in this repo source data from deepKPI by [Revelata](https://www.revelata.com). The underlying datasets capture comprehensive KPI data about public companies extracted from narrative text and tables in their filings; these are refreshed nightly to capture fresh disclosures. Data access requires a [free account](https://www.revelata.com/signup?product_id=0). Authentication is provided via OAuth for our MCP server (preferred for Claude and Cowork) or API Key (preferred for OpenClaw); once authenticated, these skills allow you to pull KPI data into your agent's context automatically.
+The skills cover a growing set of fundamental workflows for equity research: KPI lookup, filing-text retrieval, derived metric calculation, peer benchmarking, seasonality analysis, and analyst-report pressure-testing.
 
-Integration instructions for Claude Cowork, OpenClaw, or generic API access and API keys are available [here](https://www.revelata.com/ai-credits).
+Data access requires a [free Revelata account](https://www.revelata.com/signup?product_id=0). Every data point returned by our deepKPI service has a clickable hyperlink back to its source sentence in the original filing. Provenance is preserved through every downstream tool call, so analyses are **1-click auditable** — no opaque numbers, no hand-waved citations.
 
-**MCP (Claude connector):** See **[MCP.md](./MCP.md)** for setup, endpoint URL, and troubleshooting. OpenClaw uses the REST API — see **`deepkpi-api/`** in this repo.
+Authentication is via **OAuth** (Claude, ChatGPT) or **API key** (OpenClaw). For manual MCP server setup, endpoint URL, and the underlying tool reference, see **[MCP.md](./MCP.md)**.
 
-## Layout
+## Skills
 
-- **Root `SKILL.md`** — Agent-facing skill package (**`revelata-deepkpi`**): YAML frontmatter + router doc.
-- **Subfolders** — Reference markdown used by that skill (e.g. `retrieve-kpi-data/retrieve-kpi-data.md`, `company-summary-segments/company-summary-segments.md`, `retrieve-sec-filing/retrieve-sec-filing.md`, `deepkpi-api/deepkpi-api.md`). 
-
-The installer builds one directory, **`revelata-deepkpi/`** (root `SKILL.md` + those folders), and either copies it for **OpenClaw** or zips it for **Claude** as a **single** deliverable.
-
-## Modules (inside the bundle)
-
-| Folder | Role |
+| Skill | What it does |
 |---|---|
-| `retrieve-kpi-data` | Pulls **structured KPI** time series from filings into agent and chat workflows, with Excel export. MCP (Claude) or `deepkpi-api` (OpenClaw). |
-| `company-summary-segments` | **What a company does** (`get_company_summary`), **segments / geos** (`get_company_segments`), **thematic discovery** (`company_summary_search`).|
-| `retrieve-sec-filing` | Pulls **SEC filing markdown** into chat — full filing or excerpts — plus verbatim quotes / MD&A / risk language (`list_sec_filing_markdowns` / `get_sec_filing_markdown`). Separate purpose from KPI pulls. |
-| `derive-implied-metric` | Computes derived metrics based on reported data with transparent formulas and source-data links. Example uses include Q4 imputation, segment remainders, per-unit metrics, AUV, Rule of 40, etc. |
-| `analyze-seasonality` | Computes and analyzes seasonal ratios, quarterly splits from annual forecasts, and builds an Excel workbook with the results |
-| `analyst-report-pressure-test` | Pressure-tests sell-side analyst reports by mapping their claims to supporting and countervailing evidence from SEC filings.|
-| `peer-benchmark` | **Peers / comps / similar companies** — fingerprint and discover operationally similar companies, including peers for individual segments |
-| `idea-generation-survey` | **Idea discovery** — interactive survey + broad screening for new ideas, or for interesting companies. |
-| `format-deepkpi-for-excel` | Canonical `.xlsx` layout, styling, formulas, hyperlinks. Edit or override this skill to implement your own formatting conventions. |
-| `deepkpi-api` | REST API access to deepKPI endpoints (company lookup, KPI discovery, KPI search, company summary search, company summary, segment breakdown). Required for OpenClaw; env-var fallback for Claude when MCP is unavailable. |
-| `custom-deepkpi-skill` | **Stub / template** — summarizes shared rules, links to the skills above, and a minimal "hello world" response. Fork and customize for your org. |
+| `kpi` | Pulls structured KPI time series for US public companies from SEC filings; supports Excel export. |
+| `company-summary` | Describes a company's business and segment / geography structure; supports thematic "who does X?" discovery. |
+| `filing` | Pulls clean SEC filing markdown into chat; extracts verbatim quotes from MD&A, risk factors, footnotes. |
+| `seasonality` | Computes seasonal quarterly ratios from historical actuals; splits annual forecasts into quarterly estimates; outputs an Excel workbook. |
+| `implied-metric` | Derives metrics that aren't directly reported — Q4 from FY−(Q1+Q2+Q3), segment remainders, per-unit economics (ARPU, ASP, AUV), take rates. |
+| `pressure-test` | Pressure-tests analyst reports against SEC filing data; outputs an interactive HTML report with claim-by-claim evidence and provenance hyperlinks. |
+| `benchmark` | Performs operational peer / comp discovery via deepKPI semantic search; aligns KPI fingerprints, generates segment sub-benchmarks, supports HTML and Excel output. |
+| `ideas` | Guides users without a specific company or thesis through idea generation — interactive interview, screen, and deep-dive. |
+| `revelata` | Orchestrates complex multi-step research that crosses multiple workflows. |
 
 ## Installation
 
-### Quick install (any platform)
+We integrate into the following agentic frameworks:
+
+### Claude Desktop Cowork & Code
+
+Install the plugin via our third-party marketplace:
+
+1. In Cowork, open **Customize → + → Create Plugin**
+2. Add marketplace: **`revelata/deepkpi-agents`**
+3. Install the **`revelata`** plugin
+
+**Known Cowork issue — manual MCP authentication required.** A Cowork issue prevents authentication within Cowork chat. To finish setup:
+
+4. Open **Customize → Revelata → Connectors**
+5. Choose the **Revelata** connector and click **Install** (or **Connect**, depending on your version of Cowork).
+6. Complete the OAuth flow when prompted
+
+> **Important:** A Cowork plugin install propagates to **Claude Code** automatically. The reverse is **not** true. If you want both supported, install via Cowork.
+
+### Claude.ai (web) or Claude Desktop Chat
+
+1. Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip).
+2. Enable **Code execution and file creation** in Claude.ai → Settings → Capabilities
+3. Upload the ZIP via **Customize → Skills**
+4. Adding the deepKPI MCP connector (see **[MCP.md](./MCP.md)**)
+
+### Claude Code CLI
+
+From a terminal:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash
+claude plugin marketplace add revelata/deepkpi-agents
+claude plugin install revelata@revelata-marketplace
 ```
 
-The installer prompts you to choose **Claude Desktop**, **Claude.ai**, or
-**OpenClaw**, then stages **`revelata-deepkpi/`** from this repo (or downloads it)
-and walks you through setup.
+The MCP OAuth flow runs in your browser on first use.
 
-- **Claude (Desktop or web):** downloads the latest prebuilt **`revelata-deepkpi.zip`** (from the stable “latest release” asset) — upload that as a custom skill to access all of the functionality.
-- **OpenClaw:** installs to **`~/.openclaw/skills/revelata-deepkpi/`** and configures **`skills.entries.revelata-deepkpi`** with `DEEPKPI_API_KEY` (skill **`name:`** in root `SKILL.md` matches that key).
+### ChatGPT
 
-To skip the prompt and go straight to a specific platform:
+ChatGPT supports custom skills via **Developer Mode** plus MCP via **Apps**:
 
-**OpenClaw**
+1. Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip).
+2. **Enable Developer Mode** in ChatGPT settings.
+3. **Upload** `revelata-deepkpi.zip` as a custom skill.
+4. **Add the deepKPI MCP server as an App**: `https://deepkpi-mcp.revelata.com/mcp`. Authenticate via OAuth on first use.
+
+### OpenClaw
+
+OpenClaw uses the deepKPI REST API (no MCP). Get an API key at [revelata.com/ai-credits](https://www.revelata.com/ai-credits), then:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw
 ```
 
-**Claude Desktop**
-```bash
-curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s claude-desktop
-```
-
-**Claude.ai (web)**
-```bash
-curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s claude-web
-```
-
-### From a local clone
-
-```bash
-git clone https://github.com/revelata/deepkpi-agents.git
-cd deepkpi-agents
-./install.sh
-```
-
-Same interactive flow, but uses local files instead of downloading from GitHub.
-
-### Notes
-
-- **`custom-deepkpi-skill`** is not bundled by the installer — clone the repo to copy it into your bundle if you want it.
-- Override the OpenClaw skills directory with `OPENCLAW_SKILLS_ROOT` if needed (the skill still installs as `revelata-deepkpi` inside that root).
-
+The installer prompts for `DEEPKPI_API_KEY` and configures `~/.openclaw/openclaw.json`.
 
 ## Examples
 
-Once installed, ask your agent to do your work for you: 
+Once installed, ask your agent to do your work:
 
 ```
 Pull membership data for Planet Fitness and create an Excel workbook
@@ -101,4 +101,14 @@ Pull the store count rolls for Planet Fitness into Excel
 
 ```
 Pressure test this analyst report on Clorox [attach PDF] — use SEC data and give me the HTML report
+```
+
+In Claude Cowork or Claude Code, you can also invoke a specific skill directly with a slash command:
+
+```
+/revelata:kpi PLNT number of members
+```
+
+```
+/revelata:pressure-test [attach PDF]
 ```
