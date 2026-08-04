@@ -1,0 +1,32 @@
+{
+    "name": "revelata",
+    "version": "1.0.16",
+    "description": "Equity research and fundamental analysis skills powered by Revelata deepKPI.",
+    "author": {
+        "name": "Revelata, Inc.",
+        "email": "support@revelata.com",
+        "url": "https://www.revelata.com"
+    },
+    "homepage": "https://www.revelata.com",
+    "repository": "https://github.com/revelata/deepkpi-agents",
+    "license": "Apache-2.0",
+    "keywords": ["equity-research", "investing","financial data", "financial analysis", "financial modeling", "financial statements", "sec", "kpi", "fundamentals", "filings"],
+    "skills": "./skills/",
+    "mcpServers": "./.mcp.json",
+    "interface": {
+        "displayName": "Revelata deepKPI",
+        "shortDescription": "SEC KPI time series, filings, and equity research workflows.",
+        "longDescription": "Agent skills for analyzing and modeling financial KPIs for US public companies. Includes KPI lookup and retrieval, SEC filing retrieval, seasonality, implied metrics, benchmarking, analyst report pressure-testing, and more — backed by the Revelata deepKPI MCP server with sentence-level provenance.",
+        "developerName": "Revelata, Inc.",
+        "category": "Finance",
+        "capabilities": ["Read"],
+        "websiteURL": "https://www.revelata.com",
+        "privacyPolicyURL": "https://www.revelata.com/privacy",
+        "defaultPrompt": [
+            "Compare META and Microsoft’s AI infra spend and tell me what differentiates them.", 
+            "Pull membership data for Planet Fitness and create an Excel workbook",
+            "Analyze quarterly sales for Darden restaurants. Impute Q4 sales if necessary.",
+            "Pressure test this analyst report against SEC data and give me the HTML report"
+        ]
+    }
+}

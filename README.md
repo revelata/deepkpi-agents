@@ -60,14 +60,18 @@ claude plugin install revelata@revelata-marketplace
 
 The MCP OAuth flow runs in your browser on first use.
 
-### ChatGPT
+### ChatGPT / Codex (desktop Plugins)
 
-ChatGPT supports custom skills via **Developer Mode** plus MCP via **Apps**:
+Install as a plugin from the Revelata marketplace (skills + deepKPI MCP together):
 
-1. Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip).
-2. **Enable Developer Mode** in ChatGPT settings.
-3. **Upload** `revelata-deepkpi.zip` as a custom skill.
-4. **Add the deepKPI MCP server as an App**: `https://deepkpi-mcp.revelata.com/mcp`. Authenticate via OAuth on first use.
+1. In **ChatGPT desktop**, open **Plugins**.
+2. **Add a marketplace** and use the GitHub source: **`revelata/deepkpi-agents`**.
+3. Install the **Revelata deepKPI** (`revelata`) plugin from that marketplace.
+4. Complete **OAuth** when prompted (sign in with your Revelata account).
+
+Requires a [free Revelata account](https://www.revelata.com/signup?product_id=0). The MCP endpoint is `https://deepkpi-mcp.revelata.com/mcp`.
+
+**Alternative (skills ZIP + MCP App):** Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip), enable **Developer Mode**, upload the ZIP as a custom skill, and add the deepKPI MCP server as an App at the URL above.
 
 ### OpenClaw
 

@@ -1,0 +1,20 @@
+{
+    "name": "revelata-marketplace",
+    "interface": {
+        "displayName": "Revelata"
+    },
+    "plugins": [
+        {
+            "name": "revelata",
+            "source": {
+                "source": "local",
+                "path": "./"
+            },
+            "policy": {
+                "installation": "AVAILABLE",
+                "authentication": "ON_INSTALL"
+            },
+            "category": "Finance"
+        }
+    ]
+}
