@@ -101,23 +101,23 @@ into quarterly estimates.
 **`pressure-test`** — End-to-end workflow for uploaded analyst PDFs: extract
 4–6 claims, pull granular deepKPI metrics per claim, build paired "supports" /
 "complicates" evidence with mandatory provenance hyperlinks, and emit a
-Revelata-branded interactive HTML report (`references/html-template.md`,
-`references/chart-patterns.md`). After the draft HTML exists, run the mandatory
-internal **draft HTML QA** rubric (`references/double-check.md`), then revise
-and re-check as needed before presenting the file. **Always** read `kpi` for
-KPI mechanics; use `filing` when the test needs verbatim filing passages; use
-`company-summary` for business description / segment structure / thematic
-lists when useful; use `implied-metric` when filling Q4 or segment gaps.
+Revelata-branded interactive HTML report (follow that skill’s html-template and
+chart-patterns references). After the draft HTML exists, run that skill’s
+mandatory **draft HTML QA** rubric (double-check), then revise and re-check as
+needed before presenting the file. **Always** read `kpi` for KPI mechanics; use
+`filing` when the test needs verbatim filing passages; use `company-summary` for
+business description / segment structure / thematic lists when useful; use
+`implied-metric` when filling Q4 or segment gaps.
 
 **`benchmark`** — Curated **operational** benchmark sets (not trading multiples):
 `company_summary_search` for candidates, KPI fingerprint + alignment, diff-driven
-segment sub-benchmarks, chat 1-pager, optional HTML
-(`references/html-template.md`), Excel via
+segment sub-benchmarks, chat 1-pager, optional HTML (follow that skill’s
+html-template reference), Excel via
 `../_common/revelata-excel-styling-rules.md`. **Always** read `kpi` first.
 
 **`ideas`** — Onramp when the user has **no ticker and no thesis**: rapid
 interview (multiple-choice by default), `company_summary_search` for a 10–15
 name screen with thesis-matched KPIs, then deep pulls on 1–2 chosen names per
-`kpi`. `references/sector-kpi-map.md` for diagnostic KPI concepts. **No** default
-Excel offer. Not for users who already named a company or a specific metric —
-use `kpi` instead.
+`kpi`. Use `list_kpis` / `search_kpis` for diagnostic KPI concepts. **No**
+default Excel offer. Not for users who already named a company or a specific
+metric — use `kpi` instead.

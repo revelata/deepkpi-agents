@@ -40,7 +40,8 @@ See `../_common/connection-failure.md`. STOP and ask before falling back.
 Before pulling KPI time series, consult the `kpi` skill (provenance,
 `list_kpis` / `search_kpis`, parallel pulls). For thematic company discovery via natural-language
 queries, use the `company_summary_search` tool per the `company-summary` skill.
-For diagnostic KPI *concepts* by sector when choosing what to pull, see `references/sector-kpi-map.md`.
+For diagnostic KPI *concepts* by sector when choosing what to pull, use
+`list_kpis` / `search_kpis` (and the `kpi` skill) rather than guessing names.
 
 ## Style rules — enforce strictly
 
@@ -368,8 +369,8 @@ Only now do you go deep. Pull on the 1-2 narrowed names. Consult the
 `kpi` skill for mechanics.
 
 - 8-12 quarters minimum
-- 3-5 diagnostic operating KPIs (`references/sector-kpi-map.md` for concepts; use `list_kpis` to discover what's
-  available, then `search_kpis` for the best thesis-matched names) —
+- 3-5 diagnostic operating KPIs (use `list_kpis` to discover what's available,
+  then `search_kpis` for the best thesis-matched names) —
   not just revenue
 - Same KPIs across both names if comparing, so the tables line up
 
@@ -510,8 +511,9 @@ if prompted.
 
 ## Reference
 
-`references/sector-kpi-map.md` — diagnostic operating KPIs by sector. Use when picking
-signature KPIs for the broad screen and the fuller set for the deep pull.
+Use `list_kpis` / `search_kpis` (via the `kpi` skill) when picking signature KPIs
+for the broad screen and the fuller set for the deep pull — prefer unit /
+operating metrics over financials when both exist.
 
 ## When not to use
 
