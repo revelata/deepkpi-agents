@@ -116,7 +116,7 @@ increase only if needed.
 
 Effective query patterns:
 - Be specific: `"average revenue per paying user"` not `"ARPU"`
-- Include segment context: `"Chipotle domestic restaurant comparable sales increase"`
+- Be specific about segment: `"Chipotle domestic restaurant comparable sales increase"`
 - Include cost language: `"food beverage and packaging costs as percentage"`
 - Geographic splits: `"Net Sales by Geography Americas Europe Greater China"`
 
