@@ -5,7 +5,7 @@ description: >
   complex multi-step queries that cross multiple workflows (KPIs + filing text + segments,
   pressure-test plus follow-up data pulls, peer benchmarks plus seasonality, etc.).
   Routes to narrow skills (kpi, company-summary, filing, seasonality, implied-metric,
-  pressure-test, benchmark, ideas) when a single workflow fits. Pulls SEC metrics
+  pressure-test, benchmark, ideas, operating-model) when a single workflow fits. Pulls SEC metrics
   (10-K/10-Q/8-K): segments, unit KPIs (stores, comps, ARPU, users), statements, cash
   flow; filing markdown and verbatim quotes; implied Q4/per-unit, seasonality, Excel.
   For "pull data", historicals, "find the KPI", seasonality, .xlsx, filing excerpts,
@@ -58,9 +58,11 @@ apply to a single request — chain through all that fit.
 | Pull **full filing markdown** into chat, **verbatim SEC text**, quotes, MD&A / risk-factor language, or "what did they say" | `filing` — **before any web/SEC.gov**: `list_sec_filing_markdowns` (free) → `get_sec_filing_markdown` (10 credits). Return full markdown when they want the document; blockquoted excerpts for quote-style asks; no paraphrase as quotes |
 | Derive missing Q4 numbers, a segment remainder, or per-unit economics (ASP, ARPU, AUV, take rate) | `implied-metric` |
 | Split annual forecasts into quarterly estimates / seasonality patterns | `seasonality` |
-| Produce an Excel workbook (.xlsx) from deepKPI data | Whichever data skill applies (`kpi`, `seasonality`, etc.); then follow `../_common/revelata-excel-styling-rules.md` |
+| **Build an operating model** in Excel — scaffold plus revenue, costs, consolidated financials, depreciation, NWC | `operating-model` — orchestrates section sub-skills; read `kpi` for raw pulls only when the user wants data without the full model workflow |
+| Produce an Excel workbook (.xlsx) from deepKPI data (not a full operating model) | Whichever data skill applies (`kpi`, `seasonality`, etc.); then follow `../_common/revelata-excel-styling-rules.md` |
 | Pressure-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `pressure-test` |
 | **Peers / comps**, **benchmark** a company, **most similar** public companies, or operational comp sets | `benchmark` — always read the `kpi` skill first for KPI mechanics |
+| Tearsheet of a company | `tearsheet` |
 
 **Default entry points by intent:**
 
@@ -118,6 +120,20 @@ html-template reference), Excel via
 **`ideas`** — Onramp when the user has **no ticker and no thesis**: rapid
 interview (multiple-choice by default), `company_summary_search` for a 10–15
 name screen with thesis-matched KPIs, then deep pulls on 1–2 chosen names per
+
 `kpi`. Use `list_kpis` / `search_kpis` for diagnostic KPI concepts. **No**
 default Excel offer. Not for users who already named a company or a specific
 metric — use `kpi` instead.
+
+**`tearsheet`** - A one-pager tearsheet that an analyst would find useful for 
+earnings call prep.  Contains a company summary, snapshot of key financials 
+and operational KPIs, etc. 
+
+**`operating-model`** — Full operating-model orchestrator: resolve the company,
+lay down a styled Excel scaffold (Revenue, Costs, Consolidated Financials,
+Depreciation Schedule, Net Working Capital), discover the KPI inventory once via
+`list_kpis`, then hand each section to its sub-skill (`revenue/`, `costs/`,
+`consolidated-financials/`, etc.). Industry-specific revenue and cost builds
+(e.g. restaurants) route automatically. Uses `../_common/revelata-excel-styling-rules.md`
+and the xlsx skill throughout. For a single section only, still resolve the
+company and run KPI discovery before routing.

@@ -110,7 +110,8 @@ lint_skills() {
   local repo_root="$1"
   local skills_root="${repo_root}/skills"
   local hits
-  hits="$(grep -rEn '\.\./[^_][^/]*/SKILL\.md' "$skills_root" 2>/dev/null || true)"
+  hits="$(grep -rEn '\.\./[^_][^/]*/SKILL\.md' "$skills_root" 2>/dev/null \
+    | grep -Ev 'skills/operating-model/' || true)"
   if [[ -n "$hits" ]]; then
     echo "Cross-skill SKILL.md references found (must go through _common/):" >&2
     echo "$hits" >&2
@@ -155,7 +156,16 @@ build_bundle_at() {
 
     mkdir -p "${bundle_root}/${skill_name}"
     cp "${skill_dir}/SKILL.md" "${bundle_root}/${skill_name}/${skill_name}.md"
-    if [[ -d "${skill_dir}/references" ]]; then
+    cp "${skill_dir}/SKILL.md" "${bundle_root}/${skill_name}/SKILL.md"
+    if [[ "$skill_name" == "operating-model" ]]; then
+      shopt -s nullglob
+      for sub in "${skill_dir}"/*/; do
+        sub_name="$(basename "${sub%/}")"
+        [[ "$sub_name" == "_common" || "$sub_name" == "implied-metric" ]] && continue
+        cp -R "${sub%/}" "${bundle_root}/${skill_name}/"
+      done
+      shopt -u nullglob
+    elif [[ -d "${skill_dir}/references" ]]; then
       cp -R "${skill_dir}/references" "${bundle_root}/${skill_name}/references"
     fi
   done

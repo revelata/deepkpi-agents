@@ -90,7 +90,8 @@ Examples: domestic = total − international; Maggiano's = consolidated − Chil
 implied_useful_life    = net_PP&E / depreciation_expense
 next_year_depreciation = current_net_PP&E / implied_useful_life
 ```
-Use the average of the last 2 years as the forward assumption, held constant.
+Use the average of the last three reported years as the forward assumption, held
+constant (fewer than three available: the average of what exists).
 
 ### Take rate
 ```

@@ -38,7 +38,10 @@ VERSION ?=
 # the version declared in $(PLUGIN_JSON). Default behavior is to abort.
 ALLOW_VERSION_MISMATCH ?= 0
 
-.PHONY: package release clean
+.PHONY: lint package release clean
+
+lint:
+	@python3 tools/dependency_audit.py --strict
 
 package:
 	@echo "Packaging $(FOLDER)..."

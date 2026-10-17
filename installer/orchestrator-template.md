@@ -8,10 +8,13 @@ description: >
   splits, .xlsx export. Pressure-tests sell-side analyst PDFs against SEC filing
   data with interactive HTML output. Operational peer / comp benchmarking. Idea
   generation for "what should I invest in?" when the user has no specific company
-  in mind. Company summaries and segment / geography discovery. Triggers: "pull
+  in mind. Company summaries and segment / geography discovery. Full operating
+  model Excel builds (revenue, costs, consolidated financials, depreciation, NWC).
+  Triggers: "pull
   data", historicals, "find the KPI", seasonality, .xlsx, filing excerpts, "what
   did they say", pressure-test, peers, comps, benchmark, similar companies, new
-  ideas, what does X do, who operates in. OpenClaw: see `_common/deepkpi-api.md`.
+  ideas, what does X do, who operates in, build an operating model, operating
+  model for, model out this company, set up the model, scaffold a model. OpenClaw: see `_common/deepkpi-api.md`.
 version: 1.0.0
 homepage: https://www.revelata.com
 metadata:
@@ -60,9 +63,11 @@ apply to a single request — load all that fit.
 | Pull **full filing markdown** into chat, **verbatim SEC text**, quotes, MD&A / risk-factor language, or "what did they say" | `filing/filing.md` — **before any web/SEC.gov**: `list_sec_filing_markdowns` (free) → `get_sec_filing_markdown` (10 credits). Return full markdown when they want the document; blockquoted excerpts for quote-style asks; no paraphrase as quotes |
 | Derive missing Q4 numbers, a segment remainder, or per-unit economics (ASP, ARPU, AUV, take rate) | `implied-metric/implied-metric.md` |
 | Split annual forecasts into quarterly estimates / seasonality patterns | `seasonality/seasonality.md` |
-| Produce an Excel workbook (.xlsx) from deepKPI data | Whichever data doc applies (`kpi/kpi.md`, `seasonality/seasonality.md`, etc.); then follow `_common/revelata-excel-styling-rules.md` |
+| **Build an operating model** in Excel — scaffold plus revenue, costs, consolidated financials, depreciation, NWC | `operating-model/operating-model.md` — section sub-skills live under `operating-model/`; read `kpi/kpi.md` only for raw pulls without the full model workflow |
+| Produce an Excel workbook (.xlsx) from deepKPI data (not a full operating model) | Whichever data doc applies (`kpi/kpi.md`, `seasonality/seasonality.md`, etc.); then follow `_common/revelata-excel-styling-rules.md` |
 | Pressure-test a sell-side / analyst report against SEC filing data (HTML report, Chart.js, provenance links) | `pressure-test/pressure-test.md` |
 | **Peers / comps**, **benchmark** a company, **most similar** public companies, or operational comp sets | `benchmark/benchmark.md` — always read `kpi/kpi.md` first for KPI mechanics |
+| Tearsheet of a company | `tearsheet` |
 
 **Default entry points by intent:**
 
@@ -128,3 +133,17 @@ rapid interview (multiple-choice by default), `company_summary_search` for a
 per `kpi/kpi.md`. `ideas/references/sector-kpi-map.md` for diagnostic KPI
 concepts. **No** default Excel offer. Not for users who already named a company
 or a specific metric — use `kpi/kpi.md` instead.
+
+**`tearsheet`** - A one-pager tearsheet that an analyst would find useful for 
+earnings call prep.  Contains a company summary, snapshot of key financials 
+and operational KPIs, etc. 
+
+**`operating-model/operating-model.md`** — Full operating-model orchestrator:
+resolve the company, lay down a styled Excel scaffold (Revenue, Costs,
+Consolidated Financials, Depreciation Schedule, Net Working Capital), run
+`list_kpis` once for a shared KPI inventory, then build each section via its
+sub-skill (`operating-model/revenue/`, `operating-model/costs/`, etc.).
+Industry-specific revenue and cost pipelines (e.g. restaurants) route
+automatically. Internal sub-skills reference `operating-model/SKILL.md` for
+the model timeline. For a single section only, still resolve the company and
+run KPI discovery before routing.

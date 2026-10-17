@@ -36,6 +36,12 @@ See `../_common/data-source-rules.md` for the runtime routing table (MCP-capable
 vs non-MCP) and the canonical inventory of deepKPI operations. The KPI workflow
 uses `query_company_id`, `list_kpis`, and `search_kpis`.
 
+For known structured-KPI gaps (quarter vs. half-year period
+mismatches on 4-4-5 retailers, monthly sales 8-Ks, late-filed
+material 8-Ks, one-time MD&A disclosures), read
+`../_common/deepkpi-coverage-gaps.md` BEFORE concluding that a needed
+metric is unavailable.
+
 If neither MCP nor the REST fallback applies, say so and ask the user how to
 proceed.
 
@@ -121,6 +127,23 @@ Effective query patterns:
 - Geographic splits: `"Net Sales by Geography Americas Europe Greater China"`
 
 A typical request needs 2–4 separate searches.
+
+### Search exhaustion — required before declaring a KPI absent
+
+Before concluding "this KPI is not in deepKPI" and falling back to a
+non-deepKPI source, run the four-variant search exhaustion check in
+`../_common/deepkpi-coverage-gaps.md` (the metric as phrased, a synonym, the
+parent metric, the segment- or geography-level variant), testing any close
+`list_kpis` candidate with a `search_kpis` call before concluding. A single
+pass that finds nothing is not a confirmed gap: deepKPI often structures a
+metric at a different period or level than the one asked for (a half-year
+figure where a quarter was requested, a segment line where a total was), and
+one more query usually finds it.
+
+When the gap is real, document what was searched in the audit table:
+`tried [variant1, variant2, variant3, variant4], not in deepKPI,
+fallback to SEC URL`. A bare "not in deepKPI" is a defect — without
+the search log, a reviewer cannot tell whether the fallback is justified.
 
 ### 4. Handle gaps
 
@@ -231,6 +254,10 @@ For layout examples, see **In-chat table template (data pull)** below.
    (paraphrase allowed; **bold** is not optional):
 
    **Would you like me to build an Excel workbook (.xlsx) laid out for modeling — periods across columns (annuals, then a blank column, then quarterlies) per our export spec?**
+
+   For a **full operating model** (revenue build, costs, consolidated financials,
+   depreciation, NWC in one workbook), use the `operating-model` skill instead of
+   a raw KPI export.
 
 3. Do **not** skip this step because the answer feels complete without it. Do **not**
    bury it mid-message; put it **after** the tables so it is visible.
