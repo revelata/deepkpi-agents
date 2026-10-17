@@ -3,7 +3,8 @@
 Canonical Excel (.xlsx) layout and styling for deepKPI financial exports: wide
 layout, annual then quarterly columns, Calibri, pale-green fill on deepKPI input
 cells, dark-blue hyperlinked numbers, numeric date headers, time series values
-as Excel numbers (not text), freeze panes, column grouping, no redundant Source
+as Excel numbers (not text), real cell indents (never leading spaces), freeze
+panes, column grouping, no redundant Source
 rows; same metric at quarterly and annual frequency (same definition/unit) on
 one row across period columns, not two rows; derived cells must be live
 formulas, never hardcoded computed values.
@@ -26,10 +27,10 @@ offer).
 
 ### Sheet defaults (apply to the whole workbook)
 
-- **Font:** **Calibri** for the sheet. **Hyperlinked value cells** (provenance links)
-  use **dark blue** font (`#0563C1` / `FF0563C1`) and the **number format** in
-  **Hyperlinks** below so they read like real links — see that section. Other body
-  (non-linked) styling follows **Color conventions**.
+- **Font:** **Calibri** for the sheet. **font size 12** **Hyperlinked value cells** (provenance links)
+  use **dark blue** font (`#0563C1` / `FF0563C1`) and keep the **row's own number
+  format** (a link never changes a cell's format — see **Hyperlinks**) so they read
+  like real links. Other body (non-linked) styling follows **Color conventions**.
 - **Gridlines:** **Off** — the worksheet should present with **no visible cell
   grid** (Excel: gridlines hidden for the sheet).
 - **Empty data cells** (no value for that period): show a **dash** (`-` or
@@ -53,8 +54,9 @@ offer).
 - **Hyperlinked value cells:** the **cell value** remains numeric when the metric is
   numeric; the provenance hyperlink is layered on the cell — do not replace the
   number with a text-only representation. Display them with **dark blue** font and
-  the **hyperlink number format** in **Hyperlinks** (percent-style for rates; for
-  counts/currency use the sheet accounting format **with the same dark blue**).
+  the **row's own number format** — the one `revelata-excel-units-and-scale.md`
+  Rule 3 dictates for the row's dimension and scale, identical on linked and
+  non-linked cells (see **Hyperlinks**).
 
 ### Title cell **C1** (not A1)
 
@@ -80,6 +82,9 @@ empty.
 
 ### Period column headers (store dates as numbers)
 
+- **Which fiscal years go in Col E onward** is set by the parent or orchestrator skill (e.g., in a canonical **Model
+  timeline** section) invoking this set of formatting rules. This section solely governs *how* those period headers are formatted, not
+  *which* years they are.
 - Do **not** type period labels as plain text in header cells. **Store real Excel
   date serials** in the **date header row** (**row 3** in the default layout: **C1**
   title → blank row 2 → **headers row 3**), in Col E onward, then apply **number format**:
@@ -134,12 +139,13 @@ Format all output spreadsheets as a **revenue build model**:
   build subtotals): **operand** rows above where needed; the **derived KPI** gets
   its **own** row—because it is a **different** line item, not a hole in one stream.
   Those cells are still **live formulas** (see **Derived values — formulas only**).
-- **Time periods flow left to right** within each block. Row labels in column A.
-- **Three-column label system**:
+- **Time periods flow left to right** within each block. Row labels in Col C.
+- **Four-column label system**:
   - Col A (hidden): deepKPI metric name string — serves as audit trail
-  - Col B: Display label (what users see)
-  - Col C: Units tag, italic (e.g., `(in thousands)`)
-  - Col D onward: time-period data values
+  - Col B (hidden): row index
+  - Col C: Display label (what users see)
+  - Col D: Units tag, italic (e.g., `(USD in millions)`)
+  - Col E onward: time-period data values
 - **KPI names (Col C — display labels) — one pattern for the whole sheet:** Before
   filling rows, choose a **single** convention for how **metric + qualifier /
   segment** reads. **Prefer** separating the qualifier with an **em dash or hyphen**
@@ -155,10 +161,17 @@ Format all output spreadsheets as a **revenue build model**:
   then use it as it appears.
 - Col A may still hold the raw deepKPI string; Col C should read as a **consistent
   series of human-readable labels**.
-- **Annual and quarterly column blocks:** **Annual columns first** (FY2017,
-  FY2018 … or 4-digit year labels), left → right, oldest first. Then **one blank
-  column**. Then **quarterly columns** (Mar-22, Jun-22, Sep-22, Dec-22 …), left →
-  right, oldest first. Do **not** put quarterlies before annuals.
+- **Annual and quarterly column blocks — only when the invoking skill lays
+  quarterly columns.** Where it does: **Annual columns first** (FY2017, FY2018 … or
+  4-digit year labels), left → right, oldest first. Then **one blank column**. Then
+  **quarterly columns** (Mar-22, Jun-22, Sep-22, Dec-22 …), left → right, oldest
+  first. Do **not** put quarterlies before annuals. The **operating-model** skill
+  lays **annual columns only** (its Model timeline: four historical and five
+  projection fiscal years), so there the annual block is the whole data region —
+  no separator column, no quarterly block, and no quarterly column group.
+- **Rows are never hidden or collapsed.** A supporting row (a quarterly row summed to an
+  annual value) may be placed in a row outline group, left **expanded**; memo and check
+  rows are ordinary visible rows. The reader sees every row the model carries.
 - **Column outline / grouping (expand–collapse):** Create **two** separate Excel
   **column groups** (outline) so the user can **collapse or expand** the **annual**
   block vs the **quarterly** block: (1) group **only** the contiguous **annual**
@@ -173,9 +186,20 @@ Format all output spreadsheets as a **revenue build model**:
 - **Date header row** (Col E onward): **numeric Excel dates** with display formats
   above (**Mar-22** style for quarterlies); **Bold** and **underlined** font.
   (Calibri.)
-- **ALL CAPS section header rows** (e.g. `REVENUE BUILD`): **Bold** and **font
-  underlined** (underline the text in Col C for that row; background unchanged
+- **ALL CAPS section header rows** (e.g. `REVENUE BUILD`): **Bold**, **font
+  underlined**, and **font size 16**  (underline the text in Col C for that row; background unchanged
   unless the xlsx skill says otherwise).
+- **Every header below the five section headers** — a build's section sub-header
+  (`Consolidated Revenue`, `Comparable Cohort Revenue`, `Notes`), a brand / banner /
+  concept / segment / geography header, an ownership header, a block header — is
+  **bold, underlined, size 12, title case**, one level shallower than the line
+  items it frames (the block-header rule below). Nothing below the five section headers is size 16 or
+  ALL CAPS, and no header is left un-underlined: the hierarchy inside a section is
+  carried by indent, not by size and not by withholding the underline. The
+  renderer's `subheader()` produces exactly this row. A header row has **no data
+  region**: its period cells are empty, never dashes, and it carries no Col D tag. A
+  dash marks a data row's empty period, never a header's; the renderer treats any
+  row with no cells and no tag as a header and renders it so.
 - **Color conventions** (Revelata KPI inputs — overriding generic xlsx fill rules
   for this file type):
   - **deepKPI-sourced input values** ("hardcoded" from API): **fill / background**
@@ -190,23 +214,88 @@ Format all output spreadsheets as a **revenue build model**:
   - **Red** `#FF0000` (`FFFF0000`): estimated or external values (use sparingly)
 - **% change rows**: italic label + italic data, formatted as accounting-style %:
   `_(* #,##0.0%_);_(* \(#,##0.0%\);_(* "-"?_);_(@_)`
-- **Number format** for all data values (accounting with dash for zero):
-  `_(* #,##0_);_(* \(#,##0\);_(* "-"_);_(@_)`
-- **Subtotals**: bold; last item before total gets a thin bottom border.
-- **Grand totals**: bold, double top border.
-- **Sub-items**: indent label in Col C with two leading spaces.
+- **Number format** is **derived, never chosen**: it follows from the row's
+  dimension and display scale per `revelata-excel-units-and-scale.md` **Rule 3**
+  (money in millions `_(* #,##0,,_);…`, money in thousands `#,##0,`, per-unit money
+  `#,##0.00`, percent as above). The one-comma accounting format with a dash for zero,
+  `_(* #,##0_);_(* \(#,##0\);_(* "-"_);_(@_)`, is the **counts / ones** case of that
+  table, not a default for all data values.
+- **Totals and subtotals — the "sum bar"**: bold, with a **single thin top border**
+  across the data columns only (Col E onward). Never a double line, never a bottom
+  border on the row above, never a border on the label columns. One visual for every
+  total, from a block subtotal to the grand total.
+- **Sub-items**: indent the Col C label with the cell's **real indent property**
+  (see **Indentation — real cell indent, never leading spaces** below). Never pad
+  the label string with spaces.
+- **Comments.** An input cell carries **no** comment: its hyperlink and the Col A
+  series name are its provenance. A comment sits on an input only when the value is an
+  override or on a basis the link does not show. The operand recipe of a formula row
+  and the basis of a driver go on the **Col C label cell**, one comment per row.
+
+### Indentation — real cell indent, never leading spaces
+
+**Indentation is applied with the cell's actual indent property** — openpyxl
+`Alignment(indent=n)` (`indent=1`, `2`, `3`), the equivalent of Excel's
+**Home → Increase Indent** (`Alt, H, 6`) — and **never with leading spaces** in the
+label string. This is a hard rule for **every** Col C label on **every** sheet.
+Where a build file says "indent once", "indent twice", or "indent level *n*", it
+means `Alignment(indent=1)`, `Alignment(indent=2)`, `Alignment(indent=n)` — not two
+or four spaces.
+
+Leading spaces are prohibited because:
+
+- The block-header underline (`Font(underline="single")`) draws under the padding
+  characters and produces a **ragged rule running left of the text**; a real indent
+  shifts the label without adding any underline-able characters.
+- Padded labels break `MATCH` / `VLOOKUP` / `XLOOKUP` and any other lookup against
+  the label text, and they defeat exact-match comparisons that do not `TRIM`.
+- The padding is **invisible in the Excel UI** — a user cannot see, verify, or
+  correct a mis-padded row, and Increase/Decrease Indent will not clear it.
+- Changing a cell's horizontal alignment leaves the phantom spaces stranded inside
+  the string, so the label no longer lines up with anything.
+
+When setting a cell's `Alignment`, **keep the existing `horizontal` / `vertical`
+settings and add `indent=n`** — do not construct a bare `Alignment(indent=n)` that
+discards the rest, and do not prepend spaces to the string:
+
+```python
+# correct
+c = ws["C12"]
+c.value = "Total Square Footage"          # no padding in the string
+a = c.alignment
+c.alignment = Alignment(horizontal=a.horizontal, vertical=a.vertical, indent=1)
+
+# wrong
+c.value = "  Total Square Footage"        # leading spaces — prohibited
+```
+
+**The indent hierarchy is set by row kind, and the renderer applies it.** A block
+header sits at level *n*; the line items it frames sit at *n + 1*; the total they
+roll up into returns to *n*, bold with the sum bar; a memo or check row sits at the
+items' level, *n + 1*; a trend or ratio row that belongs to one line (`YoY %`,
+`% of revenue`, days) sits one level deeper than that line. Nested blocks repeat the
+pattern: a sub-block header at *n + 1*, its items at *n + 2*, its total at *n + 1*.
+A stage gives an indent only to its **headers** — the renderer derives every other
+row's indent from these rules — so a build file states hierarchy by nesting headers,
+never by indenting data rows.
+
+Any ASCII row map in these skill files uses spaces only to **draw** the hierarchy on
+the page, two spaces per level. Those spaces are diagram, not data: the renderer sets
+the indents.
 
 ```
 Col A (hidden)            | Col B | Col C                  | Col D          | FY2022       | FY2023       |   | Mar-22       | Jun-22       | Sep-22       | Dec-22       | … |
 --------------------------|-------|------------------------|----------------|--------------|--------------|---|--------------|--------------|--------------|--------------|---|
                           |       | REVENUE BUILD          |                |              |              |   |              |              |              |              |   |  ← ALL CAPS bold + underlined
 revenue; qtr+FY ($)       |  33   | Revenue                | (in thousands) | [1,196,826] inp| [1,383,600] inp|   | [248,017] inp| [300,941] inp| [292,246] inp| [355,622] drv| … | ← one row: FY block + quarterly block; Q4 imputed = FY−Q1−Q2−Q3 in Dec column, black—not a separate "Q4" row; not a second "annual only" row
-                          |  34   |   % YoY                |                |   +15.6%     |   +12.5%     |   |     n/a      |   +21.1%     |   +15.2%     |              | … | ← italic; distinct KPI → own row OK
+                          |  34   |   YoY %                |                |   +15.6%     |   +12.5%     |   |     n/a      |   +21.1%     |   +15.2%     |              | … | ← italic; distinct KPI → own row OK; label indent = Alignment(indent=1), cell value is "YoY %" with no padding
 ```
 
 *(Legend: **row 2 blank** between **C1** title and headers; date header row —
 **numeric** dates, bold + underlined; empty inputs — `-`; **C1** = bold 12pt title
-with full company name; **A1:B1** empty.)*
+with full company name; **A1:B1** empty. The spaces before `YoY %` above are the
+diagram's way of showing one indent level — the stored cell value carries **no**
+leading spaces.)*
 
 ### Derived values — formulas only
 
@@ -237,15 +326,12 @@ sufficient.
   (Excel ARGB `FF0563C1`). **Do not** rely on underline to signal links — Excel's
   per-character underline on hyperlinked numbers is unreliable across clients and
   libraries.
-- **Number format** on **hyperlinked** numeric cells (rates / percents / ratios stored
-  as decimal fractions, e.g. `0.105` → 10.5%):
-
-  `_(#,##0.0%_);_((#,##0.0%);_(-_);_(@_)`
-
-  For **counts, currency, or other non-percent** linked values, keep the sheet's
-  standard accounting format from **Number format** above (`_(* #,##0_);_(* \(#,##0\);…`)
-  but **still** apply **dark blue** (`FF0563C1`) on the font so the cell reads as a
-  link.
+- **Number format** on **hyperlinked** numeric cells is the **row's own format** —
+  the Rule 3 format the row's dimension and scale dictate, exactly as on the
+  non-linked cells beside it (a percent input stored as a decimal fraction, `0.105`
+  → 10.5%, takes the same `_(* #,##0.0%_);…` as a derived percent row). A link
+  never changes a cell's number format; the **dark blue** font (`FF0563C1`) is the
+  link signal, so linked and derived cells in one column render identically.
 - **Calibri** on link cells.
 
 Use `cell.hyperlink` + numeric `cell.value`, or `=HYPERLINK("url", …)` with a numeric
@@ -266,10 +352,12 @@ Before presenting the file link, verify every item. Do not deliver the file unti
       unit)** = **one row** (annual block + quarterly block), not two rows; **imputed
       Q4 (etc.) in that row's column**, not a separate "Q4 derived" line item;
       distinct KPIs = separate rows
-- [ ] **Annual columns are the left block**, blank separator, **quarterly columns
-      on the right** — not the reverse
-- [ ] **Column groups** defined: **annual** block and **quarterly** block each
-      collapsible via outline (separator + cols A–D **outside** groups)
+- [ ] *(skills that lay quarterlies only)* **Annual columns are the left block**,
+      blank separator, **quarterly columns on the right** — not the reverse; an
+      annual-only skill (the operating model) has one contiguous annual block
+- [ ] *(skills that lay quarterlies only)* **Column groups** defined: **annual**
+      block and **quarterly** block each collapsible via outline (separator + cols
+      A–D **outside** groups)
 - [ ] **Calibri** as the workbook body font
 - [ ] **Gridlines hidden** (no visible cell grid on the sheet)
 - [ ] **C1** (not A1): **bold**, **12pt**, sentence case, **full official company name** +
@@ -281,18 +369,29 @@ Before presenting the file link, verify every item. Do not deliver the file unti
       right of **D**)
 - [ ] **No** extra **Source** rows/columns for filings — only **hyperlinks** on value
       cells
-- [ ] **Hyperlinks** on value cells: **dark blue** font `FF0563C1`; number format
-      `_(#,##0.0%_);_((#,##0.0%);_(-_);_(@_)` for percent-class metrics; accounting
-      format + same blue for non-percent linked values; **do not** depend on underline
+- [ ] **Hyperlinks** on value cells: **dark blue** font `FF0563C1`; the cell keeps
+      the **row's own number format** (Rule 3 of the units contract — a linked
+      percent renders exactly like a derived one); **do not** depend on underline
 - [ ] **Empty** data cells show a **dash** (not blank) in the data region
 - [ ] **deepKPI input** cells: fill **`#E2EFDA`**; **hyperlinked** inputs **dark blue**
       `FF0563C1` per **Hyperlinks**
 - [ ] **Derived** cells: **black** font (no green input styling); formulas live
 - [ ] Every derived value is a live `=` formula referencing input cells — no hardcoded numbers
 - [ ] **Time series numerics** stored as **Excel numbers**, not text strings
-- [ ] Number format `_(* #,##0_);_(* \(#,##0\);_(* "-"_);_(@_)` applied to data cells as applicable
+- [ ] Number format on every data cell is the row's **Rule 3** format (two-comma
+      money in millions, one-comma counts, per-unit `0.00`, percent) — derived from
+      the row's dimension and display scale, never chosen by hand; no data cell on
+      `General`
 - [ ] Every deepKPI-sourced cell has an actual Excel hyperlink (not a plain-text URL string)
 - [ ] **ALL CAPS** section headers: **bold** and **underlined**
+- [ ] **Indentation** on every Col C label uses the cell's **real indent property**
+      (`Alignment(indent=n)` / `Alt, H, 6`) — **no** label string anywhere in the
+      workbook begins with a space. Verify programmatically before delivering:
+      every Col C `cell.value` satisfies `value == value.lstrip()`
+- [ ] Setting indent **preserved** each cell's existing `horizontal` / `vertical`
+      alignment rather than replacing the whole `Alignment` object
+- [ ] **Block headers** sit at the **same** indent level as their own line items
+      (bold + underline distinguishes them, not a deeper indent)
 - [ ] **Col C** display labels: **one** naming pattern sheet-wide; **prefer** em dash
       or hyphen over **parentheses** for qualifiers; abbreviations only when
       **industry-standard** (e.g. ARPU), not opaque codes (e.g. BOC)
@@ -300,6 +399,16 @@ Before presenting the file link, verify every item. Do not deliver the file unti
 
 ## Common failure modes (Excel)
 
+- **Faking indentation with leading spaces** — `"  Total Square Footage"` instead of
+  `Alignment(indent=1)`. The underline on header rows then runs ragged under the
+  padding, lookups on the label fail, and the user cannot see or fix the padding in
+  Excel. Use the **real cell indent** (`Alt, H, 6`) every time.
+- **Clobbering alignment while indenting** — assigning a fresh `Alignment(indent=n)`
+  drops the cell's `horizontal` / `vertical` settings. Read the existing alignment
+  and carry those values through.
+- **Indenting a data row by hand** — the renderer sets every non-header row's indent
+  from its kind; a stage gives an indent only to a header, and only when it nests
+  one block inside another.
 - **Extra Source rows**: filing identity lives in the **cell hyperlink** only.
 - **Green font on hyperlinked values** — use **dark blue** `FF0563C1` and the **percent
   format** (or accounting + blue for non-percent) so links look like links **without**

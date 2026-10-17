@@ -1,8 +1,8 @@
 # deepkpi-agents: Revelata Agentic Skills Library
 
-**Open-source agentic skills for equity research and analysis, powered by [Revelata deepKPI](https://www.revelata.com).** Pull structured KPI time series, full SEC filing markdown (10-K, 10-Q, 8-K), 10-K-derived company summaries, and more — directly into Claude, ChatGPT, or OpenClaw.
+**Open-source agentic skills for equity research and analysis, powered by [Revelata deepKPI](https://www.revelata.com), our Stable Context Service for fundamental equity research.** Pull structured, hard-to-find KPI time series; SEC filing markdown (10-K, 10-Q, 8-K); comprehensive company summaries; and more — directly into Claude, ChatGPT, OpenClaw, or Hermes.  Our deepKPI Stable Context Service pre-structures, pre-interprets, pre-verifies, and cites every fact it returns, enabling your AI to operate on a stable, authoritative substrate. 
 
-The skills cover a growing set of fundamental workflows for equity research: KPI lookup, filing-text retrieval, derived metric calculation, peer benchmarking, seasonality analysis, and analyst-report pressure-testing.
+The skills cover a growing set of fundamental workflows for equity research: KPI lookup, filing-text retrieval, Excel operating model generation, earnings call preparation, derived metric calculation, peer benchmarking, seasonality analysis, and analyst report pressure testing.
 
 Data access requires a [free Revelata account](https://www.revelata.com/signup?product_id=0). Every data point returned by our deepKPI service has a clickable hyperlink back to its source sentence in the original filing. Provenance is preserved through every downstream tool call, so analyses are **1-click auditable** — no opaque numbers, no hand-waved citations.
 
@@ -19,6 +19,8 @@ Authentication is via **OAuth** (Claude, ChatGPT) or **API key** (OpenClaw). For
 | `implied-metric` | Derives metrics that aren't directly reported — Q4 from FY−(Q1+Q2+Q3), segment remainders, per-unit economics (ARPU, ASP, AUV), take rates. |
 | `pressure-test` | Pressure-tests analyst reports against SEC filing data; outputs an interactive HTML report with claim-by-claim evidence and provenance hyperlinks. |
 | `benchmark` | Performs operational peer / comp discovery via deepKPI semantic search; aligns KPI fingerprints, generates segment sub-benchmarks, supports HTML and Excel output. |
+| `tearsheet` | Outputs a one-page pre-earnings tearsheet — quarterly financials, revenue-driver KPIs, and bull / bear tensions; outputs an HTML report. |
+| `operating-model` | Builds a full operating model in Excel from deepKPI: scaffold plus revenue, costs, consolidated financials, depreciation, and net working capital sections. |
 | `ideas` | Guides users without a specific company or thesis through idea generation — interactive interview, screen, and deep-dive. |
 | `revelata` | Orchestrates complex multi-step research that crosses multiple workflows. |
 
@@ -30,24 +32,24 @@ We integrate into the following agentic frameworks:
 
 Install the plugin via our third-party marketplace:
 
-1. In Cowork, open **Customize → + → Create Plugin**
-2. Add marketplace: **`revelata/deepkpi-agents`**
-3. Install the **`revelata`** plugin
+1. In Claude Desktop, open **Customize → Plugins → Add Marketplace**
+2. **Add from a repository**, and enter **`revelata/deepkpi-agents`**
+3. **Turn off** "automatic syncing" and then click **Sync**
+4. Then **Add** the **`Revelata`** plugin
 
-**Known Cowork issue — manual MCP authentication required.** A Cowork issue prevents authentication within Cowork chat. To finish setup:
+**Known issue — manual MCP authentication required.** A Claude desktop issue may prevent authentication within Cowork or Chat sessions. To finish setup:
 
-4. Open **Customize → Revelata → Connectors**
-5. Choose the **Revelata** connector and click **Install** (or **Connect**, depending on your version of Cowork).
-6. Complete the OAuth flow when prompted
+5. Open **Customize → Connectors → Yours**
+6. Click **Connect** for the **Revelata** connector
+7. Complete the OAuth flow when prompted
 
-> **Important:** A Cowork plugin install propagates to **Claude Code** automatically. The reverse is **not** true. If you want both supported, install via Cowork.
 
 ### Claude.ai (web) or Claude Desktop Chat
 
 1. Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip).
 2. Enable **Code execution and file creation** in Claude.ai → Settings → Capabilities
 3. Upload the ZIP via **Customize → Skills**
-4. Adding the deepKPI MCP connector (see **[MCP.md](./MCP.md)**)
+4. Add the deepKPI MCP connector (see **[MCP.md](./MCP.md)**)
 
 ### Claude Code CLI
 
