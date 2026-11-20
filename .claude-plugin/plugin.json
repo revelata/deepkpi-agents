@@ -1,6 +1,6 @@
 {
     "name": "revelata",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Equity research and fundamental analysis skills powered by Revelata deepKPI.",
     "author": {
         "name": "Revelata, Inc.",
@@ -9,5 +9,8 @@
     },
     "homepage": "https://www.revelata.com",
     "repository": "https://github.com/revelata/deepkpi-agents",
-    "license": "Apache-2.0"
+    "license": "Apache-2.0",
+    "icon": "./assets/icon.png",
+    "privacyPolicyUrl": "https://app.termly.io/policy-viewer/policy.html?policyUUID=d43ea6b9-44c7-4fae-b1c7-904c815b67c8",
+    "termsOfServiceUrl": "https://app.termly.io/policy-viewer/policy.html?policyUUID=b23e7803-82d9-4a25-8575-b1ac84488757"
 }

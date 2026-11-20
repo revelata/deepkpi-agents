@@ -1,6 +1,6 @@
 {
     "name": "revelata",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Equity research and fundamental analysis skills powered by Revelata deepKPI.",
     "author": {
         "name": "Revelata, Inc.",
@@ -19,9 +19,12 @@
         "longDescription": "Agent skills for fundamental equity research and analysis of US public companies. Includes KPI lookup and retrieval, SEC filing retrieval, company tearsheets, automatic operating models, seasonality analysis, implied metrics, benchmarking, analyst report pressure-testing, and more — backed by the Revelata deepKPI MCP server with sentence-level provenance.",
         "developerName": "Revelata, Inc.",
         "category": "Finance",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png",
         "capabilities": ["Read"],
         "websiteURL": "https://www.revelata.com",
-        "privacyPolicyURL": "https://www.revelata.com/privacy",
+        "privacyPolicyURL": "https://app.termly.io/policy-viewer/policy.html?policyUUID=d43ea6b9-44c7-4fae-b1c7-904c815b67c8",
+        "termsOfServiceURL": "https://app.termly.io/policy-viewer/policy.html?policyUUID=b23e7803-82d9-4a25-8575-b1ac84488757",
         "defaultPrompt": [
             "Compare META and Microsoft's AI infra spend and tell me what differentiates them.", 
             "Pull membership data for Planet Fitness and create an Excel workbook",

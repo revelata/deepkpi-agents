@@ -11,6 +11,8 @@ description: >
   or "challenge" in the context of an analyst report, research note, or investment thesis.
   Also triggers when the user uploads a PDF that looks like a sell-side report and asks
   for analysis, counterpoints, or a second opinion on it.
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # pressure-test
@@ -21,12 +23,15 @@ and use to form an independent view — every number is clickable back to its so
 
 ## Data source
 
-See `../_common/data-source-rules.md` for the runtime routing table and the canonical
+See `../_common/data-source-rules.md` for how deepKPI is reached and the canonical
 inventory of deepKPI operations.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. STOP and ask before falling back.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## When this skill triggers
 

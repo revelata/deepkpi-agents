@@ -8,6 +8,8 @@ description: >
   companies, benchmarking, comp sets, valuation peers, thematic "what's like X?", or segment
   pure-plays. Exclude unrelated verticals (e.g., gym vs car wash) except clear segment-to-segment,
   same customer + same need.
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # benchmark
@@ -37,12 +39,15 @@ counterpart in the whole-company set, that's the signal to go deeper.
 
 ## Data source
 
-See `../_common/data-source-rules.md` for the runtime routing table and the canonical
+See `../_common/data-source-rules.md` for how deepKPI is reached and the canonical
 inventory of deepKPI operations.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. STOP and ask before falling back.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## Dependencies
 

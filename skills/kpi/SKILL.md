@@ -12,8 +12,9 @@ description: >
   segment/geography breakdowns, or thematic "who does X?" lists, use the 
   company-summary skill instead.
   Always use before analyzing or projecting on KPIs. After in-chat KPI tables, end
-  with a bold Excel (.xlsx) offer unless the user asked for a file or declined. For
-  .xlsx output, follow ../_common/revelata-excel-styling-rules.md.
+  with a bold Excel (.xlsx) offer unless the user asked for a file or declined.
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # kpi
@@ -32,8 +33,8 @@ the `company-summary` skill (`get_company_summary`, `get_company_segments`,
 
 ## Data source
 
-See `../_common/data-source-rules.md` for the runtime routing table (MCP-capable
-vs non-MCP) and the canonical inventory of deepKPI operations. The KPI workflow
+See `../_common/data-source-rules.md` for how deepKPI is reached and the canonical
+inventory of deepKPI operations. The KPI workflow
 uses `query_company_id`, `list_kpis`, and `search_kpis`.
 
 For known structured-KPI gaps (quarter vs. half-year period
@@ -42,12 +43,15 @@ material 8-Ks, one-time MD&A disclosures), read
 `../_common/deepkpi-coverage-gaps.md` BEFORE concluding that a needed
 metric is unavailable.
 
-If neither MCP nor the REST fallback applies, say so and ask the user how to
-proceed.
+If the deepKPI tools are missing, the user is not signed in: follow section 1 of
+`../_common/connection-failure.md`.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. STOP and ask before falling back.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## Opening line
 

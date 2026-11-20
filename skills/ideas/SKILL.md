@@ -12,6 +12,8 @@ description: >
   everywhere") and want to know which public companies that maps to. Do NOT
   trigger when the user already has a specific company or KPI in mind — use the
   kpi skill for that instead.
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # ideas
@@ -28,12 +30,15 @@ keep exploring with them.
 
 ## Data source
 
-See `../_common/data-source-rules.md` for the runtime routing table and the canonical
+See `../_common/data-source-rules.md` for how deepKPI is reached and the canonical
 inventory of deepKPI operations.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. STOP and ask before falling back.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## Dependencies
 

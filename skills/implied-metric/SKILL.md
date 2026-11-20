@@ -11,6 +11,8 @@ description: >
   are. Always pull inputs via the kpi skill; derived values inherit provenance
   from their deepKPI-sourced components. For `.xlsx`/CSV exports, follow
   ../_common/revelata-excel-styling-rules.md (plus the xlsx skill).
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # implied-metric
@@ -27,9 +29,12 @@ use hardcoded or assumed figures as inputs to a derivation.
 See `../_common/data-source-rules.md`. Inputs to derivations are pulled with
 `query_company_id` / `list_kpis` / `search_kpis` — same workflow as the `kpi` skill.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. STOP and ask before falling back.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## Critical: flow vs. stock
 

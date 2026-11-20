@@ -1,12 +1,12 @@
 # deepkpi-agents: Revelata Agentic Skills Library
 
-**Open-source agentic skills for equity research and analysis, powered by [Revelata deepKPI](https://www.revelata.com), our Stable Context Service for fundamental equity research.** Pull structured, hard-to-find KPI time series; SEC filing markdown (10-K, 10-Q, 8-K); comprehensive company summaries; and more — directly into Claude, ChatGPT, OpenClaw, or Hermes.  Our deepKPI Stable Context Service pre-structures, pre-interprets, pre-verifies, and cites every fact it returns, enabling your AI to operate on a stable, authoritative substrate. 
+**Open-source agentic skills for equity research and analysis, powered by [Revelata deepKPI](https://www.revelata.com), our Stable Context Service for fundamental equity research.** Pull structured, hard-to-find KPI time series; SEC filing markdown (10-K, 10-Q, 8-K); comprehensive company summaries; and more — directly into Claude or ChatGPT.  Our deepKPI Stable Context Service pre-structures, pre-interprets, pre-verifies, and cites every fact it returns, enabling your AI to operate on a stable, authoritative substrate. 
 
 The skills cover a growing set of fundamental workflows for equity research: KPI lookup, filing-text retrieval, Excel operating model generation, earnings call preparation, derived metric calculation, peer benchmarking, seasonality analysis, and analyst report pressure testing.
 
 Data access requires a [free Revelata account](https://www.revelata.com/signup?product_id=0). Every data point returned by our deepKPI service has a clickable hyperlink back to its source sentence in the original filing. Provenance is preserved through every downstream tool call, so analyses are **1-click auditable** — no opaque numbers, no hand-waved citations.
 
-Authentication is via **OAuth** (Claude, ChatGPT) or **API key** (OpenClaw). For manual MCP server setup, endpoint URL, and the underlying tool reference, see **[MCP.md](./MCP.md)**.
+Authentication is via **OAuth** with your Revelata account. For manual MCP server setup, endpoint URL, and the underlying tool reference, see **[MCP.md](./MCP.md)**.
 
 ## Skills
 
@@ -28,7 +28,7 @@ Authentication is via **OAuth** (Claude, ChatGPT) or **API key** (OpenClaw). For
 
 We integrate into the following agentic frameworks:
 
-### Claude Desktop Cowork & Code
+### Claude Desktop & Claude.ai
 
 Install the plugin via our third-party marketplace:
 
@@ -37,19 +37,12 @@ Install the plugin via our third-party marketplace:
 3. **Turn off** "automatic syncing" and then click **Sync**
 4. Then **Add** the **`Revelata`** plugin
 
-**Known issue — manual MCP authentication required.** A Claude desktop issue may prevent authentication within Cowork or Chat sessions. To finish setup:
+**Connect the deepKPI connector.** Claude installs a plugin's connector separately from the plugin, so connect it once to finish setup:
 
-5. Open **Customize → Connectors → Yours**
-6. Click **Connect** for the **Revelata** connector
-7. Complete the OAuth flow when prompted
+5. Open the **[Revelata deepKPI connector](https://claude.ai/customize/connectors/id/revelata-deepkpi)** and click **Connect to Claude**
+6. Sign in with your Revelata account, or [create a free one](https://www.revelata.com/signup?product_id=0)
 
-
-### Claude.ai (web) or Claude Desktop Chat
-
-1. Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip).
-2. Enable **Code execution and file creation** in Claude.ai → Settings → Capabilities
-3. Upload the ZIP via **Customize → Skills**
-4. Add the deepKPI MCP connector (see **[MCP.md](./MCP.md)**)
+If you skip this step, the skills send you to sign in the first time you use them.
 
 ### Claude Code CLI
 
@@ -72,18 +65,6 @@ Install as a plugin from the Revelata marketplace (skills + deepKPI MCP together
 4. Complete **OAuth** when prompted (sign in with your Revelata account).
 
 Requires a [free Revelata account](https://www.revelata.com/signup?product_id=0). The MCP endpoint is `https://deepkpi-mcp.revelata.com/mcp`.
-
-**Alternative (skills ZIP + MCP App):** Download the latest [ZIP package](https://github.com/revelata/deepkpi-agents/releases/latest/download/deepkpi-skills.zip), enable **Developer Mode**, upload the ZIP as a custom skill, and add the deepKPI MCP server as an App at the URL above.
-
-### OpenClaw
-
-OpenClaw uses the deepKPI REST API (no MCP). Get an API key at [revelata.com/ai-credits](https://www.revelata.com/ai-credits), then:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash -s openclaw
-```
-
-The installer prompts for `DEEPKPI_API_KEY` and configures `~/.openclaw/openclaw.json`.
 
 ## Examples
 

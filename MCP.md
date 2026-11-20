@@ -32,8 +32,6 @@ First, **create a free Revelata account** — [Sign up](https://www.revelata.com
 
 Then, follow the instructions below to use the server with **Claude Desktop**, **Claude.ai**, and similar clients.
 
-**Note:** OpenClaw does not use our MCP server; it uses the **REST API** and **`DEEPKPI_API_KEY`**. See [`skills/_common/deepkpi-api.md`](./skills/_common/deepkpi-api.md). Hosted API docs: [deepkpi-api.revelata.com/docs](https://deepkpi-api.revelata.com/docs).
-
 ---
 
 ### Basic setup (Claude)
@@ -174,26 +172,9 @@ Fetches the markdown content for a specific SEC filing.
 
 ---
 
-### OpenClaw vs MCP
+## Get the agent skills, too
 
-| Runtime | How you use deepKPI |
-|--------|----------------------|
-| **Claude + MCP** | Connector URL **`…/mcp`**, OAuth — tools **`query_company_id`**, **`list_kpis`**, **`search_kpis`**, **`company_summary_search`**, **`get_company_summary`**, **`get_company_segments`**, **`list_sec_filing_markdowns`**, **`get_sec_filing_markdown`**. |
-| **OpenClaw** | Install **`revelata-deepkpi`**, set **`DEEPKPI_API_KEY`**, call REST per [`skills/_common/deepkpi-api.md`](./skills/_common/deepkpi-api.md). |
-
-Do not paste the MCP URL into OpenClaw as a substitute for the REST skill flow.
-
----
-
-## Get the Agentic Skills bundle, too
-
-Agent instructions and OpenClaw install:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/revelata/deepkpi-agents/main/install.sh | bash
-```
-
-Details: [README.md](./README.md).
+The Revelata plugin installs the skills together with this MCP server. Install steps for Claude, Claude Code, and ChatGPT: [README.md](./README.md).
 
 ---
 
