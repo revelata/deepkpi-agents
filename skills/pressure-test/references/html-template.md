@@ -381,7 +381,7 @@ to the HTML. The logo links to `https://www.revelata.com/for-ai-builders`.
     <a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">Run this on any report with your agent:</a>
   </p>
   <p>
-    Install and setup instructions (Claude connector + OpenClaw) live on GitHub:
+    Install and setup instructions (Claude and ChatGPT plugin) live on GitHub:
     <a href="https://github.com/revelata/deepkpi-agents" target="_blank" rel="noopener noreferrer">deepkpi-agents</a>.
   </p>
 </div>

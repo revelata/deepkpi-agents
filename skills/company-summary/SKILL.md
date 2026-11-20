@@ -8,6 +8,8 @@ description: >
   that need detail. NOT for numeric KPI time series — use the kpi skill for that.
   Triggers: what does X do, describe the business, segments, geographies,
   reportable segments, companies that make, firms in industry, thematic lists.
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # company-summary
@@ -21,16 +23,19 @@ skill instead.
 
 ## Data source
 
-See `../_common/data-source-rules.md` for the runtime routing table and the canonical
+See `../_common/data-source-rules.md` for how deepKPI is reached and the canonical
 inventory of deepKPI operations. This workflow uses `query_company_id`,
 `get_company_summary`, `get_company_segments`, and `company_summary_search`.
 
 `query_company_id` resolves **name / brand → `company_id`** (SEC CIK for US issuers).
 Use it whenever the user names a company and you do not already have `company_id`.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. STOP and ask before falling back.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## Credits (budget consciously)
 

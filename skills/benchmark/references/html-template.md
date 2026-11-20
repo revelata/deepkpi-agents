@@ -301,7 +301,7 @@ FOOTER
 
 CLOSING CTA ("try it yourself")
   Same block as Analysis Pressure Test HTML: linked headline "Run this on any report with your agent:",
-  two columns (Claude vs OpenClaw) with MCP URL, install.sh curl, and a final bullet (use the
+  a GitHub link for install and setup (no shell commands), and a final bullet (use the
   benchmark-specific prompts in the HTML skeleton below, not "Pressure test this report").
 
 DISCLOSURES

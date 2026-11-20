@@ -1,25 +1,18 @@
 ---
 name: operating-model
 description: >
-  Builds the scaffold for a full operating model of a US public company from
-  Revelata deepKPI data, then orchestrates section sub-skills to fill it in.
-  Takes a ticker or company name as input, resolves it to a deepKPI
-  `company_id` via `query_company_id`, classifies the company's industry once
-  (restaurant, retail or software — any other industry stops here with an
-  unsupported-industry message and no workbook), and produces a single-sheet Excel
-  (.xlsx) workbook with styled-but-empty ALL-CAPS section headers — Revenue,
-  Costs, Consolidated Financials, Depreciation Schedule, Net Working Capital —
-  following ../_common/revelata-excel-styling-rules.md. After the scaffold is
-  laid down, it discovers the company's full KPI inventory once via `list_kpis`
-  and shares it, then hands each section to its dedicated sub-skill, built in
-  dependency order (revenue, depreciation-schedule, costs, consolidated-financials,
-  net-working-capital) and rendered in the fixed sheet order by the renderer in
-  scripts/ (compose the sections as keyed rows, regenerate the whole workbook).
+  Builds a full operating model of a US public company in Excel (.xlsx) from
+  Revelata deepKPI data: a single-sheet workbook with Revenue, Costs, Consolidated
+  Financials, Depreciation Schedule and Net Working Capital sections, each filled
+  by its own sub-skill. Takes a ticker or company name. Supports restaurant, retail
+  and software companies only; any other industry stops with an unsupported-industry
+  message and no workbook.
   Triggers:
   "build an operating model", "build a model for", "operating model for a ticker
   or company", "model out this company", "set up the model", "scaffold a model".
-  For a single section, a one-off KPI pull, or filing text, use the kpi / filing
-  skills directly instead.
+  For a one-off KPI pull, or filing text, use the kpi / filing skills directly instead.
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 ---
 
 # operating-model
@@ -183,7 +176,7 @@ Every stage file specifies its rows in tables that carry a **`Lays when`** colum
 column says under what condition the row must be on the sheet, and `scripts/audit.py`
 reads it at Step 5 to check that every specified row was laid. The values below are
 the only ones the column may hold; they are defined here once, mirrored as constants
-in `scripts/audit.py`, and `make lint` rejects any other value.
+in `scripts/audit.py`, which rejects any other value.
 
 | Value | Meaning |
 |---|---|
@@ -214,7 +207,7 @@ The workbook is never edited in place. Every section is composed as a list of ke
 rows, and the whole workbook is regenerated from those lists on every render, in the
 scaffold order of Step 2. `scripts/framework.py` is the single implementation of this
 mechanic, `scripts/style.py` the single implementation of the styling and units
-contracts, and `scripts/README.md` shows the build-directory layout. Four rules
+contracts, and `scripts/README.md` shows the build-directory layout. These rules
 follow:
 
 - **One module per section, returning rows.** A section module returns its rows
@@ -237,7 +230,6 @@ follow:
   insertion into a saved workbook and no address that can go stale. A key that no
   assembled section lays down is a render error naming the key and the referencing
   row, not a `#REF!` discovered later.
-
 - **A stage owns its rows; the renderer is never the fix.** Every row has one owner,
   the section or sub-build whose file defines it, and no stage adds, removes or edits a
   row in another stage's module. A stage that needs a row it does not lay references it
@@ -270,15 +262,6 @@ follow:
     does not show.
   A stage file that says "record" or "note" something names the place; where it
   does not, apply the test above.
-
-After every render, recalculate with the xlsx skill's `recalc.py` (zero formula
-errors); at Step 5, run `scripts/audit.py`.
-
-The styling rules and the units contract in `../_common/` remain the specification;
-`style.py` carries their values (colors, number formats, borders) once. Skill text
-names a convention — "pale-green input fill", "red driver", "SUM-BAR" — and never
-restates a color code or a format string. A change to a rule is made in the rule
-text and in `style.py` in the same commit.
 
 - **A rate names its base, and a count identity holds only counts.** A rate
   driver's Col D tag names the row its formula multiplies or divides by, and that
@@ -343,9 +326,18 @@ text and in `style.py` in the same commit.
   are the build's fit diagnostic (low single digits expected) and are visible, not a
   memo.
 
+After every render, recalculate with the xlsx skill's `recalc.py` (zero formula
+errors); at Step 5, run `scripts/audit.py`.
+
+The styling rules and the units contract in `../_common/` remain the specification;
+`style.py` carries their values (colors, number formats, borders) once. Skill text
+names a convention — "pale-green input fill", "red driver", "SUM-BAR" — and never
+restates a color code or a format string. A change to a rule is made in the rule
+text and in `style.py` in the same commit.
+
 ## Data source
 
-See `../_common/data-source-rules.md` for the MCP-vs-REST routing table and the
+See `../_common/data-source-rules.md` for how deepKPI is reached and the
 canonical inventory of deepKPI operations. This skill uses `query_company_id`
 (to resolve the company) and `list_kpis` (to discover the full, shared KPI
 inventory once); the `industry-classification` sub-skill it invokes at Step 1.2
@@ -354,10 +346,12 @@ uses `list_sec_filing_markdowns` and one `get_sec_filing_markdown` to read the
 latest earnings-release exhibit once; the section sub-skills then use
 `search_kpis` and the statement operations against that shared inventory.
 
-## Hard stop if deepKPI access fails
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. If deepKPI is unreachable, STOP and ask
-the user before falling back to any other source.
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back.
 
 ## Opening line
 
@@ -463,9 +457,7 @@ discover **every KPI deepKPI has for this company** in a single call, so all the
 sub-skills draw from **one shared inventory** instead of each re-discovering KPIs
 on their own.
 
-Call **`list_kpis`** with the resolved `company_id`. See
-`../_common/deepkpi-api.md` (the `/v1.0/list_kpis` entry and "Step 2 — Discover
-available KPIs") for the exact call. Key points:
+Call the **`list_kpis`** tool with the resolved `company_id`. Key points:
 
 - **This call is free** — no credits — so always run it here rather than letting
   each sub-skill spend `search_kpis` credits to find the same names.

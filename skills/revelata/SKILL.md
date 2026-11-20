@@ -11,17 +11,11 @@ description: >
   For "pull data", historicals, "find the KPI", seasonality, .xlsx, filing excerpts,
   pressure-test analyst PDFs, peer benchmarks, idea generation, or company summaries
   across multiple needs.
-version: 1.0.0
-homepage: https://www.revelata.com
+  Load this skill even when the deepKPI tools are missing or need sign-in: it walks
+  the user through signing in.
 metadata:
-  openclaw:
-    emoji: "📊"
-    requires:
-      env:
-        - DEEPKPI_API_KEY
-      bins:
-        - curl
-    primaryEnv: DEEPKPI_API_KEY
+  version: "1.0.0"
+  homepage: https://www.revelata.com
 ---
 
 # Revelata deepKPI orchestrator
@@ -36,13 +30,14 @@ skill below.
 ## Data access
 
 See `../_common/data-source-rules.md` — single source of truth for how to call
-deepKPI from MCP-capable runtimes (Claude, ChatGPT) vs non-MCP runtimes
-(OpenClaw). Every skill below depends on this.
+deepKPI through the Revelata MCP server. Every skill below depends on this.
 
-## Hard stop on connection failures
+## If deepKPI access fails
 
-See `../_common/connection-failure.md`. If deepKPI access fails, STOP and ask
-the user before falling back to other sources. This rule applies to **every**
+Read `../_common/connection-failure.md` before telling the user anything about
+a failure. If the user is not signed in to deepKPI, send them to sign in (its
+section 1); never answer that with an error. If deepKPI is down, STOP and ask
+before falling back. This rule applies to **every**
 skill in the bundle.
 
 ## Sub-skill routing

@@ -33,10 +33,9 @@ Shared content under `../_common/` is referenced by every skill above:
 
 | Reference | Purpose |
 |-----------|---------|
-| **`../_common/data-source-rules.md`** | What deepKPI is; runtime routing (MCP-capable vs non-MCP); canonical inventory of deepKPI operations. |
+| **`../_common/data-source-rules.md`** | What deepKPI is; how it is reached (the Revelata MCP server); canonical inventory of deepKPI operations. |
 | **`../_common/connection-failure.md`** | Hard-stop rule when deepKPI access fails — STOP and ask before falling back. |
 | **`../_common/revelata-excel-styling-rules.md`** | Canonical `.xlsx` layout, styling, formulas, hyperlinks — apply whenever building a spreadsheet from deepKPI data. |
-| **`../_common/deepkpi-api.md`** | REST API reference for OpenClaw / non-MCP runtimes. |
 
 **Compose:** Use `kpi` for any task that needs figures; `company-summary` for what
 companies do, segment/geo breakdowns, thematic lists; `filing` for full filing
@@ -58,7 +57,7 @@ computed, `seasonality` for seasonal work, and follow
 When this skill is invoked **without** a heavier task, respond briefly to confirm the
 pipeline:
 
-1. Say that you will use **deepKPI** (via MCP or REST) for any real figures.
+1. Say that you will use **deepKPI** (via MCP) for any real figures.
 2. List which of the skills above would apply to a typical "pull → derive → export" request.
 3. Print a one-line **hello** acknowledging **`custom-deepkpi-skill`** is loaded — e.g.
    `deepKPI custom skill: ready (stub).`

@@ -1,7 +1,6 @@
-dist/
-deepkpi-skills.zip
 __pycache__/
 *.pyc
 .model_build*/
 *.xlsx
 ~$*
+.DS_Store
